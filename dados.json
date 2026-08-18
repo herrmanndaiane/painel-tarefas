@@ -1,1 +1,175 @@
-[]
+[
+  {
+    "id": 101,
+    "title": "Migração servidores PR/SC",
+    "deadline": "2026-08-30",
+    "status": "Em Andamento",
+    "priority": "Alta",
+    "notes": "Realizada reunião semanal onde foi definido que o colega Rafael irá criar uma VPN para o colega Rodrigo Greff para que o mesmo possa fazer o deploy do Proxmox na lâmina que se encontra instalada em Curitiba. ",
+    "subtasks": [
+      {
+        "id": 1787078402483,
+        "title": "Levantamento de servidores virtuais",
+        "owner": "Rafael",
+        "start": "2026-08-03",
+        "end": "2026-08-07",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787078417109,
+        "title": "Levantamento de servidor físico compatível",
+        "owner": "Rafael",
+        "start": "2026-08-07",
+        "end": "2026-08-14",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787078429998,
+        "title": "Viabilidade para instalação de lâmina em rack",
+        "owner": "Rafael",
+        "start": "2026-08-07",
+        "end": "2026-08-14",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787078445059,
+        "title": "Instalação física de lâmina ",
+        "owner": "Rafael",
+        "start": "2026-08-14",
+        "end": "2026-08-17",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787078463202,
+        "title": "Comunicação de rede - passagem de VLANs",
+        "owner": "Rafael",
+        "start": "2026-08-14",
+        "end": "2026-08-17",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787078483122,
+        "title": "Criação de VPN para Rodrigo Greff",
+        "owner": "Rafael",
+        "start": "2026-08-18",
+        "end": "2026-08-19",
+        "status": "Em Andamento",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787078509242,
+        "title": "Deploy da lâmina antiga para Proxmox",
+        "owner": "Rodrigo Greff",
+        "start": "2026-08-20",
+        "end": "2026-08-26",
+        "status": "Pendente",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787078532717,
+        "title": "Migração faseada dos servidor TELECOM",
+        "owner": "Rafael/Rodrigo Greff",
+        "start": "2026-08-27",
+        "end": "2026-09-04",
+        "status": "Pendente",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787078552434,
+        "title": "Validação dos proprietários dos serviços",
+        "owner": "COR",
+        "start": "2026-09-04",
+        "end": "2026-09-11",
+        "status": "Pendente",
+        "priority": "Média"
+      }
+    ]
+  },
+  {
+    "id": 1787079048171,
+    "title": "Migração servidores PR/SC - Dourados",
+    "deadline": "2026-09-30",
+    "status": "Em Andamento",
+    "priority": "Média",
+    "notes": "Estamos com pendência do responsável pelo POP pois não há viabilidade elétrica no mesmo. Necessário compra e instalação de outra régua elétrica.\n\n\"PRECISAR AMPLIAR 2 FONTE DELTA 100A APROXIMADAMENTE  R$20K\"\n\nhttps://docs.google.com/spreadsheets/d/1yQdUlkl2tt-L-tMl15HH6Tx_V5WtuHG4rIwMxNY2ywQ/edit?gid=0#gid=0",
+    "subtasks": [
+      {
+        "id": 1787079168102,
+        "title": "Levantamento de servidores virtuais",
+        "owner": "Rafael",
+        "start": "2026-08-03",
+        "end": "2026-08-07",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787079227903,
+        "title": "Levantamento de servidor físico compatível",
+        "owner": "Rafael",
+        "start": "2026-08-03",
+        "end": "2026-08-07",
+        "status": "Concluída",
+        "priority": "Média"
+      },
+      {
+        "id": 1787079317965,
+        "title": "Viabilidade para instalação de lâmina em rack",
+        "owner": "Rafael/Facilites ",
+        "start": "2026-08-03",
+        "end": "2026-08-07",
+        "status": "Pendente",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787079337633,
+        "title": "Instalação física de lâmina",
+        "owner": "Rafael",
+        "start": "2026-08-10",
+        "end": "2026-08-14",
+        "status": "Pendente",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787079362082,
+        "title": "Comunicação de rede - passagem de VLANs",
+        "owner": "Rafael/COR",
+        "start": "2026-08-17",
+        "end": "2026-08-28",
+        "status": "Pendente",
+        "priority": "Média"
+      },
+      {
+        "id": 1787079399053,
+        "title": "Deploy da lâmina antiga para Proxmox",
+        "owner": "Rodrigo Greff",
+        "start": "2026-08-31",
+        "end": "2026-09-04",
+        "status": "Pendente",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787079420490,
+        "title": "Migração faseada dos servidor TELECOM",
+        "owner": "Rafael/Rodrigo Greff",
+        "start": "2026-09-08",
+        "end": "2026-09-18",
+        "status": "Pendente",
+        "priority": "Alta"
+      },
+      {
+        "id": 1787079439819,
+        "title": "Validação dos proprietários dos serviços",
+        "owner": "Rafael/COR",
+        "start": "2026-09-08",
+        "end": "2026-09-18",
+        "status": "Pendente",
+        "priority": "Alta"
+      }
+    ]
+  }
+]
