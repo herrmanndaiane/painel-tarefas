@@ -15,7 +15,7 @@
         // CONFIGURAÇÃO DO REPOSITÓRIO GITHUB COMO BANCO DE DADOS
         const GITHUB_USER = 'herrmanndaiane';
         const GITHUB_REPO = 'painel-tarefas';
-        const GITHUB_TOKEN = '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'; // Seu Token do GitHub
+        const GITHUB_TOKEN = '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'; 
         
         const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/dados.json`;
         const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/dados.json`;
@@ -28,7 +28,7 @@
             if (badge) badge.textContent = "Sincronizando...";
 
             try {
-                // Tenta buscar via API do GitHub autenticada
+                // Busca direto da API do GitHub autenticada
                 let response = await fetch(`${API_URL}?t=${Date.now()}`, {
                     headers: { 
                         'Authorization': `token ${GITHUB_TOKEN}`,
@@ -42,7 +42,7 @@
                     const content = decodeURIComponent(escape(atob(data.content)));
                     window.activities = JSON.parse(content) || [];
                 } else {
-                    // Fallback para Raw GitHub (Permite que outros navegadores leiam os dados sem bloqueio)
+                    // Fallback para Raw GitHub (Garante leitura sem bloqueio)
                     const rawResponse = await fetch(`${RAW_URL}?t=${Date.now()}`);
                     if (rawResponse.ok) {
                         window.activities = await rawResponse.json();
@@ -57,21 +57,22 @@
             }
         }
 
-        // SALVAR DADOS NO GITHUB
+        // SALVAR DADOS NO GITHUB (COM BUSCA AUTOMÁTICA DE SHA)
         async function saveDataToGitHub() {
+            // Cópia de emergência no navegador
+            localStorage.setItem('my_activities_dashboard_v4', JSON.stringify(window.activities));
+
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando na Nuvem...";
 
             try {
-                // Se o SHA ainda não estiver carregado, busca antes de salvar
-                if (!fileSha) {
-                    const checkRes = await fetch(`${API_URL}?t=${Date.now()}`, {
-                        headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
-                    });
-                    if (checkRes.ok) {
-                        const checkData = await checkRes.json();
-                        fileSha = checkData.sha;
-                    }
+                // Busca o SHA atualizado do dados.json no GitHub antes de salvar
+                const checkRes = await fetch(`${API_URL}?t=${Date.now()}`, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                if (checkRes.ok) {
+                    const checkData = await checkRes.json();
+                    fileSha = checkData.sha;
                 }
 
                 const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(window.activities, null, 2))));
@@ -84,7 +85,7 @@
                         'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
-                        message: 'Atualização das tarefas do painel',
+                        message: 'Atualização automática do painel de tarefas',
                         content: contentEncoded,
                         sha: fileSha
                     })
@@ -96,11 +97,14 @@
                     if (badge) badge.textContent = "Salvo na Nuvem!";
                     setTimeout(() => { if (badge) badge.textContent = "Banco: GitHub Sincronizado"; }, 2000);
                 } else {
-                    console.error('Erro de permissão no GitHub.');
+                    const errData = await response.json();
+                    console.error('Erro de gravação no GitHub:', errData);
+                    alert('Erro ao salvar no GitHub. Verifique as permissões do seu Token.');
                     if (badge) badge.textContent = "Erro de Permissão (Token)";
                 }
             } catch (err) {
                 console.error('Erro ao enviar dados:', err);
+                if (badge) badge.textContent = "Erro de Conexão";
             }
         }
     </script>
