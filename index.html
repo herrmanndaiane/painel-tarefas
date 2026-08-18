@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Gestão de Atividades</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+    <!-- Header / Breadcrumb -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2 text-sm font-semibold">
+                <button onclick="showHome()" class="hover:underline flex items-center gap-1.5 opacity-90 hover:opacity-100">
+                    <i class="fa-solid fa-house text-xs"></i> Inicio
+                </button>
+                <span id="breadcrumb-sep" class="hidden text-indigo-300">/</span>
+                <span id="breadcrumb-title" class="hidden font-bold text-amber-300"></span>
+            </div>
+            <span class="text-xs bg-indigo-500/80 px-3 py-1 rounded-full">Painel Automático</span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        
+        <!-- ================= TELA INICIAL (IGUAL À SUA IMAGEM) ================= -->
+        <section id="view-home" class="space-y-6">
+            
+            <!-- Cards de Métricas (KPIs) + Gráfico -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <!-- TOTAL -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL</span>
+                        <div class="flex items-baseline justify-between mt-3">
+                            <span id="kpi-total" class="text-3xl font-extrabold text-slate-800">0</span>
+                            <i class="fa-solid fa-list-check text-slate-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- EM ANDAMENTO -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">EM ANDAMENTO</span>
+                        <div class="flex items-baseline justify-between mt-3">
+                            <span id="kpi-andamento" class="text-3xl font-extrabold text-indigo-600">0</span>
+                            <i class="fa-solid fa-spinner text-indigo-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- CONCLUÍDAS -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">CONCLUÍDAS</span>
+                        <div class="flex items-baseline justify-between mt-3">
+                            <span id="kpi-concluidas" class="text-3xl font-extrabold text-emerald-600">0</span>
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- ATRASADAS -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-rose-200 bg-rose-50/20 flex flex-col justify-between">
+                        <span class="text-[11px] font-bold text-rose-600 uppercase tracking-wider">ATRASADAS</span>
+                        <div class="flex items-baseline justify-between mt-3">
+                            <span id="kpi-atrasadas" class="text-3xl font-extrabold text-rose-600">0</span>
+                            <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Pizza -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center justify-center">
+                    <h3 class="text-xs font-bold text-slate-600 uppercase w-full text-left mb-2">Distribuição dos Status</h3>
+                    <div class="w-40 h-40 relative">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário e Tabela de Atividades -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Form Adicionar Atividade -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
+                    <h2 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Nova Atividade
+                    </h2>
+                    
+                    <form id="form-macro-activity" class="space-y-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Título da Atividade</label>
+                            <input type="text" id="macro-title" required placeholder="Ex: Migração servidores PR/SC" 
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
+                            <input type="date" id="macro-deadline" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                <select id="macro-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prioridade</label>
+                                <select id="macro-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Baixa">Baixa</option>
+                                    <option value="Média" selected>Média</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all shadow-md">
+                            Adicionar Atividade
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Lista / Tabela Minhas Atividades -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-indigo-600"></i> Minhas Atividades
+                        </h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400">Filtrar:</span>
+                            <select id="filter-macro" onchange="renderMacroTable()" class="px-2.5 py-1 border border-slate-200 rounded-lg text-xs outline-none">
+                                <option value="todos">Todos os Status</option>
+                                <option value="Atrasadas">Somente Atrasadas</option>
+                                <option value="Pendente">Pendentes</option>
+                                <option value="Em Andamento">Em Andamento</option>
+                                <option value="Concluída">Concluídas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
+                                    <th class="p-3">Atividade</th>
+                                    <th class="p-3">Progresso (%)</th>
+                                    <th class="p-3">Prazo</th>
+                                    <th class="p-3">Prioridade</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="macro-table-body" class="divide-y divide-slate-100 text-sm">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TELA 2: CRONOGRAMA DETALHADO ================= -->
+        <section id="view-timeline" class="space-y-6 hidden">
+            
+            <div class="flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div>
+                    <button onclick="showHome()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mb-1">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar para Inicio
+                    </button>
+                    <h2 class="text-xl font-bold text-slate-800" id="timeline-project-name">Cronograma da Atividade</h2>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-slate-400">Conclusão do Cronograma</span>
+                    <div id="timeline-calculated-progress" class="text-2xl font-black text-indigo-600">0%</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Formulário de Etapa -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
+                    <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Adicionar Etapa
+                    </h3>
+                    
+                    <form id="form-subtask" class="space-y-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Atividade Detalhada</label>
+                            <input type="text" id="subtask-title" required placeholder="Ex: Backup servidores PR" 
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Responsável</label>
+                            <input type="text" id="subtask-owner" required placeholder="Ex: Carlos Silva" 
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Inicial</label>
+                                <input type="date" id="subtask-start" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
+                                <input type="date" id="subtask-end" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                <select id="subtask-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prioridade</label>
+                                <select id="subtask-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Baixa">Baixa</option>
+                                    <option value="Média" selected>Média</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all shadow-md">
+                            Salvar no Cronograma
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabela do Cronograma -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-indigo-600"></i> Etapas do Cronograma
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
+                                    <th class="p-3">Etapa / Responsável</th>
+                                    <th class="p-3">Período</th>
+                                    <th class="p-3">Prioridade</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subtask-table-body" class="divide-y divide-slate-100 text-sm">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Estrutura de Dados Inicial
+        let activities = JSON.parse(localStorage.getItem('my_activities_dashboard_v3')) || [
+            {
+                id: 101,
+                title: 'Migração servidores PR/SC',
+                deadline: '2026-08-30',
+                status: 'Em Andamento',
+                priority: 'Alta',
+                subtasks: [
+                    { id: 1, title: 'Planejamento Inicial', owner: 'Carlos Silva', start: '2026-08-01', end: '2026-08-10', status: 'Concluída', priority: 'Alta' },
+                    { id: 2, title: 'Reunião de Alinhamento', owner: 'Mariana Souza', start: '2026-08-11', end: '2026-08-15', status: 'Em Andamento', priority: 'Média' },
+                    { id: 3, title: 'Enviar Proposta Comercial', owner: 'João Pedro', start: '2026-08-16', end: '2026-08-17', status: 'Pendente', priority: 'Alta' }
+                ]
+            }
+        ];
+
+        let activeActivityId = null;
+        let chartInstance = null;
+
+        // --- CALCULAR DE PRAZOS ---
+        function getDeadlineStatus(deadlineStr, status) {
+            if (status === 'Concluída') return { isOverdue: false, text: 'No Prazo' };
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const [y, m, d] = deadlineStr.split('-');
+            const deadline = new Date(y, m - 1, d);
+            const diffDays = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return { isOverdue: true, text: `Atrasada (${Math.abs(diffDays)}d)` };
+            if (diffDays === 0) return { isOverdue: false, text: 'Vence Hoje' };
+            return { isOverdue: false, text: `${diffDays}d restantes` };
+        }
+
+        // --- CÁLCULO AUTOMÁTICO DE PROGRESSO (%) ---
+        function calculateProgress(activity) {
+            if (!activity.subtasks || activity.subtasks.length === 0) {
+                return activity.status === 'Concluída' ? 100 : 0;
+            }
+            const completedCount = activity.subtasks.filter(st => st.status === 'Concluída').length;
+            return Math.round((completedCount / activity.subtasks.length) * 100);
+        }
+
+        // --- NAVEGAÇÃO DE TELAS ---
+        function showHome() {
+            activeActivityId = null;
+            document.getElementById('view-home').classList.remove('hidden');
+            document.getElementById('view-timeline').classList.add('hidden');
+            document.getElementById('breadcrumb-sep').classList.add('hidden');
+            document.getElementById('breadcrumb-title').classList.add('hidden');
+            renderMacroTable();
+            updateDashboardKPIs();
+        }
+
+        function openTimeline(id) {
+            activeActivityId = id;
+            const act = activities.find(a => a.id === id);
+            if (!act) return;
+
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-timeline').classList.remove('hidden');
+            
+            document.getElementById('breadcrumb-sep').classList.remove('hidden');
+            document.getElementById('breadcrumb-title').classList.remove('hidden');
+            document.getElementById('breadcrumb-title').textContent = act.title;
+            document.getElementById('timeline-project-name').textContent = act.title;
+
+            renderSubtaskTable();
+        }
+
+        // --- CADASTRO E GERENCIAMENTO NA TELA INICIAL ---
+        document.getElementById('form-macro-activity').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newAct = {
+                id: Date.now(),
+                title: document.getElementById('macro-title').value,
+                deadline: document.getElementById('macro-deadline').value,
+                status: document.getElementById('macro-status').value,
+                priority: document.getElementById('macro-priority').value,
+                subtasks: []
+            };
+
+            activities.push(newAct);
+            saveData();
+            renderMacroTable();
+            updateDashboardKPIs();
+            this.reset();
+        });
+
+        function deleteMacroActivity(id, event) {
+            event.stopPropagation();
+            if (confirm('Deseja excluir esta atividade e todo o cronograma vinculado?')) {
+                activities = activities.filter(a => a.id !== id);
+                saveData();
+                renderMacroTable();
+                updateDashboardKPIs();
+            }
+        }
+
+        function updateMacroStatus(id, newStatus, event) {
+            event.stopPropagation();
+            activities = activities.map(a => a.id === id ? { ...a, status: newStatus } : a);
+            saveData();
+            renderMacroTable();
+            updateDashboardKPIs();
+        }
+
+        // --- RENDERIZAR TABELA DA TELA INICIAL ---
+        function renderMacroTable() {
+            const tbody = document.getElementById('macro-table-body');
+            const filter = document.getElementById('filter-macro').value;
+            tbody.innerHTML = '';
+
+            const filtered = activities.filter(act => {
+                const info = getDeadlineStatus(act.deadline, act.status);
+                if (filter === 'todos') return true;
+                if (filter === 'Atrasadas') return info.isOverdue;
+                return act.status === filter;
+            });
+
+            filtered.forEach(act => {
+                const info = getDeadlineStatus(act.deadline, act.status);
+                const progress = calculateProgress(act);
+                const [y, m, d] = act.deadline.split('-');
+
+                let priorityClass = {
+                    'Baixa': 'bg-slate-100 text-slate-600',
+                    'Média': 'bg-amber-100 text-amber-700',
+                    'Alta': 'bg-rose-100 text-rose-700'
+                }[act.priority];
+
+                let statusBadgeClass = {
+                    'Pendente': 'bg-slate-100 text-slate-600 border-slate-300',
+                    'Em Andamento': 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                    'Concluída': 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                }[act.status];
+
+                const tr = document.createElement('tr');
+                tr.className = `${info.isOverdue ? 'bg-rose-50/40' : 'hover:bg-slate-50'} transition-all`;
+                
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <button onclick="openTimeline(${act.id})" class="font-bold text-slate-800 hover:text-indigo-600 text-left underline-offset-2 hover:underline">
+                            ${act.title}
+                        </button>
+                        ${info.isOverdue ? '<span class="ml-2 text-[10px] text-rose-600 font-bold">[ATRASADO]</span>' : ''}
+                    </td>
+                    <td class="p-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 bg-slate-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full" style="width: ${progress}%"></div>
+                            </div>
+                            <span class="text-xs font-bold text-indigo-600">${progress}%</span>
+                        </div>
+                    </td>
+                    <td class="p-3 text-xs">
+                        <div>${d}/${m}/${y}</div>
+                        <span class="text-[10px] ${info.isOverdue ? 'text-rose-600 font-bold' : 'text-slate-400'}">${info.text}</span>
+                    </td>
+                    <td class="p-3">
+                        <span class="text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${priorityClass}">${act.priority}</span>
+                    </td>
+                    <td class="p-3">
+                        <select onchange="updateMacroStatus(${act.id}, this.value, event)" class="text-xs font-semibold px-2 py-1 rounded-md border ${statusBadgeClass} outline-none">
+                            <option value="Pendente" ${act.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                            <option value="Em Andamento" ${act.status === 'Em Andamento' ? 'selected' : ''}>Em Andamento</option>
+                            <option value="Concluída" ${act.status === 'Concluída' ? 'selected' : ''}>Concluída</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteMacroActivity(${act.id}, event)" class="text-slate-300 hover:text-rose-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- GERENCIAMENTO DE SUBTAREFAS DO CRONOGRAMA ---
+        document.getElementById('form-subtask').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const act = activities.find(a => a.id === activeActivityId);
+            if (!act) return;
+
+            const newSub = {
+                id: Date.now(),
+                title: document.getElementById('subtask-title').value,
+                owner: document.getElementById('subtask-owner').value,
+                start: document.getElementById('subtask-start').value,
+                end: document.getElementById('subtask-end').value,
+                status: document.getElementById('subtask-status').value,
+                priority: document.getElementById('subtask-priority').value
+            };
+
+            act.subtasks.push(newSub);
+            
+            // Auto-atualiza status da atividade Macro para "Em Andamento" se houver etapas sendo executadas
+            if (act.status === 'Pendente' && newSub.status === 'Em Andamento') {
+                act.status = 'Em Andamento';
+            }
+
+            saveData();
+            renderSubtaskTable();
+            this.reset();
+        });
+
+        function deleteSubtask(subId) {
+            const act = activities.find(a => a.id === activeActivityId);
+            if (!act) return;
+            act.subtasks = act.subtasks.filter(s => s.id !== subId);
+            saveData();
+            renderSubtaskTable();
+        }
+
+        function updateSubtaskStatus(subId, newStatus) {
+            const act = activities.find(a => a.id === activeActivityId);
+            if (!act) return;
+
+            act.subtasks = act.subtasks.map(s => s.id === subId ? { ...s, status: newStatus } : s);
+            
+            // Se todas as subtarefas forem concluídas, conclui a Macro automaticamente
+            const allDone = act.subtasks.length > 0 && act.subtasks.every(s => s.status === 'Concluída');
+            if (allDone) act.status = 'Concluída';
+
+            saveData();
+            renderSubtaskTable();
+        }
+
+        function renderSubtaskTable() {
+            const act = activities.find(a => a.id === activeActivityId);
+            if (!act) return;
+
+            const tbody = document.getElementById('subtask-table-body');
+            tbody.innerHTML = '';
+
+            const progress = calculateProgress(act);
+            document.getElementById('timeline-calculated-progress').textContent = `${progress}%`;
+
+            if (act.subtasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 text-xs">Nenhuma etapa cadastrada no cronograma.</td></tr>`;
+                return;
+            }
+
+            act.subtasks.forEach(sub => {
+                const [sy, sm, sd] = sub.start.split('-');
+                const [ey, em, ed] = sub.end.split('-');
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50';
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <div class="font-bold text-slate-800">${sub.title}</div>
+                        <div class="text-xs text-slate-400"><i class="fa-regular fa-user"></i> ${sub.owner}</div>
+                    </td>
+                    <td class="p-3 text-xs text-slate-600">${sd}/${sm} até ${ed}/${em}/${ey}</td>
+                    <td class="p-3">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                            sub.priority === 'Alta' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'
+                        }">${sub.priority}</span>
+                    </td>
+                    <td class="p-3">
+                        <select onchange="updateSubtaskStatus(${sub.id}, this.value)" class="text-xs font-semibold px-2 py-1 rounded border outline-none">
+                            <option value="Pendente" ${sub.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                            <option value="Em Andamento" ${sub.status === 'Em Andamento' ? 'selected' : ''}>Em Andamento</option>
+                            <option value="Concluída" ${sub.status === 'Concluída' ? 'selected' : ''}>Concluída</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteSubtask(${sub.id})" class="text-slate-300 hover:text-rose-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- KPIS E GRÁFICO DA TELA INICIAL ---
+        function updateDashboardKPIs() {
+            const total = activities.length;
+            const andamento = activities.filter(a => a.status === 'Em Andamento').length;
+            const concluidas = activities.filter(a => a.status === 'Concluída').length;
+            const atrasadas = activities.filter(a => getDeadlineStatus(a.deadline, a.status).isOverdue).length;
+
+            document.getElementById('kpi-total').textContent = total;
+            document.getElementById('kpi-andamento').textContent = andamento;
+            document.getElementById('kpi-concluidas').textContent = concluidas;
+            document.getElementById('kpi-atrasadas').textContent = atrasadas;
+
+            // Gráfico
+            const pendentes = activities.filter(a => a.status === 'Pendente').length;
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendente', 'Em Andamento', 'Concluída'],
+                    datasets: [{
+                        data: [pendentes, andamento, concluidas],
+                        backgroundColor: ['#94a3b8', '#6366f1', '#10b981'],
+                        borderWidth: 2
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '70%' }
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('my_activities_dashboard_v3', JSON.stringify(activities));
+        }
+
+        // Inicializar
+        showHome();
+    </script>
+</body>
+</html>
