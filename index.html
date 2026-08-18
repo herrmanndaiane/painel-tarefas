@@ -3,80 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão de Atividades (GitHub Database)</title>
-    <!-- Tailwind CSS -->
+    <title>Painel de Gestão de Atividades</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        // CONFIGURAÇÃO DO SEU REPOSITÓRIO GITHUB COMO BANCO DE DADOS
-        const GITHUB_USER = 'herrmanndaiane';
-        const GITHUB_REPO = 'painel-tarefas';
-        const GITHUB_TOKEN = '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'; // Insira o token ghp_ gerado no Passo 1
-        
-        const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/dados.json`;
-        let fileSha = null; // Necessário para atualizações via API do GitHub
-
-        // CARREGAR DADOS DO GITHUB
-        async function loadDataFromGitHub() {
-            try {
-                const response = await fetch(API_URL, {
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    fileSha = data.sha;
-                    // Decodifica Base64 retornado pelo GitHub
-                    const content = decodeURIComponent(escape(atob(data.content)));
-                    window.activities = JSON.parse(content) || [];
-                    window.updateUI();
-                } else {
-                    console.error('Erro ao carregar dados do repositório.');
-                }
-            } catch (err) {
-                console.error('Falha de conexão com a API do GitHub:', err);
-            }
-        }
-
-        // SALVAR DADOS NO GITHUB (COM COMMIT AUTOMÁTICO)
-        async function saveDataToGitHub() {
-            const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Salvando no GitHub...";
-
-            try {
-                const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(window.activities, null, 2))));
-                
-                const response = await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: 'Atualização automática de dados do painel',
-                        content: contentEncoded,
-                        sha: fileSha
-                    })
-                });
-
-                if (response.ok) {
-                    const resData = await response.json();
-                    fileSha = resData.content.sha;
-                    if (badge) badge.textContent = "Salvo no GitHub!";
-                    setTimeout(() => { if (badge) badge.textContent = "Banco: GitHub"; }, 2000);
-                } else {
-                    alert('Erro ao salvar no GitHub. Verifique as permissões do Token.');
-                }
-            } catch (err) {
-                console.error('Erro ao fazer commit:', err);
-            }
-        }
-    </script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -84,9 +14,8 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
 
-    <!-- Header / Breadcrumb -->
     <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center space-x-2 text-sm font-semibold">
                 <button onclick="showHome()" class="hover:underline flex items-center gap-1.5 opacity-90 hover:opacity-100">
                     <i class="fa-solid fa-house text-xs"></i> Inicio
@@ -94,15 +23,17 @@
                 <span id="breadcrumb-sep" class="hidden text-indigo-300">/</span>
                 <span id="breadcrumb-title" class="hidden font-bold text-amber-300"></span>
             </div>
-            <span id="save-status" class="text-xs bg-indigo-800 font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                <i class="fa-brands fa-github text-sm"></i> Banco: GitHub
-            </span>
+
+            <div class="flex items-center gap-2 text-xs">
+                <button onclick="exportBackup()" title="Baixar arquivo de backup"
+                    class="bg-indigo-500 hover:bg-indigo-400 text-white font-medium px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-download"></i> Exportar Backup
+                </button>
+            </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6">
-        
-        <!-- TELA INICIAL -->
         <section id="view-home" class="space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -219,7 +150,6 @@
             </div>
         </section>
 
-        <!-- TELA 2: CRONOGRAMA DETALHADO -->
         <section id="view-timeline" class="space-y-6 hidden">
             <div class="flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                 <div>
@@ -317,22 +247,26 @@
                 </div>
             </div>
         </section>
-
     </main>
 
     <script>
-        window.activities = [];
+        const STORAGE_KEY = 'my_activities_dashboard_v4';
+
+        // Tenta ler o que estava salvo no navegador
+        let activities = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(localStorage.getItem('my_activities_dashboard_v3')) || [];
+
         let activeActivityId = null;
         let chartInstance = null;
 
-        window.updateUI = function() {
-            if (activeActivityId === null) {
-                renderMacroTable();
-                updateDashboardKPIs();
-            } else {
-                renderSubtaskTable();
-            }
-        };
+        function exportBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activities, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `backup_tarefas.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
 
         function getDeadlineStatus(deadlineStr, status) {
             if (status === 'Concluída') return { isOverdue: false, text: 'No Prazo' };
@@ -367,7 +301,7 @@
 
         function openTimeline(id) {
             activeActivityId = id;
-            const act = window.activities.find(a => a.id === id);
+            const act = activities.find(a => a.id === id);
             if (!act) return;
 
             document.getElementById('view-home').classList.add('hidden');
@@ -383,10 +317,10 @@
         }
 
         function saveNotes() {
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = activities.find(a => a.id === activeActivityId);
             if (!act) return;
             act.notes = document.getElementById('project-notes').value;
-            saveDataToGitHub();
+            saveData();
         }
 
         document.getElementById('form-macro-activity').addEventListener('submit', function(e) {
@@ -401,23 +335,29 @@
                 subtasks: []
             };
 
-            window.activities.push(newAct);
-            saveDataToGitHub();
+            activities.push(newAct);
+            saveData();
+            renderMacroTable();
+            updateDashboardKPIs();
             this.reset();
         });
 
         function deleteMacroActivity(id, event) {
             event.stopPropagation();
             if (confirm('Deseja excluir esta atividade e todo o cronograma vinculado?')) {
-                window.activities = window.activities.filter(a => a.id !== id);
-                saveDataToGitHub();
+                activities = activities.filter(a => a.id !== id);
+                saveData();
+                renderMacroTable();
+                updateDashboardKPIs();
             }
         }
 
         function updateMacroStatus(id, newStatus, event) {
             event.stopPropagation();
-            window.activities = window.activities.map(a => a.id === id ? { ...a, status: newStatus } : a);
-            saveDataToGitHub();
+            activities = activities.map(a => a.id === id ? { ...a, status: newStatus } : a);
+            saveData();
+            renderMacroTable();
+            updateDashboardKPIs();
         }
 
         function renderMacroTable() {
@@ -425,7 +365,7 @@
             const filter = document.getElementById('filter-macro').value;
             tbody.innerHTML = '';
 
-            const filtered = window.activities.filter(act => {
+            const filtered = activities.filter(act => {
                 const info = getDeadlineStatus(act.deadline, act.status);
                 if (filter === 'todos') return true;
                 if (filter === 'Atrasadas') return info.isOverdue;
@@ -491,7 +431,7 @@
 
         document.getElementById('form-subtask').addEventListener('submit', function(e) {
             e.preventDefault();
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             const newSub = {
@@ -505,34 +445,30 @@
             };
 
             act.subtasks.push(newSub);
-            if (act.status === 'Pendente' && newSub.status === 'Em Andamento') {
-                act.status = 'Em Andamento';
-            }
-
-            saveDataToGitHub();
+            saveData();
+            renderSubtaskTable();
             this.reset();
         });
 
         function deleteSubtask(subId) {
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = activities.find(a => a.id === activeActivityId);
             if (!act) return;
             act.subtasks = act.subtasks.filter(s => s.id !== subId);
-            saveDataToGitHub();
+            saveData();
+            renderSubtaskTable();
         }
 
         function updateSubtaskStatus(subId, newStatus) {
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             act.subtasks = act.subtasks.map(s => s.id === subId ? { ...s, status: newStatus } : s);
-            const allDone = act.subtasks.length > 0 && act.subtasks.every(s => s.status === 'Concluída');
-            if (allDone) act.status = 'Concluída';
-
-            saveDataToGitHub();
+            saveData();
+            renderSubtaskTable();
         }
 
         function renderSubtaskTable() {
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             const tbody = document.getElementById('subtask-table-body');
@@ -579,17 +515,17 @@
         }
 
         function updateDashboardKPIs() {
-            const total = window.activities.length;
-            const andamento = window.activities.filter(a => a.status === 'Em Andamento').length;
-            const concluidas = window.activities.filter(a => a.status === 'Concluída').length;
-            const atrasadas = window.activities.filter(a => getDeadlineStatus(a.deadline, a.status).isOverdue).length;
+            const total = activities.length;
+            const andamento = activities.filter(a => a.status === 'Em Andamento').length;
+            const concluidas = activities.filter(a => a.status === 'Concluída').length;
+            const atrasadas = activities.filter(a => getDeadlineStatus(a.deadline, a.status).isOverdue).length;
 
             document.getElementById('kpi-total').textContent = total;
             document.getElementById('kpi-andamento').textContent = andamento;
             document.getElementById('kpi-concluidas').textContent = concluidas;
             document.getElementById('kpi-atrasadas').textContent = atrasadas;
 
-            const pendentes = window.activities.filter(a => a.status === 'Pendente').length;
+            const pendentes = activities.filter(a => a.status === 'Pendente').length;
             const ctx = document.getElementById('statusChart').getContext('2d');
             
             if (chartInstance) chartInstance.destroy();
@@ -608,8 +544,11 @@
             });
         }
 
-        // Inicializa buscando dados do GitHub
-        loadDataFromGitHub();
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+        }
+
+        showHome();
     </script>
 </body>
 </html>
