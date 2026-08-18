@@ -33,7 +33,7 @@
 
     <main class="max-w-7xl mx-auto px-4 py-6">
         
-        <!-- ================= TELA INICIAL (IGUAL À SUA IMAGEM) ================= -->
+        <!-- ================= TELA INICIAL ================= -->
         <section id="view-home" class="space-y-6">
             
             <!-- Cards de Métricas (KPIs) + Gráfico -->
@@ -245,28 +245,49 @@
                     </form>
                 </div>
 
-                <!-- Tabela do Cronograma -->
-                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days text-indigo-600"></i> Etapas do Cronograma
-                    </h3>
+                <!-- Tabela do Cronograma + Campo de Observações -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Tabela -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-indigo-600"></i> Etapas do Cronograma
+                        </h3>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
-                                    <th class="p-3">Etapa / Responsável</th>
-                                    <th class="p-3">Período</th>
-                                    <th class="p-3">Prioridade</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3 text-right">Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody id="subtask-table-body" class="divide-y divide-slate-100 text-sm">
-                                <!-- Preenchido via JS -->
-                            </tbody>
-                        </table>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
+                                        <th class="p-3">Etapa / Responsável</th>
+                                        <th class="p-3">Período</th>
+                                        <th class="p-3">Prioridade</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3 text-right">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subtask-table-body" class="divide-y divide-slate-100 text-sm">
+                                    <!-- Preenchido via JS -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <!-- NOVO: Campo de Observações e Alinhamentos -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-regular fa-note-sticky text-indigo-600"></i> Observações, Agendas & Alinhamentos
+                            </h3>
+                            <span id="notes-saved-badge" class="text-[10px] text-emerald-600 font-bold opacity-0 transition-opacity">
+                                <i class="fa-solid fa-check"></i> Salvo automaticamente
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400">Anote abaixo atas de reuniões, datas importantes, links de chamadas ou combinados da equipe.</p>
+                        
+                        <textarea id="project-notes" rows="5" oninput="saveNotes()" placeholder="Ex: Reunião com diretoria agendada para 20/08 às 14h. Ficou combinado que..." 
+                            class="w-full p-3 border border-slate-200 rounded-lg text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 resize-y"></textarea>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -275,13 +296,14 @@
 
     <script>
         // Estrutura de Dados Inicial
-        let activities = JSON.parse(localStorage.getItem('my_activities_dashboard_v3')) || [
+        let activities = JSON.parse(localStorage.getItem('my_activities_dashboard_v4')) || [
             {
                 id: 101,
                 title: 'Migração servidores PR/SC',
                 deadline: '2026-08-30',
                 status: 'Em Andamento',
                 priority: 'Alta',
+                notes: 'Alinhamento dia 12/08: Equipe de TI de SC confirmou disponibilidade na janela noturna.',
                 subtasks: [
                     { id: 1, title: 'Planejamento Inicial', owner: 'Carlos Silva', start: '2026-08-01', end: '2026-08-10', status: 'Concluída', priority: 'Alta' },
                     { id: 2, title: 'Reunião de Alinhamento', owner: 'Mariana Souza', start: '2026-08-11', end: '2026-08-15', status: 'Em Andamento', priority: 'Média' },
@@ -340,7 +362,23 @@
             document.getElementById('breadcrumb-title').textContent = act.title;
             document.getElementById('timeline-project-name').textContent = act.title;
 
+            // Carrega observações salvas
+            document.getElementById('project-notes').value = act.notes || '';
+
             renderSubtaskTable();
+        }
+
+        // --- OBSERVAÇÕES ---
+        function saveNotes() {
+            const act = activities.find(a => a.id === activeActivityId);
+            if (!act) return;
+
+            act.notes = document.getElementById('project-notes').value;
+            saveData();
+
+            const badge = document.getElementById('notes-saved-badge');
+            badge.style.opacity = '1';
+            setTimeout(() => { badge.style.opacity = '0'; }, 1500);
         }
 
         // --- CADASTRO E GERENCIAMENTO NA TELA INICIAL ---
@@ -352,6 +390,7 @@
                 deadline: document.getElementById('macro-deadline').value,
                 status: document.getElementById('macro-status').value,
                 priority: document.getElementById('macro-priority').value,
+                notes: '',
                 subtasks: []
             };
 
@@ -468,7 +507,6 @@
 
             act.subtasks.push(newSub);
             
-            // Auto-atualiza status da atividade Macro para "Em Andamento" se houver etapas sendo executadas
             if (act.status === 'Pendente' && newSub.status === 'Em Andamento') {
                 act.status = 'Em Andamento';
             }
@@ -492,7 +530,6 @@
 
             act.subtasks = act.subtasks.map(s => s.id === subId ? { ...s, status: newStatus } : s);
             
-            // Se todas as subtarefas forem concluídas, conclui a Macro automaticamente
             const allDone = act.subtasks.length > 0 && act.subtasks.every(s => s.status === 'Concluída');
             if (allDone) act.status = 'Concluída';
 
@@ -580,7 +617,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('my_activities_dashboard_v3', JSON.stringify(activities));
+            localStorage.setItem('my_activities_dashboard_v4', JSON.stringify(activities));
         }
 
         // Inicializar
