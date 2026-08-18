@@ -12,75 +12,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-        // CONFIGURAÇÃO DO REPOSITÓRIO GITHUB
+        // CONFIGURAÇÃO DO REPOSITÓRIO GITHUB COMO BANCO DE DADOS
         const GITHUB_USER = 'herrmanndaiane';
         const GITHUB_REPO = 'painel-tarefas';
-        const GITHUB_TOKEN = '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'; // Insira seu token ghp_ aqui
+        const GITHUB_TOKEN = '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'; // Seu Token do GitHub
         
         const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/dados.json`;
+        const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/dados.json`;
+        
         let fileSha = null;
 
-        // CARREGAR DADOS DIRETO DA API DO GITHUB (SEM CACHE)
+        // CARREGAR DADOS DO GITHUB
         async function loadDataFromGitHub() {
             const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Carregando dados...";
+            if (badge) badge.textContent = "Sincronizando...";
 
             try {
-                // Adiciona timestamp para desativar cache do navegador/CDN
-                const response = await fetch(`${API_URL}?t=${Date.now()}`, {
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                // Tenta buscar via API do GitHub autenticada
+                let response = await fetch(`${API_URL}?t=${Date.now()}`, {
+                    headers: { 
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
                     fileSha = data.sha;
-                    
-                    // Decodificação UTF-8
                     const content = decodeURIComponent(escape(atob(data.content)));
-                    const parsedData = JSON.parse(content);
-                    
-                    if (Array.isArray(parsedData) && parsedData.length > 0) {
-                        window.activities = parsedData;
-                    } else {
-                        // Se o JSON estiver vazio, tenta resgatar do navegador
-                        const localBackup = JSON.parse(localStorage.getItem('my_activities_dashboard_v4')) || [];
-                        window.activities = localBackup;
-                    }
-                    
-                    if (badge) badge.textContent = "Banco: GitHub Sincronizado";
-                    window.updateUI();
+                    window.activities = JSON.parse(content) || [];
                 } else {
-                    fallbackLocal();
+                    // Fallback para Raw GitHub (Permite que outros navegadores leiam os dados sem bloqueio)
+                    const rawResponse = await fetch(`${RAW_URL}?t=${Date.now()}`);
+                    if (rawResponse.ok) {
+                        window.activities = await rawResponse.json();
+                    }
                 }
+                
+                if (badge) badge.textContent = "Banco: GitHub Sincronizado";
+                window.updateUI();
             } catch (err) {
-                console.warn('Falha na API do GitHub, usando armazenamento local:', err);
-                fallbackLocal();
+                console.warn('Erro ao carregar dados do GitHub:', err);
+                if (badge) badge.textContent = "Modo Off-line / Erro";
             }
-        }
-
-        function fallbackLocal() {
-            window.activities = JSON.parse(localStorage.getItem('my_activities_dashboard_v4')) || [];
-            const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Modo Off-line / Local";
-            window.updateUI();
         }
 
         // SALVAR DADOS NO GITHUB
         async function saveDataToGitHub() {
-            // Salva no navegador como garantia extra
-            localStorage.setItem('my_activities_dashboard_v4', JSON.stringify(window.activities));
-
             const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Salvando no GitHub...";
+            if (badge) badge.textContent = "Salvando na Nuvem...";
 
             try {
+                // Se o SHA ainda não estiver carregado, busca antes de salvar
+                if (!fileSha) {
+                    const checkRes = await fetch(`${API_URL}?t=${Date.now()}`, {
+                        headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                    });
+                    if (checkRes.ok) {
+                        const checkData = await checkRes.json();
+                        fileSha = checkData.sha;
+                    }
+                }
+
                 const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(window.activities, null, 2))));
                 
                 const response = await fetch(API_URL, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
                         message: 'Atualização das tarefas do painel',
@@ -92,13 +93,14 @@
                 if (response.ok) {
                     const resData = await response.json();
                     fileSha = resData.content.sha;
-                    if (badge) badge.textContent = "Salvo com Sucesso!";
+                    if (badge) badge.textContent = "Salvo na Nuvem!";
                     setTimeout(() => { if (badge) badge.textContent = "Banco: GitHub Sincronizado"; }, 2000);
                 } else {
-                    alert('Erro ao salvar no GitHub. Verifique as permissões do Token ou se a página está desatualizada.');
+                    console.error('Erro de permissão no GitHub.');
+                    if (badge) badge.textContent = "Erro de Permissão (Token)";
                 }
             } catch (err) {
-                console.error('Erro ao salvar:', err);
+                console.error('Erro ao enviar dados:', err);
             }
         }
     </script>
@@ -637,7 +639,6 @@
             });
         }
 
-        // Inicializa
         loadDataFromGitHub();
     </script>
 </body>
