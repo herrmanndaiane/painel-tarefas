@@ -12,98 +12,69 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-        // CONFIGURAÇÃO DO REPOSITÓRIO GITHUB COMO BANCO DE DADOS
-        const GITHUB_USER = 'herrmanndaiane';
-        const GITHUB_REPO = 'painel-tarefas';
-        const GITHUB_TOKEN = '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'; 
+        // CONFIGURAÇÃO DO BANCO DE DADOS EM NUVEM (JSONBin.io)
+        const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Insira aqui o ID do seu Bin (ex: 65d2a1b3...)
+        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
         
-        const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/dados.json`;
-        const RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/dados.json`;
-        
-        let fileSha = null;
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-        // CARREGAR DADOS DO GITHUB
-        async function loadDataFromGitHub() {
+        // CARREGAR DADOS DA NUVEM
+        async function loadDataFromCloud() {
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Sincronizando...";
 
             try {
-                // Busca direto da API do GitHub autenticada
-                let response = await fetch(`${API_URL}?t=${Date.now()}`, {
-                    headers: { 
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
+                const response = await fetch(`${API_URL}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
-                    fileSha = data.sha;
-                    const content = decodeURIComponent(escape(atob(data.content)));
-                    window.activities = JSON.parse(content) || [];
+                    window.activities = data.record || [];
+                    if (badge) badge.textContent = "Banco: Nuvem Sincronizada";
+                    window.updateUI();
                 } else {
-                    // Fallback para Raw GitHub (Garante leitura sem bloqueio)
-                    const rawResponse = await fetch(`${RAW_URL}?t=${Date.now()}`);
-                    if (rawResponse.ok) {
-                        window.activities = await rawResponse.json();
-                    }
+                    fallbackLocal();
                 }
-                
-                if (badge) badge.textContent = "Banco: GitHub Sincronizado";
-                window.updateUI();
             } catch (err) {
-                console.warn('Erro ao carregar dados do GitHub:', err);
-                if (badge) badge.textContent = "Modo Off-line / Erro";
+                console.warn('Erro ao carregar da nuvem:', err);
+                fallbackLocal();
             }
         }
 
-        // SALVAR DADOS NO GITHUB (COM BUSCA AUTOMÁTICA DE SHA)
-        async function saveDataToGitHub() {
-            // Cópia de emergência no navegador
+        function fallbackLocal() {
+            window.activities = JSON.parse(localStorage.getItem('my_activities_dashboard_v4')) || [];
+            const badge = document.getElementById('save-status');
+            if (badge) badge.textContent = "Modo Off-line / Local";
+            window.updateUI();
+        }
+
+        // SALVAR DADOS NA NUVEM
+        async function saveDataToCloud() {
             localStorage.setItem('my_activities_dashboard_v4', JSON.stringify(window.activities));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando na Nuvem...";
 
             try {
-                // Busca o SHA atualizado do dados.json no GitHub antes de salvar
-                const checkRes = await fetch(`${API_URL}?t=${Date.now()}`, {
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
-                });
-                if (checkRes.ok) {
-                    const checkData = await checkRes.json();
-                    fileSha = checkData.sha;
-                }
-
-                const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(window.activities, null, 2))));
-                
                 const response = await fetch(API_URL, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
                         'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
+                        'X-Master-Key': MASTER_KEY
                     },
-                    body: JSON.stringify({
-                        message: 'Atualização automática do painel de tarefas',
-                        content: contentEncoded,
-                        sha: fileSha
-                    })
+                    body: JSON.stringify(window.activities)
                 });
 
                 if (response.ok) {
-                    const resData = await response.json();
-                    fileSha = resData.content.sha;
                     if (badge) badge.textContent = "Salvo na Nuvem!";
-                    setTimeout(() => { if (badge) badge.textContent = "Banco: GitHub Sincronizado"; }, 2000);
+                    setTimeout(() => { if (badge) badge.textContent = "Banco: Nuvem Sincronizada"; }, 2000);
                 } else {
-                    const errData = await response.json();
-                    console.error('Erro de gravação no GitHub:', errData);
-                    alert('Erro ao salvar no GitHub. Verifique as permissões do seu Token.');
-                    if (badge) badge.textContent = "Erro de Permissão (Token)";
+                    alert('Erro ao salvar no banco em nuvem. Verifique o BIN_ID configurado.');
+                    if (badge) badge.textContent = "Erro ao Salvar";
                 }
             } catch (err) {
-                console.error('Erro ao enviar dados:', err);
+                console.error('Erro de rede:', err);
                 if (badge) badge.textContent = "Erro de Conexão";
             }
         }
@@ -129,7 +100,7 @@
             
             <div class="flex items-center gap-2">
                 <span id="save-status" class="text-xs bg-emerald-500/90 font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-brands fa-github text-sm"></i> Conectando...
+                    <i class="fa-solid fa-cloud text-sm"></i> Conectando...
                 </span>
             </div>
         </div>
@@ -421,7 +392,7 @@
             const act = window.activities.find(a => a.id === activeActivityId);
             if (!act) return;
             act.notes = document.getElementById('project-notes').value;
-            saveDataToGitHub();
+            saveDataToCloud();
         }
 
         document.getElementById('form-macro-activity').addEventListener('submit', function(e) {
@@ -437,7 +408,7 @@
             };
 
             window.activities.push(newAct);
-            saveDataToGitHub();
+            saveDataToCloud();
             this.reset();
         });
 
@@ -445,14 +416,14 @@
             event.stopPropagation();
             if (confirm('Deseja excluir esta atividade e todo o cronograma vinculado?')) {
                 window.activities = window.activities.filter(a => a.id !== id);
-                saveDataToGitHub();
+                saveDataToCloud();
             }
         }
 
         function updateMacroStatus(id, newStatus, event) {
             event.stopPropagation();
             window.activities = window.activities.map(a => a.id === id ? { ...a, status: newStatus } : a);
-            saveDataToGitHub();
+            saveDataToCloud();
         }
 
         function renderMacroTable() {
@@ -544,7 +515,7 @@
                 act.status = 'Em Andamento';
             }
 
-            saveDataToGitHub();
+            saveDataToCloud();
             this.reset();
         });
 
@@ -552,7 +523,7 @@
             const act = window.activities.find(a => a.id === activeActivityId);
             if (!act) return;
             act.subtasks = act.subtasks.filter(s => s.id !== subId);
-            saveDataToGitHub();
+            saveDataToCloud();
         }
 
         function updateSubtaskStatus(subId, newStatus) {
@@ -563,7 +534,7 @@
             const allDone = act.subtasks.length > 0 && act.subtasks.every(s => s.status === 'Concluída');
             if (allDone) act.status = 'Concluída';
 
-            saveDataToGitHub();
+            saveDataToCloud();
         }
 
         function renderSubtaskTable() {
@@ -643,7 +614,7 @@
             });
         }
 
-        loadDataFromGitHub();
+        loadDataFromCloud();
     </script>
 </body>
 </html>
