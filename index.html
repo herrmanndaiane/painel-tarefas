@@ -13,7 +13,7 @@
     
     <script>
         // CONFIGURAÇÃO DO BANCO DE DADOS EM NUVEM (JSONBin.io)
-        const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Insira aqui o ID do seu Bin (ex: 65d2a1b3...)
+        const BIN_ID = 'COLE_SEU_BIN_ID_AQUI'; // Insira aqui o ID do seu Bin (ex: 65d2a1b3...)
         const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
         
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -161,6 +161,13 @@
                             <input type="text" id="macro-title" required placeholder="Ex: Migração servidores PR/SC" 
                                 class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Responsável pela Atividade</label>
+                            <input type="text" id="macro-owner" required placeholder="Ex: Daiane Herrmann" 
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
                             <input type="date" id="macro-deadline" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
@@ -210,7 +217,7 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
-                                    <th class="p-3">Atividade</th>
+                                    <th class="p-3">Atividade / Responsável</th>
                                     <th class="p-3">Progresso (%)</th>
                                     <th class="p-3">Prazo</th>
                                     <th class="p-3">Prioridade</th>
@@ -232,7 +239,12 @@
                     <button onclick="showHome()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mb-1">
                         <i class="fa-solid fa-arrow-left"></i> Voltar para Inicio
                     </button>
-                    <h2 class="text-xl font-bold text-slate-800" id="timeline-project-name">Cronograma da Atividade</h2>
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-xl font-bold text-slate-800" id="timeline-project-name">Cronograma da Atividade</h2>
+                        <button onclick="editCurrentActivityFromTimeline()" title="Editar Nome ou Prazo" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2.5 py-1 rounded-md font-semibold transition-all">
+                            <i class="fa-solid fa-pen"></i> Editar
+                        </button>
+                    </div>
                 </div>
                 <div class="text-right">
                     <span class="text-xs text-slate-400">Conclusão do Cronograma</span>
@@ -388,6 +400,67 @@
             renderSubtaskTable();
         }
 
+        // EDITAR ATIVIDADE DIRETO DA TELA INICIAL
+        function editMacroActivity(id, event) {
+            event.stopPropagation();
+            const act = window.activities.find(a => a.id === id);
+            if (!act) return;
+
+            const newTitle = prompt('Novo título da atividade:', act.title);
+            if (newTitle === null || newTitle.trim() === '') return;
+
+            const newOwner = prompt('Novo responsável:', act.owner || 'Não atribuído');
+            if (newOwner === null || newOwner.trim() === '') return;
+
+            const newDeadline = prompt('Novo prazo (formato AAA-MM-DD):', act.deadline);
+            if (newDeadline === null || newDeadline.trim() === '') return;
+
+            act.title = newTitle.trim();
+            act.owner = newOwner.trim();
+            act.deadline = newDeadline.trim();
+
+            saveDataToCloud();
+            renderMacroTable();
+            updateDashboardKPIs();
+        }
+
+        // EDITAR ATIVIDADE DIRETO DA TELA DE CRONOGRAMA
+        function editCurrentActivityFromTimeline() {
+            if (!activeActivityId) return;
+            const act = window.activities.find(a => a.id === activeActivityId);
+            if (!act) return;
+
+            const newTitle = prompt('Novo título da atividade:', act.title);
+            if (newTitle === null || newTitle.trim() === '') return;
+
+            const newOwner = prompt('Novo responsável:', act.owner || 'Não atribuído');
+            if (newOwner === null || newOwner.trim() === '') return;
+
+            const newDeadline = prompt('Novo prazo (formato AAAA-MM-DD):', act.deadline);
+            if (newDeadline === null || newDeadline.trim() === '') return;
+
+            act.title = newTitle.trim();
+            act.owner = newOwner.trim();
+            act.deadline = newDeadline.trim();
+
+            document.getElementById('breadcrumb-title').textContent = act.title;
+            document.getElementById('timeline-project-name').textContent = act.title;
+
+            saveDataToCloud();
+            renderSubtaskTable();
+        }
+
+        // EDITAR PRAZO RÁPIDO VIA INPUT DE DATA
+        function updateMacroDeadline(id, newDeadline, event) {
+            event.stopPropagation();
+            const act = window.activities.find(a => a.id === id);
+            if (!act) return;
+            act.deadline = newDeadline;
+            saveDataToCloud();
+            renderMacroTable();
+            updateDashboardKPIs();
+        }
+
         function saveNotes() {
             const act = window.activities.find(a => a.id === activeActivityId);
             if (!act) return;
@@ -400,6 +473,7 @@
             const newAct = {
                 id: Date.now(),
                 title: document.getElementById('macro-title').value,
+                owner: document.getElementById('macro-owner').value,
                 deadline: document.getElementById('macro-deadline').value,
                 status: document.getElementById('macro-status').value,
                 priority: document.getElementById('macro-priority').value,
@@ -441,7 +515,7 @@
             filtered.forEach(act => {
                 const info = getDeadlineStatus(act.deadline, act.status);
                 const progress = calculateProgress(act);
-                const [y, m, d] = act.deadline.split('-');
+                const ownerName = act.owner || 'Não atribuído';
 
                 let priorityClass = {
                     'Baixa': 'bg-slate-100 text-slate-600',
@@ -460,10 +534,16 @@
                 
                 tr.innerHTML = `
                     <td class="p-3">
-                        <button onclick="openTimeline(${act.id})" class="font-bold text-slate-800 hover:text-indigo-600 text-left underline-offset-2 hover:underline">
-                            ${act.title}
-                        </button>
-                        ${info.isOverdue ? '<span class="ml-2 text-[10px] text-rose-600 font-bold">[ATRASADO]</span>' : ''}
+                        <div class="flex items-center gap-2">
+                            <button onclick="openTimeline(${act.id})" class="font-bold text-slate-800 hover:text-indigo-600 text-left underline-offset-2 hover:underline">
+                                ${act.title}
+                            </button>
+                            <button onclick="editMacroActivity(${act.id}, event)" title="Editar Atividade" class="text-slate-300 hover:text-indigo-600 text-xs">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-0.5"><i class="fa-regular fa-user"></i> ${ownerName}</div>
+                        ${info.isOverdue ? '<span class="text-[10px] text-rose-600 font-bold">[ATRASADO]</span>' : ''}
                     </td>
                     <td class="p-3">
                         <div class="flex items-center gap-2">
@@ -474,8 +554,8 @@
                         </div>
                     </td>
                     <td class="p-3 text-xs">
-                        <div>${d}/${m}/${y}</div>
-                        <span class="text-[10px] ${info.isOverdue ? 'text-rose-600 font-bold' : 'text-slate-400'}">${info.text}</span>
+                        <input type="date" value="${act.deadline}" onchange="updateMacroDeadline(${act.id}, this.value, event)" class="bg-transparent font-medium border-b border-transparent hover:border-slate-300 outline-none text-xs text-slate-700">
+                        <div class="text-[10px] ${info.isOverdue ? 'text-rose-600 font-bold' : 'text-slate-400'}">${info.text}</div>
                     </td>
                     <td class="p-3">
                         <span class="text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${priorityClass}">${act.priority}</span>
