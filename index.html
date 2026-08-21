@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão de Atividades</title>
+    <title>Painel de Gestão e Domínios</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -15,27 +15,33 @@
         // CONFIGURAÇÕES DO BANCO DE DADOS
         const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
         const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Chave Access Key (SÓ LEITURA)
-        const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Defina sua senha de edição (Ex: admin123)
-        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; // Sua Master Key
+        const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha de edição
+        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
         
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
 
-        // CARREGAR DADOS DA NUVEM (PÚBLICO PODE LER)
+        // CARREGAR DADOS DA NUVEM (PARA PÚBLICO E ADMIN)
         async function loadDataFromCloud() {
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Sincronizando...";
 
             try {
-                // Tenta carregar usando a chave Master se estiver autenticado, ou a chave Read Only para o público
                 const keyToUse = isEditMode ? MASTER_KEY : READ_ONLY_KEY;
-                const response = await fetch(`${API_URL}/latest`, {
+                const response = await fetch(`${API_URL}/latest?t=${Date.now()}`, {
                     headers: { 'X-Master-Key': keyToUse }
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
-                    window.activities = data.record || [];
+                    if (Array.isArray(data.record)) {
+                        window.db = { activities: data.record, domains: [] };
+                    } else {
+                        window.db = data.record || { activities: [], domains: [] };
+                    }
+                    if (!window.db.activities) window.db.activities = [];
+                    if (!window.db.domains) window.db.domains = [];
+
                     if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "Modo Leitura (Público)";
                     window.updateUI();
                 } else {
@@ -48,13 +54,18 @@
         }
 
         function fallbackLocal() {
-            window.activities = JSON.parse(localStorage.getItem('my_activities_dashboard_v4')) || [];
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v5'));
+            if (saved) {
+                window.db = saved;
+            } else {
+                window.db = { activities: [], domains: [] };
+            }
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Modo Off-line / Local";
             window.updateUI();
         }
 
-        // SALVAR DADOS NA NUVEM (EXIGE AUTENTICAÇÃO)
+        // SALVAR DADOS NA NUVEM
         async function saveDataToCloud() {
             if (!isEditMode) {
                 alert('Apenas visualização permitida. Faça login como Administrador para salvar alterações.');
@@ -62,7 +73,7 @@
                 return;
             }
 
-            localStorage.setItem('my_activities_dashboard_v4', JSON.stringify(window.activities));
+            localStorage.setItem('my_activities_dashboard_v5', JSON.stringify(window.db));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando na Nuvem...";
@@ -74,12 +85,14 @@
                         'Content-Type': 'application/json',
                         'X-Master-Key': MASTER_KEY
                     },
-                    body: JSON.stringify(window.activities)
+                    body: JSON.stringify(window.db)
                 });
 
                 if (response.ok) {
                     if (badge) badge.textContent = "Salvo na Nuvem!";
                     setTimeout(() => { if (badge) badge.textContent = "Modo Edição (Autenticado)"; }, 2000);
+                    // Atualiza a interface completa
+                    window.updateUI();
                 } else {
                     alert('Erro ao salvar no banco em nuvem.');
                     if (badge) badge.textContent = "Erro ao Salvar";
@@ -90,7 +103,6 @@
             }
         }
 
-        // LOGIN DE ADMINISTRADOR
         function toggleAdminAuth() {
             if (isEditMode) {
                 if (confirm('Deseja sair do Modo de Edição?')) {
@@ -119,12 +131,15 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
 
-    <!-- Header / Breadcrumb -->
+    <!-- Header / Navegação -->
     <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2 text-sm font-semibold">
-                <button onclick="showHome()" class="hover:underline flex items-center gap-1.5 opacity-90 hover:opacity-100">
-                    <i class="fa-solid fa-house text-xs"></i> Inicio
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-4 text-sm font-semibold">
+                <button onclick="switchTab('activities')" id="tab-btn-activities" class="flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </button>
+                <button onclick="switchTab('domains')" id="tab-btn-domains" class="flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-globe"></i> Domínios
                 </button>
                 <span id="breadcrumb-sep" class="hidden text-indigo-300">/</span>
                 <span id="breadcrumb-title" class="hidden font-bold text-amber-300"></span>
@@ -135,7 +150,6 @@
                     <i class="fa-solid fa-cloud text-sm"></i> Conectando...
                 </span>
 
-                <!-- Botão de Autenticação / Logout -->
                 <button onclick="toggleAdminAuth()" id="btn-auth" class="text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-lock text-xs"></i> Entrar / Editar
                 </button>
@@ -145,105 +159,314 @@
 
     <main class="max-w-7xl mx-auto px-4 py-6">
         
-        <!-- TELA INICIAL -->
-        <section id="view-home" class="space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL</span>
-                        <div class="flex items-baseline justify-between mt-3">
-                            <span id="kpi-total" class="text-3xl font-extrabold text-slate-800">0</span>
-                            <i class="fa-solid fa-list-check text-slate-400"></i>
+        <!-- TELA 1: ATIVIDADES -->
+        <section id="view-activities" class="space-y-6">
+            <div id="view-home" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL</span>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span id="kpi-total" class="text-3xl font-extrabold text-slate-800">0</span>
+                                <i class="fa-solid fa-list-check text-slate-400"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                            <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">EM ANDAMENTO</span>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span id="kpi-andamento" class="text-3xl font-extrabold text-indigo-600">0</span>
+                                <i class="fa-solid fa-spinner text-indigo-400"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                            <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">CONCLUÍDAS</span>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span id="kpi-concluidas" class="text-3xl font-extrabold text-emerald-600">0</span>
+                                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-rose-200 bg-rose-50/20 flex flex-col justify-between">
+                            <span class="text-[11px] font-bold text-rose-600 uppercase tracking-wider">ATRASADAS</span>
+                            <div class="flex items-baseline justify-between mt-3">
+                                <span id="kpi-atrasadas" class="text-3xl font-extrabold text-rose-600">0</span>
+                                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                        <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">EM ANDAMENTO</span>
-                        <div class="flex items-baseline justify-between mt-3">
-                            <span id="kpi-andamento" class="text-3xl font-extrabold text-indigo-600">0</span>
-                            <i class="fa-solid fa-spinner text-indigo-400"></i>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                        <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">CONCLUÍDAS</span>
-                        <div class="flex items-baseline justify-between mt-3">
-                            <span id="kpi-concluidas" class="text-3xl font-extrabold text-emerald-600">0</span>
-                            <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-rose-200 bg-rose-50/20 flex flex-col justify-between">
-                        <span class="text-[11px] font-bold text-rose-600 uppercase tracking-wider">ATRASADAS</span>
-                        <div class="flex items-baseline justify-between mt-3">
-                            <span id="kpi-atrasadas" class="text-3xl font-extrabold text-rose-600">0</span>
-                            <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center justify-center">
+                        <h3 class="text-xs font-bold text-slate-600 uppercase w-full text-left mb-2">Distribuição dos Status</h3>
+                        <div class="w-40 h-40 relative">
+                            <canvas id="statusChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center justify-center">
-                    <h3 class="text-xs font-bold text-slate-600 uppercase w-full text-left mb-2">Distribuição dos Status</h3>
-                    <div class="w-40 h-40 relative">
-                        <canvas id="statusChart"></canvas>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div id="form-container" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit relative">
+                        <div id="lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
+                            <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
+                        </div>
+
+                        <h2 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-indigo-600"></i> Nova Atividade
+                        </h2>
+                        <form id="form-macro-activity" class="space-y-4">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Título da Atividade</label>
+                                <input type="text" id="macro-title" required placeholder="Ex: Migração servidores PR/SC" 
+                                    class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Protocolo <span class="text-slate-400 font-normal lowercase">(opcional)</span></label>
+                                <input type="text" id="macro-protocol" placeholder="Ex: #2026-89412" 
+                                    class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Responsável pela Atividade</label>
+                                <input type="text" id="macro-owner" required placeholder="Ex: Daiane Herrmann" 
+                                    class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
+                                <input type="date" id="macro-deadline" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                    <select id="macro-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Pendente">Pendente</option>
+                                        <option value="Em Andamento">Em Andamento</option>
+                                        <option value="Concluída">Concluída</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prioridade</label>
+                                    <select id="macro-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Baixa">Baixa</option>
+                                        <option value="Média" selected>Média</option>
+                                        <option value="Alta">Alta</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all shadow-md">
+                                Adicionar Atividade
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-indigo-600"></i> Minhas Atividades
+                            </h2>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-400">Filtrar:</span>
+                                <select id="filter-macro" onchange="renderMacroTable()" class="px-2.5 py-1 border border-slate-200 rounded-lg text-xs outline-none">
+                                    <option value="todos">Todos os Status</option>
+                                    <option value="Atrasadas">Somente Atrasadas</option>
+                                    <option value="Pendente">Pendentes</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluídas</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
+                                        <th class="p-3">Atividade / Responsável</th>
+                                        <th class="p-3">Progresso (%)</th>
+                                        <th class="p-3">Prazo</th>
+                                        <th class="p-3">Prioridade</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3 text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="macro-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRONOGRAMA DETALHADO -->
+            <div id="view-timeline" class="space-y-6 hidden">
+                <div class="flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div>
+                        <button onclick="showHome()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mb-1">
+                            <i class="fa-solid fa-arrow-left"></i> Voltar para Inicio
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xl font-bold text-slate-800" id="timeline-project-name">Cronograma da Atividade</h2>
+                            <button id="btn-edit-timeline" onclick="editCurrentActivityFromTimeline()" title="Editar Atividade" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2.5 py-1 rounded-md font-semibold transition-all hidden">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400">Conclusão do Cronograma</span>
+                        <div id="timeline-calculated-progress" class="text-2xl font-black text-indigo-600">0%</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div id="subtask-form-container" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit relative">
+                        <div id="subtask-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
+                            <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
+                        </div>
+
+                        <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-indigo-600"></i> Adicionar Etapa
+                        </h3>
+                        <form id="form-subtask" class="space-y-4">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Atividade Detalhada</label>
+                                <input type="text" id="subtask-title" required placeholder="Ex: Backup servidores PR" 
+                                    class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Responsável</label>
+                                <input type="text" id="subtask-owner" required placeholder="Ex: Carlos Silva" 
+                                    class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Inicial</label>
+                                    <input type="date" id="subtask-start" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
+                                    <input type="date" id="subtask-end" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                    <select id="subtask-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Pendente">Pendente</option>
+                                        <option value="Em Andamento">Em Andamento</option>
+                                        <option value="Concluída">Concluída</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prioridade</label>
+                                    <select id="subtask-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Baixa">Baixa</option>
+                                        <option value="Média" selected>Média</option>
+                                        <option value="Alta">Alta</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all shadow-md">
+                                Salvar no Cronograma
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days text-indigo-600"></i> Etapas do Cronograma
+                            </h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
+                                            <th class="p-3">Etapa / Responsável</th>
+                                            <th class="p-3">Período</th>
+                                            <th class="p-3">Prioridade</th>
+                                            <th class="p-3">Status</th>
+                                            <th class="p-3 text-right">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="subtask-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-regular fa-note-sticky text-indigo-600"></i> Observações, Agendas & Alinhamentos
+                                </h3>
+                            </div>
+                            <textarea id="project-notes" rows="5" oninput="saveNotes()" placeholder="Ex: Reunião agendada..." 
+                                class="w-full p-3 border border-slate-200 rounded-lg text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 resize-y"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA 2: DOMÍNIOS -->
+        <section id="view-domains" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL DOMÍNIOS</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="domain-kpi-total" class="text-3xl font-extrabold text-slate-800">0</span>
+                        <i class="fa-solid fa-globe text-slate-400"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-rose-200 bg-rose-50/30 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-rose-600 uppercase tracking-wider">CRÍTICOS (&le; 15 DIAS)</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="domain-kpi-critical" class="text-3xl font-extrabold text-rose-600">0</span>
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-200 bg-amber-50/30 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-amber-600 uppercase tracking-wider">ATENÇÃO (&le; 30 DIAS)</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="domain-kpi-warning" class="text-3xl font-extrabold text-amber-600">0</span>
+                        <i class="fa-solid fa-clock text-amber-500"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">EM DIA (&gt; 30 DIAS)</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="domain-kpi-ok" class="text-3xl font-extrabold text-emerald-600">0</span>
+                        <i class="fa-solid fa-circle-check text-emerald-400"></i>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- FORMULÁRIO DE CRIAR ATIVIDADE -->
-                <div id="form-container" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit relative">
-                    <div id="lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
+                <div id="domain-form-container" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit relative">
+                    <div id="domain-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
                         <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
                         <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
-                        <p class="text-[11px] text-slate-400 mt-1">Faça login como Administrador no topo da página para adicionar ou editar atividades.</p>
                     </div>
 
                     <h2 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Nova Atividade
+                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Novo Domínio
                     </h2>
-                    <form id="form-macro-activity" class="space-y-4">
+                    <form id="form-domain" class="space-y-4">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Título da Atividade</label>
-                            <input type="text" id="macro-title" required placeholder="Ex: Migração servidores PR/SC" 
-                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">
-                                Protocolo <span class="text-slate-400 font-normal lowercase">(opcional)</span>
-                            </label>
-                            <input type="text" id="macro-protocol" placeholder="Ex: #2026-89412" 
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nome do Domínio</label>
+                            <input type="text" id="domain-name" required placeholder="Ex: minhaempresa.com.br" 
                                 class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
                         </div>
-
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Responsável pela Atividade</label>
-                            <input type="text" id="macro-owner" required placeholder="Ex: Daiane Herrmann" 
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Data de Vencimento</label>
+                            <input type="date" id="domain-expiration" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Provedor / Registrador <span class="text-slate-400 font-normal lowercase">(opcional)</span></label>
+                            <input type="text" id="domain-provider" placeholder="Ex: Registro.br, Locaweb, Godaddy" 
                                 class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
-
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
-                            <input type="date" id="macro-deadline" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
-                                <select id="macro-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Pendente">Pendente</option>
-                                    <option value="Em Andamento">Em Andamento</option>
-                                    <option value="Concluída">Concluída</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prioridade</label>
-                                <select id="macro-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Baixa">Baixa</option>
-                                    <option value="Média" selected>Média</option>
-                                    <option value="Alta">Alta</option>
-                                </select>
-                            </div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Observações <span class="text-slate-400 font-normal lowercase">(opcional)</span></label>
+                            <input type="text" id="domain-notes" placeholder="Ex: Renovação automática no cartão" 
+                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
                         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all shadow-md">
-                            Adicionar Atividade
+                            Cadastrar Domínio
                         </button>
                     </form>
                 </div>
@@ -251,16 +474,15 @@
                 <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-indigo-600"></i> Minhas Atividades
+                            <i class="fa-solid fa-globe text-indigo-600"></i> Monitoramento de Vencimentos
                         </h2>
                         <div class="flex items-center gap-2">
                             <span class="text-xs text-slate-400">Filtrar:</span>
-                            <select id="filter-macro" onchange="renderMacroTable()" class="px-2.5 py-1 border border-slate-200 rounded-lg text-xs outline-none">
-                                <option value="todos">Todos os Status</option>
-                                <option value="Atrasadas">Somente Atrasadas</option>
-                                <option value="Pendente">Pendentes</option>
-                                <option value="Em Andamento">Em Andamento</option>
-                                <option value="Concluída">Concluídas</option>
+                            <select id="filter-domain" onchange="renderDomainTable()" class="px-2.5 py-1 border border-slate-200 rounded-lg text-xs outline-none">
+                                <option value="todos">Todos os Domínios</option>
+                                <option value="critical">Críticos (&le; 15 dias)</option>
+                                <option value="warning">Atenção (&le; 30 dias)</option>
+                                <option value="ok">Em Dia (&gt; 30 dias)</option>
                             </select>
                         </div>
                     </div>
@@ -269,125 +491,14 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
-                                    <th class="p-3">Atividade / Responsável</th>
-                                    <th class="p-3">Progresso (%)</th>
-                                    <th class="p-3">Prazo</th>
-                                    <th class="p-3">Prioridade</th>
-                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Domínio / Provedor</th>
+                                    <th class="p-3">Data Vencimento</th>
+                                    <th class="p-3">Status / Prazo</th>
                                     <th class="p-3 text-right">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="macro-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                            <tbody id="domain-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TELA 2: CRONOGRAMA DETALHADO -->
-        <section id="view-timeline" class="space-y-6 hidden">
-            <div class="flex justify-between items-center bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <div>
-                    <button onclick="showHome()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mb-1">
-                        <i class="fa-solid fa-arrow-left"></i> Voltar para Inicio
-                    </button>
-                    <div class="flex items-center gap-3">
-                        <h2 class="text-xl font-bold text-slate-800" id="timeline-project-name">Cronograma da Atividade</h2>
-                        <button id="btn-edit-timeline" onclick="editCurrentActivityFromTimeline()" title="Editar Atividade" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2.5 py-1 rounded-md font-semibold transition-all hidden">
-                            <i class="fa-solid fa-pen"></i> Editar
-                        </button>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs text-slate-400">Conclusão do Cronograma</span>
-                    <div id="timeline-calculated-progress" class="text-2xl font-black text-indigo-600">0%</div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div id="subtask-form-container" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit relative">
-                    <div id="subtask-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
-                        <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
-                        <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
-                    </div>
-
-                    <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Adicionar Etapa
-                    </h3>
-                    <form id="form-subtask" class="space-y-4">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Atividade Detalhada</label>
-                            <input type="text" id="subtask-title" required placeholder="Ex: Backup servidores PR" 
-                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Responsável</label>
-                            <input type="text" id="subtask-owner" required placeholder="Ex: Carlos Silva" 
-                                class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Inicial</label>
-                                <input type="date" id="subtask-start" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prazo Final</label>
-                                <input type="date" id="subtask-end" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
-                                <select id="subtask-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Pendente">Pendente</option>
-                                    <option value="Em Andamento">Em Andamento</option>
-                                    <option value="Concluída">Concluída</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Prioridade</label>
-                                <select id="subtask-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Baixa">Baixa</option>
-                                    <option value="Média" selected>Média</option>
-                                    <option value="Alta">Alta</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all shadow-md">
-                            Salvar no Cronograma
-                        </button>
-                    </form>
-                </div>
-
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                        <h3 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-days text-indigo-600"></i> Etapas do Cronograma
-                        </h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
-                                        <th class="p-3">Etapa / Responsável</th>
-                                        <th class="p-3">Período</th>
-                                        <th class="p-3">Prioridade</th>
-                                        <th class="p-3">Status</th>
-                                        <th class="p-3 text-right">Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="subtask-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-regular fa-note-sticky text-indigo-600"></i> Observações, Agendas & Alinhamentos
-                            </h3>
-                        </div>
-                        <textarea id="project-notes" rows="5" oninput="saveNotes()" placeholder="Ex: Reunião agendada..." 
-                            class="w-full p-3 border border-slate-200 rounded-lg text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 resize-y"></textarea>
                     </div>
                 </div>
             </div>
@@ -396,14 +507,36 @@
     </main>
 
     <script>
-        window.activities = [];
+        window.db = { activities: [], domains: [] };
         let activeActivityId = null;
+        let activeTab = 'activities';
         let chartInstance = null;
 
+        function switchTab(tab) {
+            activeTab = tab;
+            const btnAct = document.getElementById('tab-btn-activities');
+            const btnDom = document.getElementById('tab-btn-domains');
+            const viewAct = document.getElementById('view-activities');
+            const viewDom = document.getElementById('view-domains');
+
+            if (tab === 'activities') {
+                btnAct.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnDom.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+                viewAct.classList.remove('hidden');
+                viewDom.classList.add('hidden');
+            } else {
+                btnDom.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnAct.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+                viewDom.classList.remove('hidden');
+                viewAct.classList.add('hidden');
+            }
+            window.updateUI();
+        }
+
         window.updateUI = function() {
-            // Atualiza botões e formulários dependendo da permissão
             const lockOverlay = document.getElementById('lock-overlay');
             const subtaskLockOverlay = document.getElementById('subtask-lock-overlay');
+            const domainLockOverlay = document.getElementById('domain-lock-overlay');
             const btnAuth = document.getElementById('btn-auth');
             const btnEditTimeline = document.getElementById('btn-edit-timeline');
             const projectNotes = document.getElementById('project-notes');
@@ -411,6 +544,7 @@
             if (isEditMode) {
                 if (lockOverlay) lockOverlay.classList.add('hidden');
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.add('hidden');
+                if (domainLockOverlay) domainLockOverlay.classList.add('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.remove('hidden');
                 if (projectNotes) projectNotes.removeAttribute('readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-unlock text-xs"></i> Sair / Mudar Modo';
@@ -418,19 +552,32 @@
             } else {
                 if (lockOverlay) lockOverlay.classList.remove('hidden');
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.remove('hidden');
+                if (domainLockOverlay) domainLockOverlay.classList.remove('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.add('hidden');
                 if (projectNotes) projectNotes.setAttribute('readonly', 'readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-lock text-xs"></i> Entrar / Editar';
                 btnAuth.className = "text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5";
             }
 
-            if (activeActivityId === null) {
-                renderMacroTable();
-                updateDashboardKPIs();
-            } else {
+            // Sempre re-calcula e re-renderiza tabelas e KPIs para o público leitor
+            renderMacroTable();
+            updateDashboardKPIs();
+            renderDomainTable();
+            updateDomainKPIs();
+
+            if (activeActivityId !== null) {
                 renderSubtaskTable();
             }
         };
+
+        // CALCULO EM TEMPO REAL DO PROGRESSO
+        function calculateProgress(activity) {
+            if (!activity.subtasks || activity.subtasks.length === 0) {
+                return activity.status === 'Concluída' ? 100 : 0;
+            }
+            const completedCount = activity.subtasks.filter(st => st.status === 'Concluída').length;
+            return Math.round((completedCount / activity.subtasks.length) * 100);
+        }
 
         function getDeadlineStatus(deadlineStr, status) {
             if (status === 'Concluída') return { isOverdue: false, text: 'No Prazo' };
@@ -445,14 +592,6 @@
             return { isOverdue: false, text: `${diffDays}d restantes` };
         }
 
-        function calculateProgress(activity) {
-            if (!activity.subtasks || activity.subtasks.length === 0) {
-                return activity.status === 'Concluída' ? 100 : 0;
-            }
-            const completedCount = activity.subtasks.filter(st => st.status === 'Concluída').length;
-            return Math.round((completedCount / activity.subtasks.length) * 100);
-        }
-
         function showHome() {
             activeActivityId = null;
             document.getElementById('view-home').classList.remove('hidden');
@@ -465,7 +604,7 @@
 
         function openTimeline(id) {
             activeActivityId = id;
-            const act = window.activities.find(a => a.id === id);
+            const act = window.db.activities.find(a => a.id === id);
             if (!act) return;
 
             document.getElementById('view-home').classList.add('hidden');
@@ -484,7 +623,7 @@
             event.stopPropagation();
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
 
-            const act = window.activities.find(a => a.id === id);
+            const act = window.db.activities.find(a => a.id === id);
             if (!act) return;
 
             const newTitle = prompt('Novo título da atividade:', act.title);
@@ -505,15 +644,13 @@
             act.deadline = newDeadline.trim();
 
             saveDataToCloud();
-            renderMacroTable();
-            updateDashboardKPIs();
         }
 
         function editCurrentActivityFromTimeline() {
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
             if (!activeActivityId) return;
 
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = window.db.activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             const newTitle = prompt('Novo título da atividade:', act.title);
@@ -537,24 +674,21 @@
             document.getElementById('timeline-project-name').textContent = act.title;
 
             saveDataToCloud();
-            renderSubtaskTable();
         }
 
         function updateMacroDeadline(id, newDeadline, event) {
             event.stopPropagation();
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
 
-            const act = window.activities.find(a => a.id === id);
+            const act = window.db.activities.find(a => a.id === id);
             if (!act) return;
             act.deadline = newDeadline;
             saveDataToCloud();
-            renderMacroTable();
-            updateDashboardKPIs();
         }
 
         function saveNotes() {
             if (!isEditMode) return;
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = window.db.activities.find(a => a.id === activeActivityId);
             if (!act) return;
             act.notes = document.getElementById('project-notes').value;
             saveDataToCloud();
@@ -576,7 +710,7 @@
                 subtasks: []
             };
 
-            window.activities.push(newAct);
+            window.db.activities.push(newAct);
             saveDataToCloud();
             this.reset();
         });
@@ -586,7 +720,7 @@
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
 
             if (confirm('Deseja excluir esta atividade e todo o cronograma vinculado?')) {
-                window.activities = window.activities.filter(a => a.id !== id);
+                window.db.activities = window.db.activities.filter(a => a.id !== id);
                 saveDataToCloud();
             }
         }
@@ -595,7 +729,7 @@
             event.stopPropagation();
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
 
-            window.activities = window.activities.map(a => a.id === id ? { ...a, status: newStatus } : a);
+            window.db.activities = window.db.activities.map(a => a.id === id ? { ...a, status: newStatus } : a);
             saveDataToCloud();
         }
 
@@ -604,7 +738,7 @@
             const filter = document.getElementById('filter-macro').value;
             tbody.innerHTML = '';
 
-            const filtered = window.activities.filter(act => {
+            const filtered = window.db.activities.filter(act => {
                 const info = getDeadlineStatus(act.deadline, act.status);
                 if (filter === 'todos') return true;
                 if (filter === 'Atrasadas') return info.isOverdue;
@@ -613,6 +747,7 @@
 
             filtered.forEach(act => {
                 const info = getDeadlineStatus(act.deadline, act.status);
+                // CALCULO AUTOMATICO EM TEMPO REAL DA PORCENTAGEM
                 const progress = calculateProgress(act);
                 const ownerName = act.owner || 'Não atribuído';
                 const protocolTag = act.protocol ? `<span class="text-[10px] bg-slate-100 text-slate-600 font-mono px-1.5 py-0.5 rounded border border-slate-200 ml-1.5">${act.protocol}</span>` : '';
@@ -683,7 +818,7 @@
             e.preventDefault();
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
 
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = window.db.activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             const newSub = {
@@ -707,7 +842,7 @@
 
         function deleteSubtask(subId) {
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = window.db.activities.find(a => a.id === activeActivityId);
             if (!act) return;
             act.subtasks = act.subtasks.filter(s => s.id !== subId);
             saveDataToCloud();
@@ -715,7 +850,7 @@
 
         function updateSubtaskStatus(subId, newStatus) {
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = window.db.activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             act.subtasks = act.subtasks.map(s => s.id === subId ? { ...s, status: newStatus } : s);
@@ -726,7 +861,7 @@
         }
 
         function renderSubtaskTable() {
-            const act = window.activities.find(a => a.id === activeActivityId);
+            const act = window.db.activities.find(a => a.id === activeActivityId);
             if (!act) return;
 
             const tbody = document.getElementById('subtask-table-body');
@@ -775,17 +910,17 @@
         }
 
         function updateDashboardKPIs() {
-            const total = window.activities.length;
-            const andamento = window.activities.filter(a => a.status === 'Em Andamento').length;
-            const concluidas = window.activities.filter(a => a.status === 'Concluída').length;
-            const atrasadas = window.activities.filter(a => getDeadlineStatus(a.deadline, a.status).isOverdue).length;
+            const total = window.db.activities.length;
+            const andamento = window.db.activities.filter(a => a.status === 'Em Andamento').length;
+            const concluidas = window.db.activities.filter(a => a.status === 'Concluída').length;
+            const atrasadas = window.db.activities.filter(a => getDeadlineStatus(a.deadline, a.status).isOverdue).length;
 
             document.getElementById('kpi-total').textContent = total;
             document.getElementById('kpi-andamento').textContent = andamento;
             document.getElementById('kpi-concluidas').textContent = concluidas;
             document.getElementById('kpi-atrasadas').textContent = atrasadas;
 
-            const pendentes = window.activities.filter(a => a.status === 'Pendente').length;
+            const pendentes = window.db.activities.filter(a => a.status === 'Pendente').length;
             const ctx = document.getElementById('statusChart').getContext('2d');
             
             if (chartInstance) chartInstance.destroy();
@@ -802,6 +937,143 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '70%' }
             });
+        }
+
+
+        // ================= ABA DE DOMÍNIOS =================
+        function getDomainExpirationInfo(expDateStr) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const [y, m, d] = expDateStr.split('-');
+            const expDate = new Date(y, m - 1, d);
+            const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 15) {
+                return { level: 'critical', days: diffDays, badgeClass: 'bg-rose-100 text-rose-700 border-rose-200', text: diffDays < 0 ? `Vencido (${Math.abs(diffDays)}d)` : `Vence em ${diffDays}d` };
+            } else if (diffDays <= 30) {
+                return { level: 'warning', days: diffDays, badgeClass: 'bg-amber-100 text-amber-700 border-amber-200', text: `Vence em ${diffDays}d` };
+            } else {
+                return { level: 'ok', days: diffDays, badgeClass: 'bg-emerald-100 text-emerald-700 border-emerald-200', text: `Em dia (${diffDays}d)` };
+            }
+        }
+
+        document.getElementById('form-domain').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+
+            const newDomain = {
+                id: Date.now(),
+                name: document.getElementById('domain-name').value.trim().toLowerCase(),
+                expiration: document.getElementById('domain-expiration').value,
+                provider: document.getElementById('domain-provider').value.trim(),
+                notes: document.getElementById('domain-notes').value.trim()
+            };
+
+            window.db.domains.push(newDomain);
+            saveDataToCloud();
+            this.reset();
+        });
+
+        function deleteDomain(id) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            if (confirm('Deseja remover este domínio da lista de monitoramento?')) {
+                window.db.domains = window.db.domains.filter(d => d.id !== id);
+                saveDataToCloud();
+            }
+        }
+
+        function editDomain(id) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const dom = window.db.domains.find(d => d.id === id);
+            if (!dom) return;
+
+            const newName = prompt('Nome do Domínio:', dom.name);
+            if (newName === null || newName.trim() === '') return;
+
+            const newExp = prompt('Data de Vencimento (AAAA-MM-DD):', dom.expiration);
+            if (newExp === null || newExp.trim() === '') return;
+
+            const newProvider = prompt('Provedor / Registrador:', dom.provider || '');
+            if (newProvider === null) return;
+
+            const newNotes = prompt('Observações:', dom.notes || '');
+            if (newNotes === null) return;
+
+            dom.name = newName.trim().toLowerCase();
+            dom.expiration = newExp.trim();
+            dom.provider = newProvider.trim();
+            dom.notes = newNotes.trim();
+
+            saveDataToCloud();
+        }
+
+        function renderDomainTable() {
+            const tbody = document.getElementById('domain-table-body');
+            const filter = document.getElementById('filter-domain').value;
+            tbody.innerHTML = '';
+
+            if (window.db.domains.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio cadastrado no monitoramento.</td></tr>`;
+                return;
+            }
+
+            const filtered = window.db.domains.filter(dom => {
+                const info = getDomainExpirationInfo(dom.expiration);
+                if (filter === 'todos') return true;
+                return info.level === filter;
+            });
+
+            filtered.sort((a, b) => new Date(a.expiration) - new Date(b.expiration));
+
+            filtered.forEach(dom => {
+                const info = getDomainExpirationInfo(dom.expiration);
+                const [y, m, d] = dom.expiration.split('-');
+                const hiddenClass = isEditMode ? '' : 'hidden';
+
+                const tr = document.createElement('tr');
+                tr.className = `${info.level === 'critical' ? 'bg-rose-50/50 font-medium' : 'hover:bg-slate-50'} transition-all`;
+
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <div class="font-bold font-mono text-slate-800 text-sm flex items-center gap-2">
+                            ${dom.name}
+                            <a href="https://${dom.name}" target="_blank" title="Abrir site" class="text-slate-300 hover:text-indigo-600 text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                        <div class="text-xs text-slate-400">${dom.provider || 'Provedor não informado'} ${dom.notes ? '• ' + dom.notes : ''}</div>
+                    </td>
+                    <td class="p-3 text-xs font-semibold text-slate-700">
+                        ${d}/${m}/${y}
+                    </td>
+                    <td class="p-3">
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${info.badgeClass} flex items-center gap-1.5 w-fit">
+                            <i class="fa-solid ${info.level === 'critical' ? 'fa-circle-exclamation' : info.level === 'warning' ? 'fa-clock' : 'fa-check'} text-xs"></i>
+                            ${info.text}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="editDomain(${dom.id})" title="Editar Domínio" class="text-slate-300 hover:text-indigo-600 p-1 ${hiddenClass}"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteDomain(${dom.id})" title="Excluir Domínio" class="text-slate-300 hover:text-rose-600 p-1 ml-1 ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateDomainKPIs() {
+            const total = window.db.domains.length;
+            let critical = 0, warning = 0, ok = 0;
+
+            window.db.domains.forEach(d => {
+                const info = getDomainExpirationInfo(d.expiration);
+                if (info.level === 'critical') critical++;
+                else if (info.level === 'warning') warning++;
+                else ok++;
+            });
+
+            document.getElementById('domain-kpi-total').textContent = total;
+            document.getElementById('domain-kpi-critical').textContent = critical;
+            document.getElementById('domain-kpi-warning').textContent = warning;
+            document.getElementById('domain-kpi-ok').textContent = ok;
         }
 
         loadDataFromCloud();
