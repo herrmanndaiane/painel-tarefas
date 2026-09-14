@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-           // CONFIGURAÇÕES DO BANCO DE DADOS
+         // CONFIGURAÇÕES DO BANCO DE DADOS
         const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
         const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Chave Access Key (SÓ LEITURA)
         const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha de edição
-        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C';   
+        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
         
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
@@ -562,7 +562,6 @@
                         <p class="text-xs text-slate-400">Defina os papéis, tarefas e responsabilidades das equipes.</p>
                     </div>
 
-                    <!-- BOTÕES DE GESTÃO DA MATRIZ -->
                     <div class="flex items-center gap-2">
                         <button onclick="addRaciRole()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-plus"></i> Add Papel / Equipe
@@ -573,7 +572,6 @@
                     </div>
                 </div>
 
-                <!-- LEGENDA RACI -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
                     <div class="flex items-center gap-2"><span class="bg-indigo-600 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">R</span> <span><b>Responsible:</b> Quem executa</span></div>
                     <div class="flex items-center gap-2"><span class="bg-amber-500 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">A</span> <span><b>Accountable:</b> Quem aprova</span></div>
@@ -581,7 +579,6 @@
                     <div class="flex items-center gap-2"><span class="bg-slate-400 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">I</span> <span><b>Informed:</b> Quem é informado</span></div>
                 </div>
 
-                <!-- TABELA DA MATRIZ RACI -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-center border-collapse">
                         <thead id="raci-thead"></thead>
@@ -1411,7 +1408,6 @@
             const hiddenClass = isEditMode ? '' : 'hidden';
             const disabledAttr = isEditMode ? '' : 'disabled';
 
-            // Monta o Cabeçalho (Papeis / Equipes)
             let headerHtml = `<tr class="bg-indigo-900 text-white text-xs uppercase font-extrabold border-b border-indigo-800">
                 <th class="p-4 text-left rounded-tl-xl w-1/3">Entregáveis / Atividades</th>`;
 
@@ -1428,7 +1424,6 @@
             headerHtml += `</tr>`;
             thead.innerHTML = headerHtml;
 
-            // Monta as Linhas (Tarefas)
             if (tasks.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="${roles.length + 1}" class="p-6 text-center text-slate-400 text-xs">Nenhuma tarefa adicionada à Matriz RACI. Clique em "+ Add Tarefa".</td></tr>`;
                 return;
@@ -1507,20 +1502,15 @@
             }
         }
 
-        function editKeepNote(id) {
-            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+        // EDIÇÃO DIRETA DE TEXTO DA NOTA
+        function saveInlineKeepNote(id, titleVal, contentVal) {
+            if (!isEditMode) return;
             const note = window.db.keepNotes.find(n => n.id === id);
             if (!note) return;
 
-            const newTitle = prompt('Novo título da nota:', note.title);
-            if (newTitle === null || newTitle.trim() === '') return;
-
-            const newContent = prompt('Novo conteúdo da nota:', note.content);
-            if (newContent === null || newContent.trim() === '') return;
-
             const now = new Date();
-            note.title = newTitle.trim();
-            note.content = newContent.trim();
+            note.title = titleVal.trim();
+            note.content = contentVal.trim();
             note.date = `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} (editado)`;
 
             saveDataToCloud();
@@ -1547,20 +1537,26 @@
             window.db.keepNotes.forEach(note => {
                 const hiddenClass = isEditMode ? '' : 'hidden';
                 const disabledAttr = isEditMode ? '' : 'disabled';
+                const readonlyAttr = isEditMode ? '' : 'readonly';
 
                 const card = document.createElement('div');
                 card.className = `${note.color || 'bg-white border-slate-200'} p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-3 transition-all hover:shadow-md relative`;
 
                 card.innerHTML = `
                     <div>
-                        <div class="flex justify-between items-start gap-2 mb-1.5">
-                            <h3 class="font-bold text-slate-800 text-sm leading-tight">${note.title}</h3>
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                            <!-- CAMPO DE TÍTULO EDITÁVEL -->
+                            <input type="text" value="${note.title}" ${readonlyAttr} onchange="saveInlineKeepNote(${note.id}, this.value, document.getElementById('keep-content-${note.id}').value)"
+                                class="font-bold text-slate-800 text-sm leading-tight bg-transparent w-full outline-none border-b border-transparent focus:border-slate-300">
+                            
                             <div class="flex items-center gap-1 ${hiddenClass}">
-                                <button onclick="editKeepNote(${note.id})" title="Editar Título/Conteúdo" class="text-slate-400 hover:text-indigo-600 text-xs p-1"><i class="fa-solid fa-pen"></i></button>
                                 <button onclick="deleteKeepNote(${note.id})" title="Excluir Nota" class="text-slate-400 hover:text-rose-600 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
-                        <p class="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">${note.content}</p>
+
+                        <!-- CAMPO DE CONTEÚDO EDITÁVEL -->
+                        <textarea id="keep-content-${note.id}" ${readonlyAttr} onchange="saveInlineKeepNote(${note.id}, document.querySelector('#keep-content-${note.id}').previousElementSibling.querySelector('input').value, this.value)" rows="4"
+                            class="w-full text-xs text-slate-600 bg-transparent outline-none resize-y leading-relaxed border border-transparent focus:border-slate-300 focus:bg-white/40 p-1 rounded-lg">${note.content}</textarea>
                     </div>
                     
                     <div class="flex items-center justify-between pt-2 border-t border-slate-900/5 text-[10px] text-slate-400">
