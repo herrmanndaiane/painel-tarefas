@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-         // CONFIGURAÇÕES DO BANCO DE DADOS
+        // CONFIGURAÇÕES DO BANCO DE DADOS
         const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
         const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Chave Access Key (SÓ LEITURA)
         const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha de edição
@@ -546,14 +546,10 @@
         </section>
 
 
-        <!-- TELA 3: MATRIZ RACI -->
+        <!-- TELA 3: MATRIZ RACI (DISPONÍVEL PARA LEITURA PÚBLICA) -->
         <section id="view-raci" class="space-y-6 hidden">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 relative">
-                <div id="raci-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
-                    <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
-                    <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
-                </div>
-
+                
                 <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
                     <div>
                         <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
@@ -562,7 +558,8 @@
                         <p class="text-xs text-slate-400">Defina os papéis, tarefas e responsabilidades das equipes.</p>
                     </div>
 
-                    <div class="flex items-center gap-2">
+                    <!-- BOTÕES VISÍVEIS APENAS NO MODO EDIÇÃO -->
+                    <div id="raci-admin-controls" class="flex items-center gap-2 hidden">
                         <button onclick="addRaciRole()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-plus"></i> Add Papel / Equipe
                         </button>
@@ -675,7 +672,7 @@
             const subtaskLockOverlay = document.getElementById('subtask-lock-overlay');
             const domainLockOverlay = document.getElementById('domain-lock-overlay');
             const keepLockOverlay = document.getElementById('keep-lock-overlay');
-            const raciLockOverlay = document.getElementById('raci-lock-overlay');
+            const raciAdminControls = document.getElementById('raci-admin-controls');
             
             const btnAuth = document.getElementById('btn-auth');
             const btnEditTimeline = document.getElementById('btn-edit-timeline');
@@ -686,7 +683,7 @@
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.add('hidden');
                 if (domainLockOverlay) domainLockOverlay.classList.add('hidden');
                 if (keepLockOverlay) keepLockOverlay.classList.add('hidden');
-                if (raciLockOverlay) raciLockOverlay.classList.add('hidden');
+                if (raciAdminControls) raciAdminControls.classList.remove('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.remove('hidden');
                 if (projectNotes) projectNotes.removeAttribute('readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-unlock text-xs"></i> Sair / Mudar Modo';
@@ -696,7 +693,7 @@
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.remove('hidden');
                 if (domainLockOverlay) domainLockOverlay.classList.remove('hidden');
                 if (keepLockOverlay) keepLockOverlay.classList.remove('hidden');
-                if (raciLockOverlay) raciLockOverlay.classList.remove('hidden');
+                if (raciAdminControls) raciAdminControls.classList.add('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.add('hidden');
                 if (projectNotes) projectNotes.setAttribute('readonly', 'readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-lock text-xs"></i> Entrar / Editar';
@@ -1502,7 +1499,6 @@
             }
         }
 
-        // EDIÇÃO DIRETA DE TEXTO DA NOTA
         function saveInlineKeepNote(id, titleVal, contentVal) {
             if (!isEditMode) return;
             const note = window.db.keepNotes.find(n => n.id === id);
@@ -1545,7 +1541,6 @@
                 card.innerHTML = `
                     <div>
                         <div class="flex justify-between items-start gap-2 mb-2">
-                            <!-- CAMPO DE TÍTULO EDITÁVEL -->
                             <input type="text" value="${note.title}" ${readonlyAttr} onchange="saveInlineKeepNote(${note.id}, this.value, document.getElementById('keep-content-${note.id}').value)"
                                 class="font-bold text-slate-800 text-sm leading-tight bg-transparent w-full outline-none border-b border-transparent focus:border-slate-300">
                             
@@ -1554,7 +1549,6 @@
                             </div>
                         </div>
 
-                        <!-- CAMPO DE CONTEÚDO EDITÁVEL -->
                         <textarea id="keep-content-${note.id}" ${readonlyAttr} onchange="saveInlineKeepNote(${note.id}, document.querySelector('#keep-content-${note.id}').previousElementSibling.querySelector('input').value, this.value)" rows="4"
                             class="w-full text-xs text-slate-600 bg-transparent outline-none resize-y leading-relaxed border border-transparent focus:border-slate-300 focus:bg-white/40 p-1 rounded-lg">${note.content}</textarea>
                     </div>
