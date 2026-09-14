@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão, Domínios e Notas</title>
+    <title>Painel de Gestão, Domínios, RACI e Notas</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -12,12 +12,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-        // CONFIGURAÇÕES DO BANCO DE DADOS
-        const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
+           // CONFIGURAÇÕES DO BANCO DE DADOS
+        const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
         const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Chave Access Key (SÓ LEITURA)
         const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha de edição
-        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C';  
-         
+        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C';   
         
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
@@ -36,13 +35,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data.record)) {
-                        window.db = { activities: data.record, domains: [], keepNotes: [] };
+                        window.db = { activities: data.record, domains: [], keepNotes: [], raci: { roles: [], tasks: [], matrix: {} } };
                     } else {
-                        window.db = data.record || { activities: [], domains: [], keepNotes: [] };
+                        window.db = data.record || { activities: [], domains: [], keepNotes: [], raci: { roles: [], tasks: [], matrix: {} } };
                     }
                     if (!window.db.activities) window.db.activities = [];
                     if (!window.db.domains) window.db.domains = [];
                     if (!window.db.keepNotes) window.db.keepNotes = [];
+                    if (!window.db.raci) window.db.raci = { roles: ['Redator', 'Designer', 'Programador', 'Coordenador', 'Clientes'], tasks: ['Escrever Roteiro', 'Criar Identidade Visual', 'Fazer o Planejamento', 'Colocar o Blog no Ar'], matrix: {} };
 
                     if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "Modo Leitura (Público)";
                     window.updateUI();
@@ -56,11 +56,20 @@
         }
 
         function fallbackLocal() {
-            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v6'));
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v7'));
             if (saved) {
                 window.db = saved;
             } else {
-                window.db = { activities: [], domains: [], keepNotes: [] };
+                window.db = { 
+                    activities: [], 
+                    domains: [], 
+                    keepNotes: [], 
+                    raci: { 
+                        roles: ['Redator', 'Designer', 'Programador', 'Coordenador de Mkt', 'Clientes e Stakeholders'], 
+                        tasks: ['Escrever Roteiro', 'Criar Identidade Visual', 'Fazer o Planejamento', 'Colocar o Blog no Ar'], 
+                        matrix: {} 
+                    } 
+                };
             }
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Modo Off-line / Local";
@@ -75,7 +84,7 @@
                 return;
             }
 
-            localStorage.setItem('my_activities_dashboard_v6', JSON.stringify(window.db));
+            localStorage.setItem('my_activities_dashboard_v7', JSON.stringify(window.db));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando na Nuvem...";
@@ -126,7 +135,7 @@
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
@@ -135,14 +144,17 @@
     <!-- Header / Navegação -->
     <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
-            <div class="flex items-center space-x-2 sm:space-x-4 text-sm font-semibold">
-                <button onclick="switchTab('activities')" id="tab-btn-activities" class="flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all">
+            <div class="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm font-semibold">
+                <button onclick="switchTab('activities')" id="tab-btn-activities" class="flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-solid fa-list-check"></i> Atividades
                 </button>
-                <button onclick="switchTab('domains')" id="tab-btn-domains" class="flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
+                <button onclick="switchTab('domains')" id="tab-btn-domains" class="flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-solid fa-globe"></i> Domínios
                 </button>
-                <button onclick="switchTab('keep')" id="tab-btn-keep" class="flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
+                <button onclick="switchTab('raci')" id="tab-btn-raci" class="flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-table-cells"></i> Matriz RACI
+                </button>
+                <button onclick="switchTab('keep')" id="tab-btn-keep" class="flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-regular fa-note-sticky"></i> Notas
                 </button>
                 <span id="breadcrumb-sep" class="hidden text-indigo-300">/</span>
@@ -533,7 +545,54 @@
             </div>
         </section>
 
-        <!-- TELA 3: NOTAS DA REUNIÃO (ESTILO GOOGLE KEEP) -->
+
+        <!-- TELA 3: MATRIZ RACI -->
+        <section id="view-raci" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 relative">
+                <div id="raci-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
+                    <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
+                    <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
+                </div>
+
+                <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-table-cells text-indigo-600"></i> Aplicação da Matriz RACI
+                        </h2>
+                        <p class="text-xs text-slate-400">Defina os papéis, tarefas e responsabilidades das equipes.</p>
+                    </div>
+
+                    <!-- BOTÕES DE GESTÃO DA MATRIZ -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="addRaciRole()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Add Papel / Equipe
+                        </button>
+                        <button onclick="addRaciTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Add Tarefa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LEGENDA RACI -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
+                    <div class="flex items-center gap-2"><span class="bg-indigo-600 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">R</span> <span><b>Responsible:</b> Quem executa</span></div>
+                    <div class="flex items-center gap-2"><span class="bg-amber-500 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">A</span> <span><b>Accountable:</b> Quem aprova</span></div>
+                    <div class="flex items-center gap-2"><span class="bg-sky-500 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">C</span> <span><b>Consulted:</b> Quem é consultado</span></div>
+                    <div class="flex items-center gap-2"><span class="bg-slate-400 text-white font-extrabold w-6 h-6 rounded-md flex items-center justify-center text-xs">I</span> <span><b>Informed:</b> Quem é informado</span></div>
+                </div>
+
+                <!-- TABELA DA MATRIZ RACI -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-center border-collapse">
+                        <thead id="raci-thead"></thead>
+                        <tbody id="raci-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- TELA 4: NOTAS DA REUNIÃO (ESTILO GOOGLE KEEP) -->
         <section id="view-keep" class="space-y-6 hidden">
             <div id="keep-form-container" class="max-w-2xl mx-auto bg-white p-5 rounded-2xl shadow-md border border-slate-200 relative">
                 <div id="keep-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-2xl">
@@ -565,14 +624,13 @@
                 </form>
             </div>
 
-            <!-- GRID DE CARTÕES DE NOTAS -->
             <div id="keep-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
 
     </main>
 
     <script>
-        window.db = { activities: [], domains: [], keepNotes: [] };
+        window.db = { activities: [], domains: [], keepNotes: [], raci: { roles: [], tasks: [], matrix: {} } };
         let activeActivityId = null;
         let activeTab = 'activities';
         let chartInstance = null;
@@ -581,28 +639,35 @@
             activeTab = tab;
             const btnAct = document.getElementById('tab-btn-activities');
             const btnDom = document.getElementById('tab-btn-domains');
+            const btnRaci = document.getElementById('tab-btn-raci');
             const btnKeep = document.getElementById('tab-btn-keep');
             
             const viewAct = document.getElementById('view-activities');
             const viewDom = document.getElementById('view-domains');
+            const viewRaci = document.getElementById('view-raci');
             const viewKeep = document.getElementById('view-keep');
 
-            btnAct.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
-            btnDom.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
-            btnKeep.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            btnAct.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            btnDom.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            btnRaci.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            btnKeep.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
 
             viewAct.classList.add('hidden');
             viewDom.classList.add('hidden');
+            viewRaci.classList.add('hidden');
             viewKeep.classList.add('hidden');
 
             if (tab === 'activities') {
-                btnAct.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnAct.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
                 viewAct.classList.remove('hidden');
             } else if (tab === 'domains') {
-                btnDom.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnDom.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
                 viewDom.classList.remove('hidden');
+            } else if (tab === 'raci') {
+                btnRaci.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                viewRaci.classList.remove('hidden');
             } else {
-                btnKeep.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnKeep.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
                 viewKeep.classList.remove('hidden');
             }
             window.updateUI();
@@ -613,6 +678,7 @@
             const subtaskLockOverlay = document.getElementById('subtask-lock-overlay');
             const domainLockOverlay = document.getElementById('domain-lock-overlay');
             const keepLockOverlay = document.getElementById('keep-lock-overlay');
+            const raciLockOverlay = document.getElementById('raci-lock-overlay');
             
             const btnAuth = document.getElementById('btn-auth');
             const btnEditTimeline = document.getElementById('btn-edit-timeline');
@@ -623,6 +689,7 @@
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.add('hidden');
                 if (domainLockOverlay) domainLockOverlay.classList.add('hidden');
                 if (keepLockOverlay) keepLockOverlay.classList.add('hidden');
+                if (raciLockOverlay) raciLockOverlay.classList.add('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.remove('hidden');
                 if (projectNotes) projectNotes.removeAttribute('readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-unlock text-xs"></i> Sair / Mudar Modo';
@@ -632,6 +699,7 @@
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.remove('hidden');
                 if (domainLockOverlay) domainLockOverlay.classList.remove('hidden');
                 if (keepLockOverlay) keepLockOverlay.classList.remove('hidden');
+                if (raciLockOverlay) raciLockOverlay.classList.remove('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.add('hidden');
                 if (projectNotes) projectNotes.setAttribute('readonly', 'readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-lock text-xs"></i> Entrar / Editar';
@@ -643,6 +711,7 @@
             renderDomainTable();
             updateDomainKPIs();
             renderKeepNotes();
+            renderRaciMatrix();
 
             if (activeActivityId !== null) {
                 renderSubtaskTable();
@@ -1266,6 +1335,146 @@
             document.getElementById('domain-kpi-critical').textContent = critical;
             document.getElementById('domain-kpi-warning').textContent = warning;
             document.getElementById('domain-kpi-ok').textContent = ok;
+        }
+
+
+        // --- MATRIZ RACI ---
+        function addRaciRole() {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const name = prompt('Nome da nova Equipe / Papel (Ex: Programador, Marketing, Cliente):');
+            if (name === null || name.trim() === '') return;
+
+            window.db.raci.roles.push(name.trim());
+            saveDataToCloud();
+        }
+
+        function editRaciRole(index) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const oldName = window.db.raci.roles[index];
+            const newName = prompt('Novo nome do Papel:', oldName);
+            if (newName === null || newName.trim() === '') return;
+
+            window.db.raci.roles[index] = newName.trim();
+            saveDataToCloud();
+        }
+
+        function deleteRaciRole(index) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            if (confirm(`Remover o papel "${window.db.raci.roles[index]}" da Matriz RACI?`)) {
+                window.db.raci.roles.splice(index, 1);
+                saveDataToCloud();
+            }
+        }
+
+        function addRaciTask() {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const name = prompt('Nome da nova Tarefa / Entregável (Ex: Escrever Roteiro):');
+            if (name === null || name.trim() === '') return;
+
+            window.db.raci.tasks.push(name.trim());
+            saveDataToCloud();
+        }
+
+        function editRaciTask(index) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const oldName = window.db.raci.tasks[index];
+            const newName = prompt('Novo nome da Tarefa:', oldName);
+            if (newName === null || newName.trim() === '') return;
+
+            window.db.raci.tasks[index] = newName.trim();
+            saveDataToCloud();
+        }
+
+        function deleteRaciTask(index) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            if (confirm(`Remover a tarefa "${window.db.raci.tasks[index]}" da Matriz RACI?`)) {
+                window.db.raci.tasks.splice(index, 1);
+                saveDataToCloud();
+            }
+        }
+
+        function updateRaciValue(taskIndex, roleIndex, val) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const key = `${taskIndex}_${roleIndex}`;
+            window.db.raci.matrix[key] = val;
+            saveDataToCloud();
+        }
+
+        function renderRaciMatrix() {
+            const thead = document.getElementById('raci-thead');
+            const tbody = document.getElementById('raci-tbody');
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            const roles = window.db.raci.roles || [];
+            const tasks = window.db.raci.tasks || [];
+            const hiddenClass = isEditMode ? '' : 'hidden';
+            const disabledAttr = isEditMode ? '' : 'disabled';
+
+            // Monta o Cabeçalho (Papeis / Equipes)
+            let headerHtml = `<tr class="bg-indigo-900 text-white text-xs uppercase font-extrabold border-b border-indigo-800">
+                <th class="p-4 text-left rounded-tl-xl w-1/3">Entregáveis / Atividades</th>`;
+
+            roles.forEach((r, idx) => {
+                headerHtml += `
+                    <th class="p-3 text-center min-w-[120px]">
+                        <div class="flex items-center justify-center gap-1">
+                            <span>${r}</span>
+                            <button onclick="editRaciRole(${idx})" title="Editar Nome" class="text-indigo-300 hover:text-white text-[10px] ${hiddenClass}"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteRaciRole(${idx})" title="Excluir Coluna" class="text-indigo-300 hover:text-rose-300 text-[10px] ${hiddenClass}"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </th>`;
+            });
+            headerHtml += `</tr>`;
+            thead.innerHTML = headerHtml;
+
+            // Monta as Linhas (Tarefas)
+            if (tasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${roles.length + 1}" class="p-6 text-center text-slate-400 text-xs">Nenhuma tarefa adicionada à Matriz RACI. Clique em "+ Add Tarefa".</td></tr>`;
+                return;
+            }
+
+            tasks.forEach((t, tIdx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-all border-b border-slate-100";
+
+                let rowHtml = `
+                    <td class="p-3 text-left font-bold text-slate-700 bg-slate-50/60 flex items-center justify-between gap-2">
+                        <span>${t}</span>
+                        <div class="flex items-center gap-1.5 ${hiddenClass}">
+                            <button onclick="editRaciTask(${tIdx})" title="Editar Tarefa" class="text-slate-300 hover:text-indigo-600 text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteRaciTask(${tIdx})" title="Excluir Linha" class="text-slate-300 hover:text-rose-600 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>`;
+
+                roles.forEach((_, rIdx) => {
+                    const key = `${tIdx}_${rIdx}`;
+                    const currentVal = window.db.raci.matrix[key] || '-';
+
+                    let colorStyle = {
+                        'R': 'bg-indigo-600 text-white font-extrabold',
+                        'A': 'bg-amber-500 text-white font-extrabold',
+                        'C': 'bg-sky-500 text-white font-extrabold',
+                        'I': 'bg-slate-400 text-white font-extrabold',
+                        '-': 'bg-slate-100 text-slate-400 font-normal'
+                    }[currentVal] || 'bg-slate-100 text-slate-400';
+
+                    rowHtml += `
+                        <td class="p-2">
+                            <select ${disabledAttr} onchange="updateRaciValue(${tIdx}, ${rIdx}, this.value)" class="text-xs font-bold px-3 py-1.5 rounded-lg border-0 ${colorStyle} outline-none cursor-pointer transition-all shadow-sm">
+                                <option value="-" class="bg-white text-slate-800" ${currentVal === '-' ? 'selected' : ''}>- (Nenhum)</option>
+                                <option value="R" class="bg-white text-slate-800" ${currentVal === 'R' ? 'selected' : ''}>R - Responsible</option>
+                                <option value="A" class="bg-white text-slate-800" ${currentVal === 'A' ? 'selected' : ''}>A - Accountable</option>
+                                <option value="C" class="bg-white text-slate-800" ${currentVal === 'C' ? 'selected' : ''}>C - Consulted</option>
+                                <option value="I" class="bg-white text-slate-800" ${currentVal === 'I' ? 'selected' : ''}>I - Informed</option>
+                            </select>
+                        </td>`;
+                });
+
+                rowHtml += `</tr>`;
+                tr.innerHTML = rowHtml;
+                tbody.appendChild(tr);
+            });
         }
 
 
