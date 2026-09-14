@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão e Domínios</title>
+    <title>Painel de Gestão, Domínios e Notas</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-         // CONFIGURAÇÕES DO BANCO DE DADOS
-        const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
+        // CONFIGURAÇÕES DO BANCO DE DADOS
+        const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
         const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Chave Access Key (SÓ LEITURA)
         const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha de edição
-        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
+        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C';  
         
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
@@ -35,12 +35,13 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data.record)) {
-                        window.db = { activities: data.record, domains: [] };
+                        window.db = { activities: data.record, domains: [], keepNotes: [] };
                     } else {
-                        window.db = data.record || { activities: [], domains: [] };
+                        window.db = data.record || { activities: [], domains: [], keepNotes: [] };
                     }
                     if (!window.db.activities) window.db.activities = [];
                     if (!window.db.domains) window.db.domains = [];
+                    if (!window.db.keepNotes) window.db.keepNotes = [];
 
                     if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "Modo Leitura (Público)";
                     window.updateUI();
@@ -54,11 +55,11 @@
         }
 
         function fallbackLocal() {
-            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v5'));
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v6'));
             if (saved) {
                 window.db = saved;
             } else {
-                window.db = { activities: [], domains: [] };
+                window.db = { activities: [], domains: [], keepNotes: [] };
             }
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Modo Off-line / Local";
@@ -73,7 +74,7 @@
                 return;
             }
 
-            localStorage.setItem('my_activities_dashboard_v5', JSON.stringify(window.db));
+            localStorage.setItem('my_activities_dashboard_v6', JSON.stringify(window.db));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando na Nuvem...";
@@ -133,12 +134,15 @@
     <!-- Header / Navegação -->
     <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
-            <div class="flex items-center space-x-4 text-sm font-semibold">
+            <div class="flex items-center space-x-2 sm:space-x-4 text-sm font-semibold">
                 <button onclick="switchTab('activities')" id="tab-btn-activities" class="flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-solid fa-list-check"></i> Atividades
                 </button>
                 <button onclick="switchTab('domains')" id="tab-btn-domains" class="flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-solid fa-globe"></i> Domínios
+                </button>
+                <button onclick="switchTab('keep')" id="tab-btn-keep" class="flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
+                    <i class="fa-regular fa-note-sticky"></i> Notas
                 </button>
                 <span id="breadcrumb-sep" class="hidden text-indigo-300">/</span>
                 <span id="breadcrumb-title" class="hidden font-bold text-amber-300"></span>
@@ -278,7 +282,7 @@
                                     <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
                                         <th class="p-3">Atividade / Responsável</th>
                                         <th class="p-3">Progresso (%)</th>
-                                        <th class="p-3">Prazo</th>
+                                        <th class="p-3">Prazo Final</th>
                                         <th class="p-3">Prioridade</th>
                                         <th class="p-3">Status</th>
                                         <th class="p-3 text-right">Ações</th>
@@ -435,14 +439,12 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- FORMULÁRIO INDIVIDUAL & LOTE -->
                 <div id="domain-form-container" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit relative space-y-6">
                     <div id="domain-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-xl">
                         <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
                         <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
                     </div>
 
-                    <!-- CADASTRO ÚNICO -->
                     <div>
                         <h2 class="text-md font-bold text-slate-800 mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-plus-circle text-indigo-600"></i> Cadastrar Domínio Único
@@ -481,7 +483,6 @@
 
                     <hr class="border-slate-100">
 
-                    <!-- IMPORTAÇÃO EM LOTE -->
                     <div>
                         <h2 class="text-md font-bold text-slate-800 mb-2 flex items-center gap-2">
                             <i class="fa-solid fa-file-import text-indigo-600"></i> Importar Lista em Lote
@@ -531,10 +532,48 @@
             </div>
         </section>
 
+
+        <!-- TELA 3: NOTAS DA REUNIÃO (ESTILO GOOGLE KEEP) -->
+        <section id="view-keep" class="space-y-6 hidden">
+            <!-- CRIAR NOTA -->
+            <div id="keep-form-container" class="max-w-2xl mx-auto bg-white p-5 rounded-2xl shadow-md border border-slate-200 relative">
+                <div id="keep-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-2xl">
+                    <i class="fa-solid fa-lock text-slate-400 text-2xl mb-2"></i>
+                    <span class="text-xs font-bold text-slate-600">Modo Somente Leitura</span>
+                </div>
+
+                <form id="form-keep" class="space-y-3">
+                    <input type="text" id="keep-title" placeholder="Título da Reunião / Assunto" required
+                        class="w-full text-sm font-bold text-slate-800 outline-none placeholder:text-slate-400 border-b border-slate-100 pb-2">
+                    <textarea id="keep-content" rows="3" placeholder="Criar uma nota de reunião ou alinhamento..." required
+                        class="w-full text-xs text-slate-600 outline-none resize-y placeholder:text-slate-400"></textarea>
+                    
+                    <div class="flex justify-between items-center pt-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-400 font-semibold">Cor:</span>
+                            <select id="keep-color" class="text-xs border border-slate-200 rounded-md px-2 py-1 outline-none">
+                                <option value="bg-amber-50 border-amber-200">Amarelo</option>
+                                <option value="bg-indigo-50 border-indigo-200">Azul</option>
+                                <option value="bg-emerald-50 border-emerald-200">Verde</option>
+                                <option value="bg-rose-50 border-rose-200">Rosa</option>
+                                <option value="bg-slate-50 border-slate-200">Cinza</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Adicionar Nota
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- GRID DE CARTÕES DAS NOTAS -->
+            <div id="keep-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
     </main>
 
     <script>
-        window.db = { activities: [], domains: [] };
+        window.db = { activities: [], domains: [], keepNotes: [] };
         let activeActivityId = null;
         let activeTab = 'activities';
         let chartInstance = null;
@@ -543,19 +582,30 @@
             activeTab = tab;
             const btnAct = document.getElementById('tab-btn-activities');
             const btnDom = document.getElementById('tab-btn-domains');
+            const btnKeep = document.getElementById('tab-btn-keep');
+            
             const viewAct = document.getElementById('view-activities');
             const viewDom = document.getElementById('view-domains');
+            const viewKeep = document.getElementById('view-keep');
+
+            // Reset classes
+            btnAct.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            btnDom.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            btnKeep.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+
+            viewAct.classList.add('hidden');
+            viewDom.classList.add('hidden');
+            viewKeep.classList.add('hidden');
 
             if (tab === 'activities') {
                 btnAct.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
-                btnDom.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
                 viewAct.classList.remove('hidden');
-                viewDom.classList.add('hidden');
-            } else {
+            } else if (tab === 'domains') {
                 btnDom.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
-                btnAct.className = "flex items-center gap-2 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
                 viewDom.classList.remove('hidden');
-                viewAct.classList.add('hidden');
+            } else {
+                btnKeep.className = "flex items-center gap-2 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                viewKeep.classList.remove('hidden');
             }
             window.updateUI();
         }
@@ -564,6 +614,8 @@
             const lockOverlay = document.getElementById('lock-overlay');
             const subtaskLockOverlay = document.getElementById('subtask-lock-overlay');
             const domainLockOverlay = document.getElementById('domain-lock-overlay');
+            const keepLockOverlay = document.getElementById('keep-lock-overlay');
+            
             const btnAuth = document.getElementById('btn-auth');
             const btnEditTimeline = document.getElementById('btn-edit-timeline');
             const projectNotes = document.getElementById('project-notes');
@@ -572,6 +624,7 @@
                 if (lockOverlay) lockOverlay.classList.add('hidden');
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.add('hidden');
                 if (domainLockOverlay) domainLockOverlay.classList.add('hidden');
+                if (keepLockOverlay) keepLockOverlay.classList.add('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.remove('hidden');
                 if (projectNotes) projectNotes.removeAttribute('readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-unlock text-xs"></i> Sair / Mudar Modo';
@@ -580,6 +633,7 @@
                 if (lockOverlay) lockOverlay.classList.remove('hidden');
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.remove('hidden');
                 if (domainLockOverlay) domainLockOverlay.classList.remove('hidden');
+                if (keepLockOverlay) keepLockOverlay.classList.remove('hidden');
                 if (btnEditTimeline) btnEditTimeline.classList.add('hidden');
                 if (projectNotes) projectNotes.setAttribute('readonly', 'readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-lock text-xs"></i> Entrar / Editar';
@@ -590,130 +644,14 @@
             updateDashboardKPIs();
             renderDomainTable();
             updateDomainKPIs();
+            renderKeepNotes();
 
             if (activeActivityId !== null) {
                 renderSubtaskTable();
             }
         };
 
-        // --- CONSULTA DE WHOIS SINGLE ---
-        async function fetchSingleDomainDate(rawDomain) {
-            let clean = rawDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-            if (!clean || clean.length < 4 || !clean.includes('.')) return null;
-
-            try {
-                let expDateStr = null;
-                let providerName = null;
-
-                if (clean.endsWith('.br')) {
-                    const rdapRes = await fetch(`https://rdap.registro.br/domain/${clean}`);
-                    if (rdapRes.ok) {
-                        const rdapData = await rdapRes.json();
-                        providerName = "Registro.br";
-                        if (rdapData.events) {
-                            const expEvent = rdapData.events.find(e => e.eventAction === 'expiration');
-                            if (expEvent && expEvent.eventDate) expDateStr = expEvent.eventDate.split('T')[0];
-                        }
-                    }
-                }
-
-                if (!expDateStr) {
-                    const fallbackRes = await fetch(`https://rdap.org/domain/${clean}`);
-                    if (fallbackRes.ok) {
-                        const fbData = await fallbackRes.json();
-                        if (fbData.events) {
-                            const expEvent = fbData.events.find(e => e.eventAction === 'expiration');
-                            if (expEvent && expEvent.eventDate) expDateStr = expEvent.eventDate.split('T')[0];
-                        }
-                    }
-                }
-
-                return { domain: clean, expiration: expDateStr, provider: providerName };
-            } catch (err) {
-                return { domain: clean, expiration: null, provider: null };
-            }
-        }
-
-        async function autoFetchDomainExpiration() {
-            const domainInput = document.getElementById('domain-name');
-            const statusLabel = document.getElementById('whois-status');
-            const expInput = document.getElementById('domain-expiration');
-            const providerInput = document.getElementById('domain-provider');
-
-            let raw = domainInput.value;
-            if (!raw) return;
-
-            statusLabel.textContent = "Consultando WHOIS/RDAP...";
-            statusLabel.className = "text-[10px] text-indigo-600 font-bold mt-1 block animate-pulse";
-
-            const res = await fetchSingleDomainDate(raw);
-            if (res && res.expiration) {
-                expInput.value = res.expiration;
-                if (res.provider && !providerInput.value) providerInput.value = res.provider;
-                statusLabel.textContent = "Data encontrada e preenchida automaticamente!";
-                statusLabel.className = "text-[10px] text-emerald-600 font-bold mt-1 block";
-            } else {
-                statusLabel.textContent = "Não foi possível obter a data automaticamente. Preencha manualmente.";
-                statusLabel.className = "text-[10px] text-amber-600 font-bold mt-1 block";
-            }
-        }
-
-        // --- PROCESSAMENTO DA IMPORTAÇÃO EM LOTE ---
-        async function processBatchDomains() {
-            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
-
-            const textarea = document.getElementById('batch-domains-input');
-            const statusLabel = document.getElementById('batch-status');
-            const btn = document.getElementById('btn-batch-import');
-
-            const lines = textarea.value.split('\n').map(l => l.trim()).filter(l => l.length > 3 && l.includes('.'));
-
-            if (lines.length === 0) {
-                alert('Cole ao menos um domínio válido na caixa de texto.');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.classList.add('opacity-50');
-
-            let addedCount = 0;
-            for (let i = 0; i < lines.length; i++) {
-                const domainName = lines[i].toLowerCase();
-                
-                // Evita duplicar se já existir no banco
-                const exists = window.db.domains.some(d => d.name === domainName);
-                if (exists) continue;
-
-                statusLabel.textContent = `Processando (${i + 1}/${lines.length}): ${domainName}...`;
-                
-                const result = await fetchSingleDomainDate(domainName);
-                
-                // Se não achar a data automática, insere data padrão (1 ano à frente) para você ajustar depois
-                let finalExp = result.expiration;
-                if (!finalExp) {
-                    const defaultDate = new Date();
-                    defaultDate.setFullYear(defaultDate.getFullYear() + 1);
-                    finalExp = defaultDate.toISOString().split('T')[0];
-                }
-
-                window.db.domains.push({
-                    id: Date.now() + Math.random(),
-                    name: result.domain,
-                    expiration: finalExp,
-                    provider: result.provider || '',
-                    notes: 'Importado em lote'
-                });
-                addedCount++;
-            }
-
-            statusLabel.textContent = `${addedCount} domínios importados com sucesso!`;
-            textarea.value = '';
-            btn.disabled = false;
-            btn.classList.remove('opacity-50');
-
-            saveDataToCloud();
-        }
-
+        // --- ABA ATIVIDADES ---
         function calculateProgress(activity) {
             if (!activity.subtasks || activity.subtasks.length === 0) {
                 return activity.status === 'Concluída' ? 100 : 0;
@@ -819,6 +757,7 @@
             saveDataToCloud();
         }
 
+        // EDICAO RAPIDA DE PRAZO NA TELA INICIAL
         function updateMacroDeadline(id, newDeadline, event) {
             event.stopPropagation();
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
@@ -1082,7 +1021,7 @@
         }
 
 
-        // ================= ABA DE DOMÍNIOS =================
+        // --- ABA DE DOMÍNIOS ---
         function getDomainExpirationInfo(expDateStr) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -1097,6 +1036,118 @@
             } else {
                 return { level: 'ok', days: diffDays, badgeClass: 'bg-emerald-100 text-emerald-700 border-emerald-200', text: `Em dia (${diffDays}d)` };
             }
+        }
+
+        async function fetchSingleDomainDate(rawDomain) {
+            let clean = rawDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+            if (!clean || clean.length < 4 || !clean.includes('.')) return null;
+
+            try {
+                let expDateStr = null;
+                let providerName = null;
+
+                if (clean.endsWith('.br')) {
+                    const rdapRes = await fetch(`https://rdap.registro.br/domain/${clean}`);
+                    if (rdapRes.ok) {
+                        const rdapData = await rdapRes.json();
+                        providerName = "Registro.br";
+                        if (rdapData.events) {
+                            const expEvent = rdapData.events.find(e => e.eventAction === 'expiration');
+                            if (expEvent && expEvent.eventDate) expDateStr = expEvent.eventDate.split('T')[0];
+                        }
+                    }
+                }
+
+                if (!expDateStr) {
+                    const fallbackRes = await fetch(`https://rdap.org/domain/${clean}`);
+                    if (fallbackRes.ok) {
+                        const fbData = await fallbackRes.json();
+                        if (fbData.events) {
+                            const expEvent = fbData.events.find(e => e.eventAction === 'expiration');
+                            if (expEvent && expEvent.eventDate) expDateStr = expEvent.eventDate.split('T')[0];
+                        }
+                    }
+                }
+
+                return { domain: clean, expiration: expDateStr, provider: providerName };
+            } catch (err) {
+                return { domain: clean, expiration: null, provider: null };
+            }
+        }
+
+        async function autoFetchDomainExpiration() {
+            const domainInput = document.getElementById('domain-name');
+            const statusLabel = document.getElementById('whois-status');
+            const expInput = document.getElementById('domain-expiration');
+            const providerInput = document.getElementById('domain-provider');
+
+            let raw = domainInput.value;
+            if (!raw) return;
+
+            statusLabel.textContent = "Consultando WHOIS/RDAP...";
+            statusLabel.className = "text-[10px] text-indigo-600 font-bold mt-1 block animate-pulse";
+
+            const res = await fetchSingleDomainDate(raw);
+            if (res && res.expiration) {
+                expInput.value = res.expiration;
+                if (res.provider && !providerInput.value) providerInput.value = res.provider;
+                statusLabel.textContent = "Data encontrada e preenchida automaticamente!";
+                statusLabel.className = "text-[10px] text-emerald-600 font-bold mt-1 block";
+            } else {
+                statusLabel.textContent = "Não foi possível obter a data automaticamente. Preencha manualmente.";
+                statusLabel.className = "text-[10px] text-amber-600 font-bold mt-1 block";
+            }
+        }
+
+        async function processBatchDomains() {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+
+            const textarea = document.getElementById('batch-domains-input');
+            const statusLabel = document.getElementById('batch-status');
+            const btn = document.getElementById('btn-batch-import');
+
+            const lines = textarea.value.split('\n').map(l => l.trim()).filter(l => l.length > 3 && l.includes('.'));
+
+            if (lines.length === 0) {
+                alert('Cole ao menos um domínio válido na caixa de texto.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+
+            let addedCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+                const domainName = lines[i].toLowerCase();
+                const exists = window.db.domains.some(d => d.name === domainName);
+                if (exists) continue;
+
+                statusLabel.textContent = `Processando (${i + 1}/${lines.length}): ${domainName}...`;
+                
+                const result = await fetchSingleDomainDate(domainName);
+                let finalExp = result.expiration;
+                if (!finalExp) {
+                    const defaultDate = new Date();
+                    defaultDate.setFullYear(defaultDate.getFullYear() + 1);
+                    finalExp = defaultDate.toISOString().split('T')[0];
+                }
+
+                window.db.domains.push({
+                    id: Date.now() + Math.random(),
+                    name: result.domain,
+                    expiration: finalExp,
+                    provider: result.provider || '',
+                    notes: 'Importado em lote'
+                });
+                addedCount++;
+            }
+
+            statusLabel.textContent = `${addedCount} domínios importados com sucesso!`;
+            textarea.value = '';
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+
+            saveDataToCloud();
         }
 
         document.getElementById('form-domain').addEventListener('submit', function(e) {
@@ -1218,6 +1269,87 @@
             document.getElementById('domain-kpi-critical').textContent = critical;
             document.getElementById('domain-kpi-warning').textContent = warning;
             document.getElementById('domain-kpi-ok').textContent = ok;
+        }
+
+
+        // --- ABA DE NOTAS (ESTILO GOOGLE KEEP) ---
+        document.getElementById('form-keep').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+
+            const now = new Date();
+            const dateFormatted = `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+
+            const newNote = {
+                id: Date.now(),
+                title: document.getElementById('keep-title').value.trim(),
+                content: document.getElementById('keep-content').value.trim(),
+                color: document.getElementById('keep-color').value,
+                date: dateFormatted
+            };
+
+            window.db.keepNotes.unshift(newNote);
+            saveDataToCloud();
+            this.reset();
+        });
+
+        function deleteKeepNote(id) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            if (confirm('Deseja excluir esta nota de reunião?')) {
+                window.db.keepNotes = window.db.keepNotes.filter(n => n.id !== id);
+                saveDataToCloud();
+            }
+        }
+
+        function editKeepNote(id) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const note = window.db.keepNotes.find(n => n.id === id);
+            if (!note) return;
+
+            const newTitle = prompt('Novo título da nota:', note.title);
+            if (newTitle === null || newTitle.trim() === '') return;
+
+            const newContent = prompt('Novo conteúdo da nota:', note.content);
+            if (newContent === null || newContent.trim() === '') return;
+
+            note.title = newTitle.trim();
+            note.content = newContent.trim();
+
+            saveDataToCloud();
+        }
+
+        function renderKeepNotes() {
+            const grid = document.getElementById('keep-grid');
+            grid.innerHTML = '';
+
+            if (window.db.keepNotes.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-400 py-10 text-xs">Nenhuma nota ou alinhamento registrado.</div>`;
+                return;
+            }
+
+            window.db.keepNotes.forEach(note => {
+                const hiddenClass = isEditMode ? '' : 'hidden';
+
+                const card = document.createElement('div');
+                card.className = `${note.color || 'bg-white border-slate-200'} p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-3 transition-all hover:shadow-md relative`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-1.5">
+                            <h3 class="font-bold text-slate-800 text-sm leading-tight">${note.title}</h3>
+                            <div class="flex items-center gap-1 ${hiddenClass}">
+                                <button onclick="editKeepNote(${note.id})" title="Editar Nota" class="text-slate-400 hover:text-indigo-600 text-xs p-1"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteKeepNote(${note.id})" title="Excluir Nota" class="text-slate-400 hover:text-rose-600 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">${note.content}</p>
+                    </div>
+                    <div class="text-[10px] text-slate-400 font-medium flex items-center gap-1 pt-2 border-t border-slate-900/5">
+                        <i class="fa-regular fa-clock"></i> ${note.date || 'Data não informada'}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
         loadDataFromCloud();
