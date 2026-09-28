@@ -483,7 +483,6 @@
                                 <input type="date" id="domain-expiration" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                             </div>
 
-                            <!-- CAMPO NOVO: Status Migração CNPJ -->
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Migração CNPJ</label>
                                 <select id="domain-cnpj-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
@@ -528,7 +527,7 @@
                 </div>
 
                 <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                         <div class="flex items-center gap-3">
                             <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-globe text-indigo-600"></i> Monitoramento de Vencimentos
@@ -537,14 +536,28 @@
                                 <i class="fa-solid fa-rotate text-[10px]"></i> Atualizar Datas
                             </button>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">Filtrar:</span>
-                            <select id="filter-domain" onchange="renderDomainTable()" class="px-2.5 py-1 border border-slate-200 rounded-lg text-xs outline-none">
-                                <option value="todos">Todos os Domínios</option>
-                                <option value="critical">Críticos (&le; 15 dias)</option>
-                                <option value="warning">Atenção (&le; 30 dias)</option>
-                                <option value="ok">Em Dia (&gt; 30 dias)</option>
-                            </select>
+
+                        <!-- FILTROS DUPLOS DE DOMÍNIOS -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-slate-400">CNPJ:</span>
+                                <select id="filter-domain-cnpj" onchange="renderDomainTable()" class="px-2 py-1 border border-slate-200 rounded-lg text-xs outline-none bg-slate-50">
+                                    <option value="todos">Todos CNPJs</option>
+                                    <option value="Não iniciado">Não iniciado</option>
+                                    <option value="Em andamento">Em andamento</option>
+                                    <option value="Finalizado com sucesso">Finalizado com sucesso</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-slate-400">Vencimento:</span>
+                                <select id="filter-domain" onchange="renderDomainTable()" class="px-2 py-1 border border-slate-200 rounded-lg text-xs outline-none bg-slate-50">
+                                    <option value="todos">Todos os Prazos</option>
+                                    <option value="critical">Críticos (&le; 15 dias)</option>
+                                    <option value="warning">Atenção (&le; 30 dias)</option>
+                                    <option value="ok">Em Dia (&gt; 30 dias)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -1276,7 +1289,7 @@
                 id: Date.now(),
                 name: document.getElementById('domain-name').value.trim().toLowerCase(),
                 expiration: document.getElementById('domain-expiration').value,
-                cnpjStatus: document.getElementById('domain-cnpj-status').value, // NOVO CAMPO
+                cnpjStatus: document.getElementById('domain-cnpj-status').value,
                 provider: document.getElementById('domain-provider').value.trim(),
                 notes: document.getElementById('domain-notes').value.trim()
             };
@@ -1331,9 +1344,11 @@
             saveDataToCloud();
         }
 
+        // RENDERIZAÇÃO DA TABELA DE DOMÍNIOS COM FILTRO DUPLO
         function renderDomainTable() {
             const tbody = document.getElementById('domain-table-body');
-            const filter = document.getElementById('filter-domain').value;
+            const filterExp = document.getElementById('filter-domain').value;
+            const filterCnpj = document.getElementById('filter-domain-cnpj').value;
             tbody.innerHTML = '';
 
             if (window.db.domains.length === 0) {
@@ -1343,11 +1358,23 @@
 
             const filtered = window.db.domains.filter(dom => {
                 const info = getDomainExpirationInfo(dom.expiration);
-                if (filter === 'todos') return true;
-                return info.level === filter;
+                const cnpjVal = dom.cnpjStatus || 'Não iniciado';
+
+                // Aplica Filtro de Vencimento
+                let matchExp = (filterExp === 'todos') || (info.level === filterExp);
+                
+                // Aplica Filtro de CNPJ
+                let matchCnpj = (filterCnpj === 'todos') || (cnpjVal === filterCnpj);
+
+                return matchExp && matchCnpj;
             });
 
             filtered.sort((a, b) => new Date(a.expiration) - new Date(b.expiration));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio encontrado para os filtros selecionados.</td></tr>`;
+                return;
+            }
 
             filtered.forEach(dom => {
                 const info = getDomainExpirationInfo(dom.expiration);
