@@ -14,9 +14,9 @@
     <script>
         // CONFIGURAÇÕES DO BANCO DE DADOS
         const BIN_ID = '6a84ce21f5f4af5e29260b4a'; // Seu ID do Bin no JSONBin
-        const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Chave Access Key (SÓ LEITURA)
-        const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha de edição
-        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
+        const READ_ONLY_KEY = '$2a$10$E107vBbvX17CQ5kgp7tnPuNt9TlGvLSk3P3wYZ5I1SxU1qOF1X/QG'; // Sua Access Key gerada
+        const ADMIN_PASSWORD = '1Atpd@VPGC!'; // Sua senha para liberar edição
+        const MASTER_KEY = '$2a$10$2GS3IXMMHlIzufc5EnxDYedXLztIAI6RuWrJJR8nbDniz6D6aaU.C'; 
         
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
@@ -48,7 +48,7 @@
                     if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "Modo Leitura (Público)";
                     window.updateUI();
 
-                    // Dispara a re-checagem automática dos domínios em segundo plano
+                    // Dispara re-checagem de domínios em segundo plano
                     refreshAllDomainExpirations();
                 } else {
                     fallbackLocal();
@@ -60,7 +60,7 @@
         }
 
         function fallbackLocal() {
-            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v7'));
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v8'));
             if (saved) {
                 window.db = saved;
             } else {
@@ -88,7 +88,7 @@
                 return;
             }
 
-            localStorage.setItem('my_activities_dashboard_v7', JSON.stringify(window.db));
+            localStorage.setItem('my_activities_dashboard_v8', JSON.stringify(window.db));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando na Nuvem...";
@@ -482,6 +482,17 @@
                                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Data de Vencimento</label>
                                 <input type="date" id="domain-expiration" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                             </div>
+
+                            <!-- CAMPO NOVO: Status Migração CNPJ -->
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Migração CNPJ</label>
+                                <select id="domain-cnpj-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Não iniciado" selected>Não iniciado</option>
+                                    <option value="Em andamento">Em andamento</option>
+                                    <option value="Finalizado com sucesso">Finalizado com sucesso</option>
+                                </select>
+                            </div>
+
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Provedor / Registrador <span class="text-slate-400 font-normal lowercase">(opcional)</span></label>
                                 <input type="text" id="domain-provider" placeholder="Ex: Registro.br, Locaweb, Godaddy" 
@@ -522,7 +533,7 @@
                             <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-globe text-indigo-600"></i> Monitoramento de Vencimentos
                             </h2>
-                            <button onclick="refreshAllDomainExpirations(true)" title="Forçar atualização dos vencimentos agora" class="text-xs bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 px-2.5 py-1 rounded-md border border-slate-200 transition-all font-semibold flex items-center gap-1">
+                            <button onclick="refreshAllDomainExpirations(true)" id="btn-refresh-domains" title="Forçar atualização dos vencimentos agora" class="text-xs bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 px-2.5 py-1 rounded-md border border-slate-200 transition-all font-semibold flex items-center gap-1">
                                 <i class="fa-solid fa-rotate text-[10px]"></i> Atualizar Datas
                             </button>
                         </div>
@@ -542,6 +553,7 @@
                             <thead>
                                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
                                     <th class="p-3">Domínio / Provedor</th>
+                                    <th class="p-3">Migração CNPJ</th>
                                     <th class="p-3">Data Vencimento</th>
                                     <th class="p-3">Status / Prazo</th>
                                     <th class="p-3 text-right">Ações</th>
@@ -1089,7 +1101,7 @@
         }
 
 
-        // --- DOMÍNIOS (ATUALIZAÇÃO EM TEMPO REAL) ---
+        // --- DOMÍNIOS (CONSULTA VIA PROXY ANTI-CORS SEGURO) ---
         function getDomainExpirationInfo(expDateStr) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -1114,8 +1126,11 @@
                 let expDateStr = null;
                 let providerName = null;
 
+                const proxyUrl = `https://api.allorigins.win/raw?url=`;
+
                 if (clean.endsWith('.br')) {
-                    const rdapRes = await fetch(`https://rdap.registro.br/domain/${clean}`);
+                    const targetUrl = encodeURIComponent(`https://rdap.registro.br/domain/${clean}`);
+                    const rdapRes = await fetch(`${proxyUrl}${targetUrl}`);
                     if (rdapRes.ok) {
                         const rdapData = await rdapRes.json();
                         providerName = "Registro.br";
@@ -1127,7 +1142,8 @@
                 }
 
                 if (!expDateStr) {
-                    const fallbackRes = await fetch(`https://rdap.org/domain/${clean}`);
+                    const targetUrl = encodeURIComponent(`https://rdap.org/domain/${clean}`);
+                    const fallbackRes = await fetch(`${proxyUrl}${targetUrl}`);
                     if (fallbackRes.ok) {
                         const fbData = await fallbackRes.json();
                         if (fbData.events) {
@@ -1143,9 +1159,14 @@
             }
         }
 
-        // RE-CHECAGEM AUTOMÁTICA DE TODOS OS DOMÍNIOS
         async function refreshAllDomainExpirations(manualTrigger = false) {
             if (!window.db.domains || window.db.domains.length === 0) return;
+
+            const btn = document.getElementById('btn-refresh-domains');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-[10px]"></i> Consultando WHOIS...`;
+            }
 
             let updatedAny = false;
             for (let dom of window.db.domains) {
@@ -1157,12 +1178,17 @@
                 }
             }
 
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-rotate text-[10px]"></i> Atualizar Datas`;
+            }
+
             if (updatedAny) {
                 renderDomainTable();
                 updateDomainKPIs();
                 if (isEditMode) saveDataToCloud();
             } else if (manualTrigger) {
-                alert('Datas dos domínios já estão 100% atualizadas com o WHOIS!');
+                alert('Datas dos domínios verificadas com sucesso! Todos os vencimentos já estavam 100% em dia com o WHOIS.');
             }
         }
 
@@ -1227,6 +1253,7 @@
                     id: Date.now() + Math.random(),
                     name: result.domain,
                     expiration: finalExp,
+                    cnpjStatus: 'Não iniciado',
                     provider: result.provider || '',
                     notes: 'Importado em lote'
                 });
@@ -1249,6 +1276,7 @@
                 id: Date.now(),
                 name: document.getElementById('domain-name').value.trim().toLowerCase(),
                 expiration: document.getElementById('domain-expiration').value,
+                cnpjStatus: document.getElementById('domain-cnpj-status').value, // NOVO CAMPO
                 provider: document.getElementById('domain-provider').value.trim(),
                 notes: document.getElementById('domain-notes').value.trim()
             };
@@ -1266,6 +1294,16 @@
                 window.db.domains = window.db.domains.filter(d => d.id !== id);
                 saveDataToCloud();
             }
+        }
+
+        function updateDomainCnpjStatus(id, newStatus) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+
+            const dom = window.db.domains.find(d => d.id === id);
+            if (!dom) return;
+
+            dom.cnpjStatus = newStatus;
+            saveDataToCloud();
         }
 
         function editDomain(id) {
@@ -1299,7 +1337,7 @@
             tbody.innerHTML = '';
 
             if (window.db.domains.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio cadastrado no monitoramento.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio cadastrado no monitoramento.</td></tr>`;
                 return;
             }
 
@@ -1315,6 +1353,14 @@
                 const info = getDomainExpirationInfo(dom.expiration);
                 const [y, m, d] = dom.expiration.split('-');
                 const hiddenClass = isEditMode ? '' : 'hidden';
+                const disabledAttr = isEditMode ? '' : 'disabled';
+
+                const cnpjStatusVal = dom.cnpjStatus || 'Não iniciado';
+                let cnpjStyle = {
+                    'Não iniciado': 'bg-slate-100 text-slate-600 border-slate-200',
+                    'Em andamento': 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                    'Finalizado com sucesso': 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                }[cnpjStatusVal] || 'bg-slate-100 text-slate-600 border-slate-200';
 
                 const tr = document.createElement('tr');
                 tr.className = `${info.level === 'critical' ? 'bg-rose-50/50 font-medium' : 'hover:bg-slate-50'} transition-all`;
@@ -1326,6 +1372,13 @@
                             <a href="https://${dom.name}" target="_blank" title="Abrir site" class="text-slate-300 hover:text-indigo-600 text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         </div>
                         <div class="text-xs text-slate-400">${dom.provider || 'Provedor não informado'} ${dom.notes ? '• ' + dom.notes : ''}</div>
+                    </td>
+                    <td class="p-3">
+                        <select ${disabledAttr} onchange="updateDomainCnpjStatus(${dom.id}, this.value)" class="text-xs font-semibold px-2 py-1 rounded-md border ${cnpjStyle} outline-none cursor-pointer">
+                            <option value="Não iniciado" ${cnpjStatusVal === 'Não iniciado' ? 'selected' : ''}>Não iniciado</option>
+                            <option value="Em andamento" ${cnpjStatusVal === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
+                            <option value="Finalizado com sucesso" ${cnpjStatusVal === 'Finalizado com sucesso' ? 'selected' : ''}>Finalizado com sucesso</option>
+                        </select>
                     </td>
                     <td class="p-3 text-xs font-semibold text-slate-700">
                         ${d}/${m}/${y}
