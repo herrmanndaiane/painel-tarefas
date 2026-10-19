@@ -1,175 +1,1605 @@
-[
-  {
-    "id": 101,
-    "title": "Migração servidores PR/SC",
-    "deadline": "2026-08-30",
-    "status": "Em Andamento",
-    "priority": "Alta",
-    "notes": "Realizada reunião semanal onde foi definido que o colega Rafael irá criar uma VPN para o colega Rodrigo Greff para que o mesmo possa fazer o deploy do Proxmox na lâmina que se encontra instalada em Curitiba. ",
-    "subtasks": [
-      {
-        "id": 1787078402483,
-        "title": "Levantamento de servidores virtuais",
-        "owner": "Rafael",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787078417109,
-        "title": "Levantamento de servidor físico compatível",
-        "owner": "Rafael",
-        "start": "2026-08-07",
-        "end": "2026-08-14",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787078429998,
-        "title": "Viabilidade para instalação de lâmina em rack",
-        "owner": "Rafael",
-        "start": "2026-08-07",
-        "end": "2026-08-14",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787078445059,
-        "title": "Instalação física de lâmina ",
-        "owner": "Rafael",
-        "start": "2026-08-14",
-        "end": "2026-08-17",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787078463202,
-        "title": "Comunicação de rede - passagem de VLANs",
-        "owner": "Rafael",
-        "start": "2026-08-14",
-        "end": "2026-08-17",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787078483122,
-        "title": "Criação de VPN para Rodrigo Greff",
-        "owner": "Rafael",
-        "start": "2026-08-18",
-        "end": "2026-08-19",
-        "status": "Em Andamento",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787078509242,
-        "title": "Deploy da lâmina antiga para Proxmox",
-        "owner": "Rodrigo Greff",
-        "start": "2026-08-20",
-        "end": "2026-08-26",
-        "status": "Pendente",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787078532717,
-        "title": "Migração faseada dos servidor TELECOM",
-        "owner": "Rafael/Rodrigo Greff",
-        "start": "2026-08-27",
-        "end": "2026-09-04",
-        "status": "Pendente",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787078552434,
-        "title": "Validação dos proprietários dos serviços",
-        "owner": "COR",
-        "start": "2026-09-04",
-        "end": "2026-09-11",
-        "status": "Pendente",
-        "priority": "Média"
-      }
-    ]
-  },
-  {
-    "id": 1787079048171,
-    "title": "Migração servidores PR/SC - Dourados",
-    "deadline": "2026-09-30",
-    "status": "Em Andamento",
-    "priority": "Média",
-    "notes": "Estamos com pendência do responsável pelo POP pois não há viabilidade elétrica no mesmo. Necessário compra e instalação de outra régua elétrica.\n\n\"PRECISAR AMPLIAR 2 FONTE DELTA 100A APROXIMADAMENTE  R$20K\"\n\nhttps://docs.google.com/spreadsheets/d/1yQdUlkl2tt-L-tMl15HH6Tx_V5WtuHG4rIwMxNY2ywQ/edit?gid=0#gid=0",
-    "subtasks": [
-      {
-        "id": 1787079168102,
-        "title": "Levantamento de servidores virtuais",
-        "owner": "Rafael",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787079227903,
-        "title": "Levantamento de servidor físico compatível",
-        "owner": "Rafael",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "status": "Concluída",
-        "priority": "Média"
-      },
-      {
-        "id": 1787079317965,
-        "title": "Viabilidade para instalação de lâmina em rack",
-        "owner": "Rafael/Facilites ",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "status": "Pendente",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787079337633,
-        "title": "Instalação física de lâmina",
-        "owner": "Rafael",
-        "start": "2026-08-10",
-        "end": "2026-08-14",
-        "status": "Pendente",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787079362082,
-        "title": "Comunicação de rede - passagem de VLANs",
-        "owner": "Rafael/COR",
-        "start": "2026-08-17",
-        "end": "2026-08-28",
-        "status": "Pendente",
-        "priority": "Média"
-      },
-      {
-        "id": 1787079399053,
-        "title": "Deploy da lâmina antiga para Proxmox",
-        "owner": "Rodrigo Greff",
-        "start": "2026-08-31",
-        "end": "2026-09-04",
-        "status": "Pendente",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787079420490,
-        "title": "Migração faseada dos servidor TELECOM",
-        "owner": "Rafael/Rodrigo Greff",
-        "start": "2026-09-08",
-        "end": "2026-09-18",
-        "status": "Pendente",
-        "priority": "Alta"
-      },
-      {
-        "id": 1787079439819,
-        "title": "Validação dos proprietários dos serviços",
-        "owner": "Rafael/COR",
-        "start": "2026-09-08",
-        "end": "2026-09-18",
-        "status": "Pendente",
-        "priority": "Alta"
-      }
-    ]
+{
+  "activities": [
+    {
+      "id": 101,
+      "title": "Migração servidores PR/SC",
+      "deadline": "2026-10-30",
+      "status": "Em Andamento",
+      "priority": "Alta",
+      "notes": "CURITBA:\nAté terça-feira (25/08) instalação do Proxmox finalizada\n\nMigração da primeiro DNS na quinta-feira (27/08) / (31/08) e (01/09). \n\n",
+      "subtasks": [
+        {
+          "id": 1787078402483,
+          "title": "Levantamento de servidores virtuais",
+          "owner": "Rafael",
+          "start": "2026-08-03",
+          "end": "2026-08-07",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787078417109,
+          "title": "Levantamento de servidor físico compatível",
+          "owner": "Rafael",
+          "start": "2026-08-07",
+          "end": "2026-08-14",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787078429998,
+          "title": "Viabilidade para instalação de lâmina em rack",
+          "owner": "Rafael",
+          "start": "2026-08-07",
+          "end": "2026-08-14",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787078445059,
+          "title": "Instalação física de lâmina ",
+          "owner": "Rafael",
+          "start": "2026-08-14",
+          "end": "2026-08-17",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787078463202,
+          "title": "Comunicação de rede - passagem de VLANs",
+          "owner": "Rafael",
+          "start": "2026-08-14",
+          "end": "2026-08-17",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787078509242,
+          "title": "Deploy da lâmina antiga para Proxmox",
+          "owner": "Rodrigo Greff",
+          "start": "2026-08-20",
+          "end": "2026-08-26",
+          "status": "Concluída",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787078532717,
+          "title": "Migração faseada dos servidor TELECOM",
+          "owner": "Rafael/Rodrigo Greff",
+          "start": "2026-08-27",
+          "end": "2026-09-04",
+          "status": "Pendente",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787078552434,
+          "title": "Validação dos proprietários dos serviços",
+          "owner": "COR",
+          "start": "2026-09-04",
+          "end": "2026-09-11",
+          "status": "Pendente",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787079048171,
+      "title": "Migração servidores PR/SC - Dourados",
+      "deadline": "2026-09-30",
+      "status": "Em Andamento",
+      "priority": "Média",
+      "notes": "Esclareço que este site não está contemplado no orçamento de Capex 2026 para melhorias ou qualificações de infraestrutura.\n\nNo entanto, para viabilizar a implantação dos novos equipamentos solicitados, será indispensável realizar as seguintes adequações técnicas:\n\n    Reformulação da infraestrutura elétrica (interna e externa);\n\n    Substituição das fontes retificadoras atuais.\n\nO investimento estimado para esta intervenção é de R$ 38.000,00 (Capex não previsto).\n\nhttps://docs.google.com/spreadsheets/d/1yQdUlkl2tt-L-tMl15HH6Tx_V5WtuHG4rIwMxNY2ywQ/edit?gid=0#gid=0",
+      "subtasks": [
+        {
+          "id": 1787079168102,
+          "title": "Levantamento de servidores virtuais",
+          "owner": "Rafael",
+          "start": "2026-08-03",
+          "end": "2026-08-07",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787079227903,
+          "title": "Levantamento de servidor físico compatível",
+          "owner": "Rafael",
+          "start": "2026-08-03",
+          "end": "2026-08-07",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787079317965,
+          "title": "Viabilidade para instalação de lâmina em rack",
+          "owner": "Rafael/Facilites ",
+          "start": "2026-08-03",
+          "end": "2026-08-07",
+          "status": "Pendente",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787079337633,
+          "title": "Instalação física de lâmina",
+          "owner": "Rafael",
+          "start": "2026-08-10",
+          "end": "2026-08-14",
+          "status": "Pendente",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787079362082,
+          "title": "Comunicação de rede - passagem de VLANs",
+          "owner": "Rafael/COR",
+          "start": "2026-08-17",
+          "end": "2026-08-28",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787079399053,
+          "title": "Deploy da lâmina antiga para Proxmox",
+          "owner": "Rodrigo Greff",
+          "start": "2026-08-31",
+          "end": "2026-09-04",
+          "status": "Pendente",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787079420490,
+          "title": "Migração faseada dos servidor TELECOM",
+          "owner": "Rafael/Rodrigo Greff",
+          "start": "2026-09-08",
+          "end": "2026-09-18",
+          "status": "Pendente",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787079439819,
+          "title": "Validação dos proprietários dos serviços",
+          "owner": "Rafael/COR",
+          "start": "2026-09-08",
+          "end": "2026-09-18",
+          "status": "Pendente",
+          "priority": "Alta"
+        }
+      ]
+    },
+    {
+      "id": 1787140955708,
+      "title": "Adição de lâmina - Cluster iVeloz",
+      "deadline": "2026-09-30",
+      "status": "Em Andamento",
+      "priority": "Alta",
+      "notes": "Aguardando confirmação do field para instalação da lâmina, já temos informação da rede da iLO.",
+      "subtasks": [
+        {
+          "id": 1787140993062,
+          "title": "Envio de nova lâmina",
+          "owner": "Rodrigo Greff",
+          "start": "2026-07-13",
+          "end": "2026-08-06",
+          "status": "Concluída",
+          "priority": "Alta"
+        },
+        {
+          "id": 1787141039459,
+          "title": "Instalação da lâmina no rack",
+          "owner": "Field",
+          "start": "2026-08-10",
+          "end": "2026-08-21",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787141208724,
+          "title": "Validação da entrega de rede",
+          "owner": "Rodrigo Greff",
+          "start": "2026-08-17",
+          "end": "2026-08-26",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787141618876,
+      "title": "Remoção de servidores desligados",
+      "deadline": "2026-09-30",
+      "status": "Concluída",
+      "priority": "Alta",
+      "notes": "https://docs.google.com/spreadsheets/d/1eXoLIqpcJeBShkmatQ5w45wfE6rlG-s1J0NF8ebrT1Y/edit?usp=drive_link",
+      "subtasks": [
+        {
+          "id": 1787141712193,
+          "title": "Levantamento de servidores desligados",
+          "owner": "New Front",
+          "start": "2026-08-18",
+          "end": "2026-08-28",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787141774787,
+          "title": "Identificação de priprietários",
+          "owner": "Gabriel Melo",
+          "start": "2026-08-19",
+          "end": "2026-08-24",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787141925165,
+          "title": "Agendamento, via GMUD, para remoção",
+          "owner": "Gabriel Melo",
+          "start": "2026-08-20",
+          "end": "2026-08-25",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787141952519,
+          "title": "Remoção de todos os servidores desligados há mais de 90 dias",
+          "owner": "Gabriel Melo/New Front",
+          "start": "2026-08-24",
+          "end": "2026-08-28",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787161383290,
+      "title": "Backup File Server Financeiro",
+      "owner": "Daiane Herrmann",
+      "deadline": "2026-08-25",
+      "status": "Concluída",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1787161796857,
+          "title": "Instalação de agent",
+          "owner": "Daiane Herrmann",
+          "start": "2026-08-18",
+          "end": "2026-08-18",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787161822839,
+          "title": "Execução do primeiro backup full",
+          "owner": "Daiane Herrmann",
+          "start": "2026-08-19",
+          "end": "2026-08-26",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787161401034,
+      "title": "Manutenção catálogo INFRA TI",
+      "owner": "Daiane Herrmann",
+      "deadline": "2026-08-20",
+      "status": "Concluída",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1787162296080,
+          "title": "Inclusão de opções de snap, upgrade e manutenção",
+          "owner": "Daiane Herrmann",
+          "start": "2026-08-17",
+          "end": "2026-08-19",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787162396092,
+      "title": "Replicação lâminas Prodemge",
+      "owner": "Rodrigo Greff",
+      "deadline": "2026-09-01",
+      "status": "Concluída",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1787162421745,
+          "title": "Validação de acesso via VPN",
+          "owner": "Matheus Fonseca",
+          "start": "2026-08-18",
+          "end": "2026-08-19",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787162440008,
+          "title": "Acesso ás lâminas para validação",
+          "owner": "Rodrigo Greff",
+          "start": "2026-08-19",
+          "end": "2026-08-21",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787162461667,
+          "title": "Configuração da replicação ",
+          "owner": "Rodrigo Greff",
+          "start": "2026-08-24",
+          "end": "2026-08-26",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787162482281,
+          "title": "Validação da replicação",
+          "owner": "Rodrigo Greff/Matheus Fonseca",
+          "start": "2026-08-26",
+          "end": "2026-08-31",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1787162501813,
+          "title": "Criação de documentação",
+          "owner": "Rodrigo Greff",
+          "start": "2026-08-31",
+          "end": "2026-09-01",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787340266856,
+      "title": "Migração servidores PR/SC - São José",
+      "protocol": "",
+      "owner": "Rafael",
+      "deadline": "2026-10-02",
+      "status": "Em Andamento",
+      "priority": "Média",
+      "notes": "Formatar  a lâmina e instalar o Proxmox (04/09)\n\nMigrar servidores do R710 pro ProLiant com Proxmox (07/09 - 22/09)",
+      "subtasks": [
+        {
+          "id": 1787343231509,
+          "title": "Formatação de lâmina em bancada",
+          "owner": "Rafael",
+          "start": "2026-08-24",
+          "end": "2026-08-28",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787343248682,
+          "title": "Instalação do servidor no rack",
+          "owner": "Rafael/Field",
+          "start": "2026-08-31",
+          "end": "2026-09-04",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787343287431,
+          "title": "Migração dos servidores para lâmina Proxmox",
+          "owner": "Rafael",
+          "start": "2026-09-07",
+          "end": "2026-09-22",
+          "status": "Pendente",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1787834874501,
+      "title": "Estruturação HA JVE e SP",
+      "protocol": "",
+      "owner": "Daiane Herrmann",
+      "deadline": "2026-12-31",
+      "status": "Pendente",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1787834895357,
+          "title": "Compra de servidores",
+          "owner": "Roger",
+          "start": "2026-08-27",
+          "end": "2026-11-06",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787834934804,
+          "title": "Instalação SO - Feita pela SERCOMPE (Suse Linux for SAP)",
+          "owner": "SERCOMPE",
+          "start": "2026-10-12",
+          "end": "2026-10-16",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787834980837,
+          "title": "Ações de SAP - replication",
+          "owner": "Diego",
+          "start": "2026-10-19",
+          "end": "2026-11-13",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787835001732,
+          "title": "Viabilidade de servidores - JVE e SP",
+          "owner": "Daiane Herrmann",
+          "start": "2026-08-27",
+          "end": "2026-09-11",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1787835021813,
+          "title": "Compra de GBICS (12)",
+          "owner": "Daiane Herrmann",
+          "start": "2026-08-31",
+          "end": "2026-09-11",
+          "status": "Pendente",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1789584559545,
+      "title": "Cancelar contrato StarTI",
+      "protocol": "",
+      "owner": "Daiane Herrmann",
+      "deadline": "2026-10-02",
+      "status": "Em Andamento",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1789588073322,
+          "title": "Solicitação de contrato atualizado",
+          "owner": "Daiane Herrmann",
+          "start": "2026-09-16",
+          "end": "2026-09-30",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1790270466604,
+      "title": "Migrar servidor MK da ON_NET - Cluster SEMPRE",
+      "protocol": "-",
+      "owner": "Valderson",
+      "deadline": "2026-10-22",
+      "status": "Pendente",
+      "priority": "Alta",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1790270681399,
+          "title": "Configuração de ferramenta de P2V",
+          "owner": "Rodrigo Greff",
+          "start": "2026-09-28",
+          "end": "2026-10-02",
+          "status": "Pendente",
+          "priority": "Alta"
+        },
+        {
+          "id": 1790270785463,
+          "title": "Virada para ambiente virtualizado",
+          "owner": "Valderson",
+          "start": "2026-10-05",
+          "end": "2026-10-09",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1790270903165,
+          "title": "Desligamento do servidor Bare Metal",
+          "owner": "Valderson",
+          "start": "2026-10-12",
+          "end": "2026-10-23",
+          "status": "Pendente",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1790607118853,
+      "title": "Atualização PVE-JOI - 11/10",
+      "protocol": "",
+      "owner": "Daiane Herrmann",
+      "deadline": "2026-10-23",
+      "status": "Em Andamento",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1790607490249,
+          "title": "Atualização de versão para 8",
+          "owner": "Everton Pasqualini",
+          "start": "2026-09-28",
+          "end": "2026-10-02",
+          "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1790607522188,
+          "title": "Desligamento e migração dos servidores com mais de 250GB",
+          "owner": "Everton Pasqualini",
+          "start": "2026-10-11",
+          "end": "2026-10-12",
+          "status": "Pendente",
+          "priority": "Média"
+        },
+        {
+          "id": 1790607538953,
+          "title": "Atualização final com reboot",
+          "owner": "Everton Pasqualini",
+          "start": "2026-10-11",
+          "end": "2026-10-12",
+          "status": "Pendente",
+          "priority": "Média"
+        }
+      ]
+    },
+    {
+      "id": 1790619218379,
+      "title": "Backup ambiente DR para PAE",
+      "protocol": "",
+      "owner": "Everton ",
+      "deadline": "2026-09-23",
+      "status": "Concluída",
+      "priority": "Alta",
+      "notes": "",
+      "subtasks": []
+    },
+    {
+      "id": 1790619246174,
+      "title": "Liberação de acesso novo node SGI",
+      "protocol": "",
+      "owner": "Everton",
+      "deadline": "2026-09-25",
+      "status": "Concluída",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": [
+        {
+          "id": 1790619275563,
+          "title": "Configuração de rede",
+          "owner": "Vargas/Everton",
+          "start": "2026-09-24",
+          "end": "2026-09-25",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "id": 1787662182170,
+      "name": "gpsnet.com.br",
+      "expiration": "2027-07-24",
+      "provider": "Registro.br",
+      "notes": ""
+    },
+    {
+      "id": 1787667331507.3157,
+      "name": "17telecom.com.br",
+      "expiration": "2027-01-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667331601.0652,
+      "name": "amigointernet.com.br",
+      "expiration": "2028-08-16",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667331684.9243,
+      "name": "amigoperto.com.br",
+      "expiration": "2027-08-29",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667331791.8604,
+      "name": "amigoplay.com.br",
+      "expiration": "2027-09-15",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667331874.8726,
+      "name": "araruama.com.br",
+      "expiration": "2027-10-31",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667331951.9133,
+      "name": "avato.com.br",
+      "expiration": "2026-10-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332033.6816,
+      "name": "avatocomunica.com.br",
+      "expiration": "2027-07-06",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332101.2073,
+      "name": "avatoconecta.com.br",
+      "expiration": "2027-08-06",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332177.5222,
+      "name": "avatodatacenter.com.br",
+      "expiration": "2027-02-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332253.9795,
+      "name": "avatohosting.com.br",
+      "expiration": "2027-05-29",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332356.3027,
+      "name": "avatolabs.com.br",
+      "expiration": "2027-02-25",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332441.9883,
+      "name": "avatotecnologia.com.br",
+      "expiration": "2027-03-01",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332522.431,
+      "name": "avatto.com.br",
+      "expiration": "2027-10-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332601.6035,
+      "name": "bedinet.com.br",
+      "expiration": "2026-06-16",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332689.4316,
+      "name": "bereitengenharia.com.br",
+      "expiration": "2027-04-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332762.8647,
+      "name": "brasiloperacoes.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667332854.74,
+      "name": "brasiltelecomunicacoes.com.br",
+      "expiration": "2027-03-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667333017.6567,
+      "name": "brparticipacoes.com.br",
+      "expiration": "2028-04-27",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667333107.801,
+      "name": "centrooestetelecom.com.br",
+      "expiration": "2026-11-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667333276.2856,
+      "name": "clubetvalphaville.com.br",
+      "expiration": "2027-09-18",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667333385.028,
+      "name": "conectividadenocampo.com.br",
+      "expiration": "2027-02-19",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667333469.3481,
+      "name": "conectividaderural.com.br",
+      "expiration": "2027-02-19",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667333551.2852,
+      "name": "contacliente.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667335604.5361,
+      "name": "contacliente.net.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667335691.3044,
+      "name": "ctotelecom.com.br",
+      "expiration": "2026-11-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667335907.1736,
+      "name": "dz7.gru.br",
+      "expiration": "2026-12-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667338303.17,
+      "name": "dz7.net.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667338422.1992,
+      "name": "dz7.tv.br",
+      "expiration": "2027-06-03",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667339052.1033,
+      "name": "dz7telecom.com.br",
+      "expiration": "2026-12-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667350754.7725,
+      "name": "encontreseuprovedor.com.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667351357.3333,
+      "name": "evo.agr.br",
+      "expiration": "2027-12-13",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667351853.9417,
+      "name": "evo.net.br",
+      "expiration": "2028-02-21",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667351923.7974,
+      "name": "evo.radio.br",
+      "expiration": "2028-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667352419.5022,
+      "name": "evo.seg.br",
+      "expiration": "2028-08-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667352853.5588,
+      "name": "evo.tv.br",
+      "expiration": "2028-02-13",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667353349.7153,
+      "name": "evo360.com.br",
+      "expiration": "2027-06-14",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667353918.9426,
+      "name": "evobanco.com.br",
+      "expiration": "2027-12-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667354586.0515,
+      "name": "evonetworks.net.br",
+      "expiration": "2027-03-13",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667355259.8965,
+      "name": "f-brasiltecpar.com.br",
+      "expiration": "2027-05-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667355723.9956,
+      "name": "gauchatecpar.com.br",
+      "expiration": "2027-09-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667356425.5444,
+      "name": "gpsnetrural.com.br",
+      "expiration": "2027-10-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667356921.6282,
+      "name": "grupoavato.com.br",
+      "expiration": "2027-05-25",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667357519.7795,
+      "name": "grupoevo.com.br",
+      "expiration": "2028-04-23",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667358204.2664,
+      "name": "hitelecom.com.br",
+      "expiration": "2027-09-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667358721.1638,
+      "name": "interair.com.br",
+      "expiration": "2027-01-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667360245.6223,
+      "name": "internetalphaville.com.br",
+      "expiration": "2027-09-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667360872.095,
+      "name": "internetrapida.net.br",
+      "expiration": "2027-12-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667361442.2002,
+      "name": "internex.net.br",
+      "expiration": "2027-06-24",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667361557.9648,
+      "name": "intnet.com.br",
+      "expiration": "2027-10-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667362090.814,
+      "name": "mega4g.com.br",
+      "expiration": "2028-04-11",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667362553.8406,
+      "name": "megavelocidade.com.br",
+      "expiration": "2026-10-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667363152.182,
+      "name": "megavelocidade4g.com.br",
+      "expiration": "2028-04-11",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667397591.9924,
+      "name": "netmaistecnologia.com.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667397662.2466,
+      "name": "netsun.net.br",
+      "expiration": "2026-12-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667397749.1116,
+      "name": "netsuntecnologia.com.br",
+      "expiration": "2026-10-28",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667398179.4849,
+      "name": "omegahosting.com.br",
+      "expiration": "2027-08-31",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667398723.9468,
+      "name": "prepar.net.br",
+      "expiration": "2027-01-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667399134.9277,
+      "name": "primatectelecom.com.br",
+      "expiration": "2027-08-21",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667400353.6968,
+      "name": "provedorlocal.com.br",
+      "expiration": "2027-09-16",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667401304.4617,
+      "name": "remota.com.br",
+      "expiration": "2026-12-07",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667401756.6985,
+      "name": "s-brasiltecpar.com.br",
+      "expiration": "2027-05-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667401972.2417,
+      "name": "safetycable.com.br",
+      "expiration": "2027-02-27",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667402548.851,
+      "name": "safetycables.com.br",
+      "expiration": "2027-02-23",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667403110.7717,
+      "name": "sejaamigo.com.br",
+      "expiration": "2027-06-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667403639.6008,
+      "name": "selkointernet.com.br",
+      "expiration": "2026-11-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667404311.1204,
+      "name": "selkointernet.net.br",
+      "expiration": "2026-11-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667404981.625,
+      "name": "sinoscorp.com.br",
+      "expiration": "2027-09-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667405592.3643,
+      "name": "sinosnet.com.br",
+      "expiration": "2026-05-24",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667406302.5312,
+      "name": "sinosnet.net.br",
+      "expiration": "2026-07-07",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667418157.8093,
+      "name": "skynetempresarial.com.br",
+      "expiration": "2027-08-25",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667420482.5293,
+      "name": "skynetguarulhos.com.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667421199.7188,
+      "name": "talentosnatecnologia.com.br",
+      "expiration": "2027-02-27",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667421776.0823,
+      "name": "talentospro.com.br",
+      "expiration": "2027-02-04",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667421996.8303,
+      "name": "techomega.com.br",
+      "expiration": "2027-11-27",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667422635.9067,
+      "name": "titania.com.br",
+      "expiration": "2027-05-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667423173.0222,
+      "name": "tjnetcomunicacoes.com.br",
+      "expiration": "2029-09-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667423674.8674,
+      "name": "tleste.com.br",
+      "expiration": "2026-11-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667424164.6084,
+      "name": "tleste.net.br",
+      "expiration": "2026-12-14",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667424689.713,
+      "name": "turbonex.com.br",
+      "expiration": "2027-04-06",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667425164.6536,
+      "name": "turbonex.net.br",
+      "expiration": "2026-11-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667425777.8,
+      "name": "tvalphaville.com.br",
+      "expiration": "2027-06-05",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667426374.4973,
+      "name": "twtelecom.com.br",
+      "expiration": "2027-06-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667426835.6257,
+      "name": "unicenter.com.br",
+      "expiration": "2027-11-04",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667427285.179,
+      "name": "unicenterserver.com.br",
+      "expiration": "2027-10-26",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667428852.4146,
+      "name": "riouruguai.net.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667429369.2676,
+      "name": "v-expressa.com.br",
+      "expiration": "2027-11-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667429998.4712,
+      "name": "veloxtelecom.net.br",
+      "expiration": "2027-07-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667430700.3381,
+      "name": "viavale.com.br",
+      "expiration": "2027-06-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667431170.0027,
+      "name": "viexfibra.com.br",
+      "expiration": "2027-10-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667431730.0618,
+      "name": "vinet.com.br",
+      "expiration": "2026-09-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667431862.7317,
+      "name": "vinoativacoes.com.br",
+      "expiration": "2027-12-19",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667432261.6008,
+      "name": "vinointernet.com.br",
+      "expiration": "2026-08-08",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667466859.5938,
+      "name": "virtualisp.com.br",
+      "expiration": "2027-08-25",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667467050.1885,
+      "name": "w3.net.br",
+      "expiration": "2026-12-27",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667467130.6252,
+      "name": "w3mega.com.br",
+      "expiration": "2028-07-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667467737.373,
+      "name": "w3nt.com.br",
+      "expiration": "2031-06-14",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667468261.2542,
+      "name": "zecstar.com.br",
+      "expiration": "2026-10-15",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667468669.8965,
+      "name": "zecta.com.br",
+      "expiration": "2027-04-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667469276.613,
+      "name": "zecta.net.br",
+      "expiration": "2027-04-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667469875.984,
+      "name": "zectatelecom.com.br",
+      "expiration": "2027-05-18",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667470431.417,
+      "name": "amigo.psi.br",
+      "expiration": "2026-06-19",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667470923.0808,
+      "name": "amigo.tv.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667471339.0774,
+      "name": "amigoempresas.com.br",
+      "expiration": "2026-06-25",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667471805.7837,
+      "name": "amigofibra.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667471918.5278,
+      "name": "amigofone.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667472429.5903,
+      "name": "amigonet.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667472872.9624,
+      "name": "amigoplay.tv.br",
+      "expiration": "2027-07-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667473487.0205,
+      "name": "amigoradio.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667474024.5525,
+      "name": "amigotv.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667474595.4187,
+      "name": "canoasnet.com.br",
+      "expiration": "2026-10-06",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667475197.9402,
+      "name": "internetamigo.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667475981.5015,
+      "name": "megaway.com.br",
+      "expiration": "2028-08-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667476381.8481,
+      "name": "playamigo.com.br",
+      "expiration": "2027-07-17",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667477088.4167,
+      "name": "redesul.com.br",
+      "expiration": "2027-09-10",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667478466.1602,
+      "name": "redesul.psi.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667478895.091,
+      "name": "redesul.tv.br",
+      "expiration": "2028-08-03",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667479491.661,
+      "name": "redesulempresas.com.br",
+      "expiration": "2028-08-24",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667479883.7344,
+      "name": "redesulvip.com.br",
+      "expiration": "2028-08-24",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667480464.8376,
+      "name": "royalnet.com.br",
+      "expiration": "2027-07-24",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667481146.2095,
+      "name": "royalnet.psi.br",
+      "expiration": "2026-07-07",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667481815.233,
+      "name": "somosamigo.com.br",
+      "expiration": "2027-06-22",
+      "provider": "Registro.br",
+      "notes": "Importado em lote",
+      "cnpjStatus": "Em andamento"
+    },
+    {
+      "id": 1787667481897.9292,
+      "name": "bewnet.com.br",
+      "expiration": "2027-05-09",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667482414.9937,
+      "name": "bomtempo.inf.br",
+      "expiration": "2027-04-12",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667482938.9646,
+      "name": "betahosting.com.br",
+      "expiration": "2027-07-21",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667483631.1624,
+      "name": "younet.com.br",
+      "expiration": "2026-11-13",
+      "provider": "Registro.br",
+      "notes": "Importado em lote"
+    },
+    {
+      "id": 1787667485194.8586,
+      "name": "adquiraja.com.br",
+      "expiration": "2027-08-25",
+      "provider": "",
+      "notes": "Importado em lote"
+    }
+  ],
+  "keepNotes": [
+    {
+      "id": 1790254107344,
+      "title": "Migrar servidor MK da ON_NET - Cluster SEMPRE",
+      "content": "Greff vai ajudar o Valderson a montar o P2V pois a máquina tem um SO Ubuntu 12.04",
+      "color": "bg-rose-50 border-rose-200",
+      "date": "24/09/2026 09:48"
+    },
+    {
+      "id": 1790253781422,
+      "title": "Atividades Erik - ALLREDE",
+      "content": "- Criar a cópia do backup do PBS da ALL REDE para o PBS de Cuiabá (Erik e Greff)\n- Montar servidor na ALLREDE para mandar",
+      "color": "bg-rose-50 border-rose-200",
+      "date": "24/09/2026 09:43"
+    },
+    {
+      "id": 1790001249554,
+      "title": "Atualização PVE-JOI - 11/10",
+      "content": "Precisamos desligar as máquinas abaixo e migrar de host:\nVirtual Machine 334 (NCE-SEPLAG) on node 'pve-joi01'\nVirtual Machine 239 (VM-CORDIGITAL-VM-DB-2-HADR-PROD-JVE) on node 'pve-joi02'\n\nVirtual Machine 232 (VM-CORDIGITAL-VM-DB-1-HADR-PROD-JVE) on node 'pve-joi03'\nVirtual Machine 245 (INFODIGI-DB01-AVATO) on node 'pve-joi05'\nVirtual Machine 242 (VM-CORDIGITAL-VM-DB-3-HADR-PROD-JVE) on node 'pve-joi09'",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "28/09/2026 11:16 (editado)"
+    },
+    {
+      "id": 1790000909888,
+      "title": "Atualização CLuster PAE-DR",
+      "content": "Tentar estender as VLANs até o DR-JVE para migrar todas as VMs e atualizar",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "21/09/2026 11:28"
+    },
+    {
+      "id": 1789679055601,
+      "title": "Compra de discos Titânia ANDAMENTO",
+      "content": "Protocolo aberto para compras  5539127",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "21/09/2026 10:08 (editado)"
+    },
+    {
+      "id": 1789678587035,
+      "title": "Backup DR para PAE - Resolvido",
+      "content": "Backup está parado desde 28/08\nA origem :\nPVE-AVATO-JOI01 - 172.20.77.11\nPVE-AVATO-JOI02 - 172.20.77.12\nPVE-AVATO-JOI03 - 172.20.77.13\nPVE-AVATO-JOI04 - 172.20.77.14\nPVE-AVATO-PAR01 - 172.20.77.10\n\nDestino 172.31.66.148 porta 8007\n\nCall com Pegoraro dia 18/09.",
+      "color": "bg-emerald-50 border-emerald-200",
+      "date": "21/09/2026 10:08 (editado)"
+    },
+    {
+      "id": 1789676806968,
+      "title": "Acesso novo node SGI - Resolvido",
+      "content": "Liberação de acesso do novo node do SGI NODE05-SGI-JOI01 para comunicação com a internet e com os hosts localizados em Santa Maria. Aberto ticket com o COR - OS278428",
+      "color": "bg-emerald-50 border-emerald-200",
+      "date": "28/09/2026 11:10 (editado)"
+    },
+    {
+      "id": 1789403851914,
+      "title": "Reunião Semanal Técnica - New Front & Brasil Tecpar",
+      "content": "17/09 - Atualização do ambiente Avato DR: VLANs criadas, necessário agendar a migração com proprietário das VMs Prisma.\n\n- GMUD para migração dos servidores PRISMA em 23/09 às 20h\n- Aguardando validação da migração da VM",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "21/09/2026 14:13 (editado)"
+    }
+  ],
+  "raci": {
+    "roles": [
+      "Infra Interna",
+      "Infra New Front",
+      "Coordenador",
+      "DevOps",
+      "CSTI N2"
+    ],
+    "tasks": [
+      "Snapshot horário comercial - interno",
+      "Snapshot agendado",
+      "Restore de backup interno",
+      "Restore de backup cliente",
+      "Quebra de senha - VM interna",
+      "Suporte docker/kubernets",
+      "Criação de VM Interna",
+      "Criação de VM de cliente",
+      "Troca de IP - VM interna",
+      "Troca de IP - VM de cliente",
+      "Ajustes Backup Veeam - Cliente",
+      "Ajuste Veeam Backup - Interno",
+      "Monitoramento ambiente interno",
+      "Clonagem de VM interna",
+      "Clonagem de VM cliente",
+      "Migração de ambiente - VM interna",
+      "Migração de ambiente - VM de Cliente"
+    ],
+    "matrix": {
+      "0_0": "R",
+      "0_2": "I",
+      "1_2": "I",
+      "2_2": "I",
+      "1_1": "R",
+      "2_0": "R",
+      "3_1": "R",
+      "4_0": "R",
+      "5_3": "R",
+      "6_2": "A",
+      "6_0": "R",
+      "7_1": "R",
+      "7_2": "C",
+      "10_4": "R",
+      "11_0": "R",
+      "9_4": "R",
+      "8_0": "R",
+      "8_3": "-",
+      "8_2": "I",
+      "12_0": "R",
+      "12_2": "I",
+      "13_0": "R",
+      "14_1": "R",
+      "15_0": "R",
+      "16_1": "R",
+      "13_2": "I",
+      "14_2": "I",
+      "15_2": "I",
+      "16_2": "I",
+      "16_3": "I"
+    }
   }
-]
+}
