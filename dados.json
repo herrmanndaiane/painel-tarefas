@@ -519,15 +519,6 @@
       "notes": "",
       "subtasks": [
         {
-          "id": 1790607522188,
-          "title": "Desligamento e migração dos servidores com mais de 250GB",
-          "owner": "Everton Pasqualini",
-          "start": "2026-10-11",
-          "end": "2026-10-12",
-          "status": "Pendente",
-          "priority": "Média"
-        },
-        {
           "id": 1790607538953,
           "title": "Atualização final com reboot",
           "owner": "Everton Pasqualini",
