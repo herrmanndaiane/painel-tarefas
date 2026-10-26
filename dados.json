@@ -544,6 +544,15 @@
           "end": "2027-01-22",
           "status": "Pendente",
           "priority": "Média"
+        },
+        {
+          "id": 1793038519093,
+          "title": "Atualização final com reboot",
+          "owner": "Everton Pasqualini",
+          "start": "2027-01-01",
+          "end": "2027-01-22",
+          "status": "Pendente",
+          "priority": "Média"
         }
       ]
     },
