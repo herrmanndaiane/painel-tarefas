@@ -626,7 +626,7 @@
     {
       "id": 1787667331951.9133,
       "name": "avato.com.br",
-      "expiration": "2026-10-22",
+      "expiration": "2027-10-22",
       "provider": "Registro.br",
       "notes": "Importado em lote"
     },
@@ -1501,10 +1501,10 @@
     },
     {
       "id": 1790001249554,
-      "title": "Atualização PVE-JOI - 11/10",
+      "title": "Atualização PVE-JOI - JANEIRO 2027",
       "content": "Precisamos desligar as máquinas abaixo e migrar de host:\nVirtual Machine 334 (NCE-SEPLAG) on node 'pve-joi01'\nVirtual Machine 239 (VM-CORDIGITAL-VM-DB-2-HADR-PROD-JVE) on node 'pve-joi02'\n\nVirtual Machine 232 (VM-CORDIGITAL-VM-DB-1-HADR-PROD-JVE) on node 'pve-joi03'\nVirtual Machine 245 (INFODIGI-DB01-AVATO) on node 'pve-joi05'\nVirtual Machine 242 (VM-CORDIGITAL-VM-DB-3-HADR-PROD-JVE) on node 'pve-joi09'",
       "color": "bg-amber-50 border-amber-200",
-      "date": "28/09/2026 11:16 (editado)"
+      "date": "26/10/2026 11:09 (editado)"
     },
     {
       "id": 1790000909888,
