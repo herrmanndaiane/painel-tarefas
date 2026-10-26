@@ -519,15 +519,6 @@
       "notes": "",
       "subtasks": [
         {
-          "id": 1790607490249,
-          "title": "Atualização de versão para 8",
-          "owner": "Everton Pasqualini",
-          "start": "2026-09-28",
-          "end": "2026-10-02",
-          "status": "Concluída",
-          "priority": "Média"
-        },
-        {
           "id": 1790607522188,
           "title": "Desligamento e migração dos servidores com mais de 250GB",
           "owner": "Everton Pasqualini",
