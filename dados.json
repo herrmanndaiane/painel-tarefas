@@ -1486,6 +1486,13 @@
   ],
   "keepNotes": [
     {
+      "id": 1793037880014,
+      "title": "Principais ações",
+      "content": "- Remoção de Snaps antigos: 6335674 \n- Remoção de servidores com interface down: 6274132\n-",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "26/10/2026 15:04"
+    },
+    {
       "id": 1793024493038,
       "title": "Atualização SGI",
       "content": "SMA consegue migrar para outro host, apenas algumas VMs seriam reinicializadas\nJOI-SGI: consegue migrar as máquinas \n\nEverton vai levantar todas as informações",
