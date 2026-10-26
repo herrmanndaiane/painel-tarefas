@@ -544,6 +544,15 @@
           "end": "2026-10-12",
           "status": "Pendente",
           "priority": "Média"
+        },
+        {
+          "id": 1793038451499,
+          "title": "Atualização de versão para 8",
+          "owner": "Everton Pasqualini",
+          "start": "2027-01-01",
+          "end": "2027-01-22",
+          "status": "Pendente",
+          "priority": "Média"
         }
       ]
     },
