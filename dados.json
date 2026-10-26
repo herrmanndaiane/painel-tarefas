@@ -4,7 +4,7 @@
       "id": 101,
       "title": "Migração servidores PR/SC",
       "deadline": "2026-10-30",
-      "status": "Em Andamento",
+      "status": "Concluída",
       "priority": "Alta",
       "notes": "CURITBA:\nAté terça-feira (25/08) instalação do Proxmox finalizada\n\nMigração da primeiro DNS na quinta-feira (27/08) / (31/08) e (01/09). \n\n",
       "subtasks": [
@@ -77,7 +77,7 @@
           "owner": "COR",
           "start": "2026-09-04",
           "end": "2026-09-11",
-          "status": "Pendente",
+          "status": "Concluída",
           "priority": "Média"
         }
       ]
