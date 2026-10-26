@@ -1486,6 +1486,13 @@
   ],
   "keepNotes": [
     {
+      "id": 1793024493038,
+      "title": "Atualização SGI",
+      "content": "SMA consegue migrar para outro host, apenas algumas VMs seriam reinicializadas\nJOI-SGI: consegue migrar as máquinas \n\nEverton vai levantar todas as informações",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "26/10/2026 11:21"
+    },
+    {
       "id": 1790254107344,
       "title": "Migrar servidor MK da ON_NET - Cluster SEMPRE",
       "content": "Greff vai ajudar o Valderson a montar o P2V pois a máquina tem um SO Ubuntu 12.04",
