@@ -585,7 +585,7 @@
       "protocol": "6274132",
       "owner": "Daiane Herrmann",
       "deadline": "2026-11-27",
-      "status": "Pendente",
+      "status": "Em Andamento",
       "priority": "Média",
       "notes": "",
       "subtasks": [
@@ -596,6 +596,15 @@
           "start": "2026-10-20",
           "end": "2026-10-27",
           "status": "Concluída",
+          "priority": "Média"
+        },
+        {
+          "id": 1793123130676,
+          "title": "Abertura de GMUD para remoção dos servidores do ambiente SGI",
+          "owner": "Daiane Herrmann",
+          "start": "2026-10-27",
+          "end": "2026-11-03",
+          "status": "Em Andamento",
           "priority": "Média"
         }
       ]
