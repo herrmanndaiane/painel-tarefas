@@ -606,6 +606,15 @@
           "end": "2026-11-03",
           "status": "Em Andamento",
           "priority": "Média"
+        },
+        {
+          "id": 1793123151295,
+          "title": "Execução de GMUD para remoção ambiente SGI",
+          "owner": "Daiane Herrmann",
+          "start": "2026-11-03",
+          "end": "2026-11-06",
+          "status": "Pendente",
+          "priority": "Média"
         }
       ]
     }
