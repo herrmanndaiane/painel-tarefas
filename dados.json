@@ -588,7 +588,17 @@
       "status": "Pendente",
       "priority": "Média",
       "notes": "",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1793123110588,
+          "title": "Levantamento de servidores virtuais com interface down",
+          "owner": "Gabriel Melo",
+          "start": "2026-10-20",
+          "end": "2026-10-27",
+          "status": "Concluída",
+          "priority": "Média"
+        }
+      ]
     }
   ],
   "domains": [
