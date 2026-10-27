@@ -578,6 +578,17 @@
           "priority": "Média"
         }
       ]
+    },
+    {
+      "id": 1793122908581,
+      "title": "Remoção de servidores com link down",
+      "protocol": "6274132",
+      "owner": "Daiane Herrmann",
+      "deadline": "2026-11-27",
+      "status": "Pendente",
+      "priority": "Média",
+      "notes": "",
+      "subtasks": []
     }
   ],
   "domains": [
