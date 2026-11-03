@@ -1534,6 +1534,13 @@
   ],
   "keepNotes": [
     {
+      "id": 1793712316634,
+      "title": "Migração gerências PVE",
+      "content": "- Vargas fazer o desenho da rede\n- Prancuti vai ver uma rede e VLAN livres (Vargas + Prancuti)",
+      "color": "bg-amber-50 border-amber-200",
+      "date": "03/11/2026 10:25"
+    },
+    {
       "id": 1793037880014,
       "title": "Principais ações",
       "content": "- Remoção de Snaps antigos: 6335674 \n- Remoção de servidores com interface down: 6274132\n-",
