@@ -1537,7 +1537,7 @@
       "id": 1793883286941,
       "title": "Daily infra",
       "content": "- Servidor do Fabio/Blink Dell R550 Pop Santa Maria poderá ser usado no escopo de backup de SP;\n- Servidor do Fabio/Blink 750 vai ser instalado no Cluster BHE do Teleporto;\n- Valderson vai criar um novo PBS com as máquinas Nimble e vai validar a comunicação com a All Rede para configurar o backup para lá;\n- Ramon vai configurar o monitoramento do Veeam",
-      "color": "bg-amber-50 border-amber-200",
+      "color": "bg-indigo-50 border-indigo-200",
       "date": "05/11/2026 09:54"
     },
     {
