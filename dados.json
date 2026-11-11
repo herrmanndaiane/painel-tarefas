@@ -634,7 +634,8 @@
       "name": "gpsnet.com.br",
       "expiration": "2027-07-24",
       "provider": "Registro.br",
-      "notes": ""
+      "notes": "",
+      "cnpj": "74.722.307/0001-32"
     },
     {
       "id": 1787667331507.3157,
@@ -774,28 +775,32 @@
       "name": "clubetvalphaville.com.br",
       "expiration": "2027-09-18",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "65.030.132/0001-01"
     },
     {
       "id": 1787667333385.028,
       "name": "conectividadenocampo.com.br",
       "expiration": "2027-02-19",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667333469.3481,
       "name": "conectividaderural.com.br",
       "expiration": "2027-02-19",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667333551.2852,
       "name": "contacliente.com.br",
       "expiration": "2027-06-22",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "12.974.396/0001-57"
     },
     {
       "id": 1787667335604.5361,
@@ -816,7 +821,8 @@
       "name": "dz7.gru.br",
       "expiration": "2026-12-05",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "08.028.826/0001-70"
     },
     {
       "id": 1787667338303.17,
@@ -830,14 +836,16 @@
       "name": "dz7.tv.br",
       "expiration": "2027-06-03",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667339052.1033,
       "name": "dz7telecom.com.br",
       "expiration": "2026-12-05",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "08.028.826/0001-70"
     },
     {
       "id": 1787667350754.7725,
@@ -851,42 +859,48 @@
       "name": "evo.agr.br",
       "expiration": "2027-12-13",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667351853.9417,
       "name": "evo.net.br",
       "expiration": "2028-02-21",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667351923.7974,
       "name": "evo.radio.br",
       "expiration": "2028-06-22",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667352419.5022,
       "name": "evo.seg.br",
       "expiration": "2028-08-17",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667352853.5588,
       "name": "evo.tv.br",
       "expiration": "2028-02-13",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667353349.7153,
       "name": "evo360.com.br",
       "expiration": "2027-06-14",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667353918.9426,
@@ -914,7 +928,8 @@
       "name": "gauchatecpar.com.br",
       "expiration": "2027-09-12",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "23.979.721/0001-90"
     },
     {
       "id": 1787667356425.5444,
@@ -956,28 +971,32 @@
       "name": "internetalphaville.com.br",
       "expiration": "2027-09-17",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "65.030.132/0001-01"
     },
     {
       "id": 1787667360872.095,
       "name": "internetrapida.net.br",
       "expiration": "2027-12-12",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "05.783.190/0001-84"
     },
     {
       "id": 1787667361442.2002,
       "name": "internex.net.br",
       "expiration": "2027-06-24",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "09.188.449/0001-08"
     },
     {
       "id": 1787667361557.9648,
       "name": "intnet.com.br",
       "expiration": "2027-10-09",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "03.432.059/0001-47"
     },
     {
       "id": 1787667362090.814,
@@ -1012,35 +1031,40 @@
       "name": "netsun.net.br",
       "expiration": "2026-12-05",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "04.962.229/0001-68"
     },
     {
       "id": 1787667397749.1116,
       "name": "netsuntecnologia.com.br",
       "expiration": "2026-10-28",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "04.962.229/0001-68"
     },
     {
       "id": 1787667398179.4849,
       "name": "omegahosting.com.br",
       "expiration": "2027-08-31",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667398723.9468,
       "name": "prepar.net.br",
       "expiration": "2027-01-05",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667399134.9277,
       "name": "primatectelecom.com.br",
       "expiration": "2027-08-21",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "11.554.026/0001-06"
     },
     {
       "id": 1787667400353.6968,
@@ -1054,35 +1078,40 @@
       "name": "remota.com.br",
       "expiration": "2026-12-07",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "03.453.979/0001-41"
     },
     {
       "id": 1787667401756.6985,
       "name": "s-brasiltecpar.com.br",
       "expiration": "2027-05-09",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667401972.2417,
       "name": "safetycable.com.br",
       "expiration": "2027-02-27",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667402548.851,
       "name": "safetycables.com.br",
       "expiration": "2027-02-23",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667403110.7717,
       "name": "sejaamigo.com.br",
       "expiration": "2027-06-26",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667403639.6008,
@@ -1096,7 +1125,8 @@
       "name": "selkointernet.net.br",
       "expiration": "2026-11-10",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "13.052.829/0001-80"
     },
     {
       "id": 1787667404981.625,
@@ -1138,7 +1168,8 @@
       "name": "talentosnatecnologia.com.br",
       "expiration": "2027-02-27",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "35.764.708/0001-01"
     },
     {
       "id": 1787667421776.0823,
@@ -1201,7 +1232,8 @@
       "name": "tvalphaville.com.br",
       "expiration": "2027-06-05",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "65.030.132/0001-01"
     },
     {
       "id": 1787667426374.4973,
@@ -1327,14 +1359,16 @@
       "name": "zecta.net.br",
       "expiration": "2027-04-10",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "09.188.449/0001-08"
     },
     {
       "id": 1787667469875.984,
       "name": "zectatelecom.com.br",
       "expiration": "2027-05-18",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "09.188.449/0001-08"
     },
     {
       "id": 1787667470431.417,
@@ -1494,14 +1528,16 @@
       "expiration": "2027-06-22",
       "provider": "Registro.br",
       "notes": "Importado em lote",
-      "cnpjStatus": "Em andamento"
+      "cnpjStatus": "Em andamento",
+      "cnpj": "05.060.107/0001-49"
     },
     {
       "id": 1787667481897.9292,
       "name": "bewnet.com.br",
       "expiration": "2027-05-09",
       "provider": "Registro.br",
-      "notes": "Importado em lote"
+      "notes": "Importado em lote",
+      "cnpj": "02.012.531/0001-20"
     },
     {
       "id": 1787667482414.9937,
