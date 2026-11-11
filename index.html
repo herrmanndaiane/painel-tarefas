@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão, Domínios, RACI e Notas</title>
+    <title>Painel de Gestão, Domínios, CNPJs, RACI e Notas</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
     
     <script>
         // CONFIGURAÇÕES DO WORKER PROXY
-        const PROXY_URL = 'https://icy-wildflower-ec24.dai-herrmann.workers.dev';
+        const PROXY_URL = '[https://icy-wildflower-ec24.dai-herrmann.workers.dev](https://icy-wildflower-ec24.dai-herrmann.workers.dev)';
         
         let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
         let adminToken = sessionStorage.getItem('admin_token') || '';
@@ -32,6 +32,9 @@
                     if (!window.db.activities) window.db.activities = [];
                     if (!window.db.domains) window.db.domains = [];
                     if (!window.db.keepNotes) window.db.keepNotes = [];
+                    if (!window.db.cnpjEntries || window.db.cnpjEntries.length === 0) {
+                        window.db.cnpjEntries = getDefaultCnpjData();
+                    }
                     if (!window.db.raci) window.db.raci = { roles: ['Redator', 'Designer', 'Programador', 'Coordenador', 'Clientes'], tasks: ['Escrever Roteiro', 'Criar Identidade Visual', 'Fazer o Planejamento', 'Colocar o Blog no Ar'], matrix: {} };
 
                     if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "GitHub Sincronizado";
@@ -48,8 +51,14 @@
         }
 
         function fallbackLocal() {
-            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v9'));
-            window.db = saved || { activities: [], domains: [], keepNotes: [], raci: { roles: [], tasks: [], matrix: {} } };
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v10'));
+            window.db = saved || { 
+                activities: [], 
+                domains: [], 
+                keepNotes: [], 
+                cnpjEntries: getDefaultCnpjData(),
+                raci: { roles: [], tasks: [], matrix: {} } 
+            };
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Modo Off-line / Local";
             window.updateUI();
@@ -63,7 +72,7 @@
                 return;
             }
 
-            localStorage.setItem('my_activities_dashboard_v9', JSON.stringify(window.db));
+            localStorage.setItem('my_activities_dashboard_v10', JSON.stringify(window.db));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando no GitHub...";
@@ -128,13 +137,68 @@
             }
         }
 
+        // DADOS PADRÃO DO SEU CSV REGISTRO.BR
+        function getDefaultCnpjData() {
+            return [
+                { id: 1, titular: "ASAROTUR VIAGENS E TURISMO LTDA", documento: "093.929.149/0001-30", titularDe: "1 domínio", domains: [] },
+                { id: 2, titular: "Associação Italiana de Santa Maria", documento: "090.324.187/0001-71", titularDe: "1 domínio", domains: [] },
+                { id: 3, titular: "B&W Informatica Ltda.", documento: "002.012.531/0001-20", titularDe: "1 domínio - 1 bloco IP", domains: [] },
+                { id: 4, titular: "Bereit Engenharia", documento: "018.940.768/0001-00", titularDe: "1 domínio", domains: [] },
+                { id: 5, titular: "BRASIL SERVICOS DE TELECOMUNICACOES LTDA", documento: "007.756.651/0015-50", titularDe: "163 blocos IP", domains: [] },
+                { id: 6, titular: "CENTRO OESTE TELECOM", documento: "039.832.926/0001-89", titularDe: "2 domínios", domains: [] },
+                { id: 7, titular: "COOPERATIVA AGROPECUARIA DE SAO PEDRO DO SUL LTDA", documento: "097.173.660/0001-06", titularDe: "1 domínio", domains: [] },
+                { id: 8, titular: "cooperativa dos estudantes de Santa Maria Ltd", documento: "089.798.797/0001-28", titularDe: "1 domínio", domains: [] },
+                { id: 9, titular: "COOPERATIVA MISTA DOS FUMICULTORES DO BRASIL LTDA", documento: "007.001.973/0001-94", titularDe: "2 blocos IP", domains: [] },
+                { id: 10, titular: "CREDIBENS IMOVEIS LTDA", documento: "003.665.174/0001-61", titularDe: "1 domínio", domains: [] },
+                { id: 11, titular: "DSL COMERCIO DE COMBUSTIVEIS LTDA", documento: "017.695.813/0001-46", titularDe: "2 domínios - 1 bloco IP", domains: [] },
+                { id: 12, titular: "DZ7 Telecomunicacoes Ltda", documento: "008.028.826/0001-70", titularDe: "2 domínios - 4 blocos IP", domains: [] },
+                { id: 13, titular: "Ensaio Estúdio Fotográfico Ltda", documento: "094.340.908/0001-98", titularDe: "1 domínio", domains: [] },
+                { id: 14, titular: "EVO Networks", documento: "005.783.190/0001-84", titularDe: "20 domínios - 1 bloco IP", domains: [] },
+                { id: 15, titular: "Flybyte Comunicação Multimida Ltda.", documento: "009.519.714/0001-85", titularDe: "2 domínios - 1 bloco IP", domains: [] },
+                { id: 16, titular: "HI TELECOM EIRELI", documento: "019.125.031/0001-05", titularDe: "1 domínio", domains: [] },
+                { id: 17, titular: "IGAPLAN INDUSTRIAL MECANICA LTDA", documento: "092.954.130/0001-81", titularDe: "1 domínio", domains: [] },
+                { id: 18, titular: "Inst Prev dos Serv Tit de Cargo Efet de Carazinho", documento: "010.225.642/0001-42", titularDe: "1 domínio", domains: [] },
+                { id: 19, titular: "INSTITUTO EDUCACIONAL DOM BOSCO", documento: "095.817.037/0001-13", titularDe: "2 domínios", domains: [] },
+                { id: 20, titular: "LM PROPAGANDA LTDA", documento: "092.467.331/0001-54", titularDe: "1 domínio", domains: [] },
+                { id: 21, titular: "Murilo Gomes Comércio e Serviços de Informática Lt", documento: "013.305.721/0001-51", titularDe: "1 bloco IP", domains: [] },
+                { id: 22, titular: "Netmogi Internet Provider LTDA - ME", documento: "004.962.229/0001-68", titularDe: "4 domínios - 88 blocos IP", domains: [] },
+                { id: 23, titular: "Omega Tecnologia LTDA", documento: "005.559.192/0001-94", titularDe: "1 bloco IP", domains: [] },
+                { id: 24, titular: "OnNet Telecomunicacoes LTDA", documento: "003.127.257/0001-05", titularDe: "2 domínios", domains: [] },
+                { id: 25, titular: "Poliagro Comercio e Representacoes Ltda.", documento: "093.797.868/0001-45", titularDe: "1 domínio", domains: [] },
+                { id: 26, titular: "Pollo Distribuidora de Peças Automotivas Ltda.", documento: "093.880.722/0001-69", titularDe: "1 domínio", domains: [] },
+                { id: 27, titular: "Premier Ortodontia e Estética Bucal Ltda", documento: "008.274.088/0001-41", titularDe: "1 domínio", domains: [] },
+                { id: 28, titular: "PRIMETEL TELECOM LTDA", documento: "011.554.026/0001-06", titularDe: "1 domínio", domains: [] },
+                { id: 29, titular: "PROVEDOR REDESUL LTDA", documento: "005.060.107/0001-49", titularDe: "11 domínios", domains: [] },
+                { id: 30, titular: "REDE TJNET", documento: "012.157.261/0001-07", titularDe: "1 domínio", domains: [] },
+                { id: 31, titular: "Regime Próprio de Previdência do Município de Agud", documento: "010.764.461/0001-94", titularDe: "1 domínio", domains: [] },
+                { id: 32, titular: "S. D. PROVEDOR E INFORMATICA LTDA ME", documento: "097.527.395/0001-17", titularDe: "1 bloco IP", domains: [] },
+                { id: 33, titular: "SELKO INTERNET PROVEDOR E SERVICOS DE TECNOLOGIA", documento: "013.052.829/0001-80", titularDe: "2 domínios", domains: [] },
+                { id: 34, titular: "Silveira Martins Câmara Municipal de Vereadores", documento: "092.457.308/0001-89", titularDe: "1 bloco IP", domains: [] },
+                { id: 35, titular: "T-LESTE TELECOMUNICACOES LESTE DE SAO PAULO LTDA", documento: "005.352.366/0001-43", titularDe: "2 domínios - 3 blocos IP", domains: [] },
+                { id: 36, titular: "TECKLINK TELECOM EIRELI", documento: "040.711.119/0001-97", titularDe: "-", domains: [] },
+                { id: 37, titular: "Titania Telecom", documento: "009.093.813/0001-48", titularDe: "2 domínios", domains: [] },
+                { id: 38, titular: "Titania Telecom", documento: "005.396.044/0001-04", titularDe: "1 bloco IP", domains: [] },
+                { id: 39, titular: "TV Alphaville Sistema de TV por Assinatura LTDA", documento: "065.030.132/0001-01", titularDe: "3 domínios - 2 blocos IP", domains: [] },
+                { id: 40, titular: "TW TELECOM JACIARA EIRELI", documento: "012.220.742/0001-01", titularDe: "1 domínio", domains: [] },
+                { id: 41, titular: "Uillian Bedinoto", documento: "024.304.370-82", titularDe: "-", domains: [] },
+                { id: 42, titular: "UsaFibra Nettfacil Tecnologia e Servicos Ltda", documento: "020.052.994/0001-05", titularDe: "6 blocos IP", domains: [] },
+                { id: 43, titular: "Vanipar Comércio de Parafusos e Ferramentas Ltda", documento: "093.050.698/0001-30", titularDe: "1 domínio", domains: [] },
+                { id: 44, titular: "VELOX TELECOM", documento: "027.211.095/0001-49", titularDe: "1 domínio", domains: [] },
+                { id: 45, titular: "VIA Telecomunicações Ltda.", documento: "003.453.979/0001-41", titularDe: "1 domínio - 13 blocos IP", domains: [] },
+                { id: 46, titular: "VIABRAZIL TELECOMUNICAÇÕES LTDA", documento: "002.375.258/0001-06", titularDe: "1 domínio", domains: [] },
+                { id: 47, titular: "VOINER CORSINI MARTINS", documento: "015.229.611/0001-83", titularDe: "1 bloco IP", domains: [] },
+                { id: 48, titular: "W3 MEGA", documento: "005.230.079/0001-60", titularDe: "7 domínios", domains: [] },
+                { id: 49, titular: "ZECTA TELECOMUNICACOES LTDA", documento: "009.188.449/0001-08", titularDe: "7 domínios", domains: [] }
+            ];
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             loadDataFromCloud();
         });
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap)');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
@@ -149,6 +213,9 @@
                 </button>
                 <button onclick="switchTab('domains')" id="tab-btn-domains" class="flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-solid fa-globe"></i> Domínios
+                </button>
+                <button onclick="switchTab('cnpjs')" id="tab-btn-cnpjs" class="flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-building"></i> CNPJ Domínios
                 </button>
                 <button onclick="switchTab('raci')" id="tab-btn-raci" class="flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all">
                     <i class="fa-solid fa-table-cells"></i> Matriz RACI
@@ -603,6 +670,114 @@
             </div>
         </section>
 
+        <!-- TELA NOVA: CNPJ DOMÍNIOS (IMPORTAÇÃO DO CSV REGISTRO.BR) -->
+        <section id="view-cnpjs" class="space-y-6 hidden">
+            <!-- KPIs DE CNPJ -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL DE ENTIDADES (CNPJ/CPF)</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="cnpj-kpi-total" class="text-3xl font-extrabold text-slate-800">0</span>
+                        <i class="fa-solid fa-building text-slate-400"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-indigo-200 bg-indigo-50/20 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">DOMÍNIOS VINCULADOS</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="cnpj-kpi-attached" class="text-3xl font-extrabold text-indigo-600">0</span>
+                        <i class="fa-solid fa-link text-indigo-400"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 bg-emerald-50/20 flex flex-col justify-between">
+                    <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">ENTIDADES COM DOMÍNIOS</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span id="cnpj-kpi-with-domains" class="text-3xl font-extrabold text-emerald-600">0</span>
+                        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD DE IMPORTAÇÃO CSV / ADIÇÃO MANUAL -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                    <div>
+                        <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-file-csv text-indigo-600"></i> Importar CSV de Titularidade (Registro.br)
+                        </h2>
+                        <p class="text-xs text-slate-400">Faça o upload do seu arquivo exportado do Registro.br ou cole o conteúdo do CSV.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <label class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                            <i class="fa-solid fa-upload"></i> Selecionar Arquivo CSV
+                            <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCsvFileUpload(event)">
+                        </label>
+                        <button onclick="toggleManualCnpjForm()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-all shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Novo CNPJ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulário Manual Escondido -->
+                <div id="manual-cnpj-container" class="hidden border-t border-slate-100 pt-4 mt-3">
+                    <form id="form-single-cnpj" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Titular / Razão Social</label>
+                            <input type="text" id="manual-cnpj-titular" required placeholder="Ex: ASAROTUR VIAGENS..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Documento (CNPJ ou CPF)</label>
+                            <input type="text" id="manual-cnpj-doc" required placeholder="Ex: 093.929.149/0001-30" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-mono outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Titular de (Registro.br)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="manual-cnpj-titularde" placeholder="Ex: 1 domínio" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-sm whitespace-nowrap">Cadastrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- LISTA DE CNPJs COM EXPANSÃO PARA DOMÍNIOS -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                    <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-indigo-600"></i> Entidades e Domínios Atrelados
+                    </h2>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                            <input type="text" id="filter-cnpj-search" oninput="renderCnpjTable()" placeholder="Buscar CNPJ ou Titular..." class="pl-8 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-indigo-500 w-56">
+                        </div>
+                        <select id="filter-cnpj-has-domains" onchange="renderCnpjTable()" class="px-2.5 py-1.5 border border-slate-200 rounded-lg text-xs outline-none bg-slate-50">
+                            <option value="todos">Todos os Titulares</option>
+                            <option value="with_domains">Com Domínios Atrelados</option>
+                            <option value="without_domains">Sem Domínios Atrelados</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
+                                <th class="p-3 w-10"></th>
+                                <th class="p-3">Titular / Razão Social</th>
+                                <th class="p-3">CNPJ / Documento</th>
+                                <th class="p-3">Registro.br</th>
+                                <th class="p-3">Domínios Atrelados</th>
+                                <th class="p-3 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cnpj-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <!-- TELA 3: MATRIZ RACI -->
         <section id="view-raci" class="space-y-6 hidden">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 relative">
@@ -678,44 +853,55 @@
     </main>
 
     <script>
-        window.db = { activities: [], domains: [], keepNotes: [], raci: { roles: [], tasks: [], matrix: {} } };
+        window.db = { activities: [], domains: [], keepNotes: [], cnpjEntries: [], raci: { roles: [], tasks: [], matrix: {} } };
         let activeActivityId = null;
         let activeTab = 'activities';
         let chartInstance = null;
+        let expandedCnpjIds = new Set(); // Armazena linhas expandidas
 
         function switchTab(tab) {
             activeTab = tab;
             const btnAct = document.getElementById('tab-btn-activities');
             const btnDom = document.getElementById('tab-btn-domains');
+            const btnCnpj = document.getElementById('tab-btn-cnpjs');
             const btnRaci = document.getElementById('tab-btn-raci');
             const btnKeep = document.getElementById('tab-btn-keep');
             
             const viewAct = document.getElementById('view-activities');
             const viewDom = document.getElementById('view-domains');
+            const viewCnpj = document.getElementById('view-cnpjs');
             const viewRaci = document.getElementById('view-raci');
             const viewKeep = document.getElementById('view-keep');
 
-            btnAct.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
-            btnDom.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
-            btnRaci.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
-            btnKeep.className = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            const inactiveClass = "flex items-center gap-1.5 hover:bg-indigo-500/50 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg transition-all";
+            const activeClass = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+
+            btnAct.className = inactiveClass;
+            btnDom.className = inactiveClass;
+            btnCnpj.className = inactiveClass;
+            btnRaci.className = inactiveClass;
+            btnKeep.className = inactiveClass;
 
             viewAct.classList.add('hidden');
             viewDom.classList.add('hidden');
+            viewCnpj.classList.add('hidden');
             viewRaci.classList.add('hidden');
             viewKeep.classList.add('hidden');
 
             if (tab === 'activities') {
-                btnAct.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnAct.className = activeClass;
                 viewAct.classList.remove('hidden');
             } else if (tab === 'domains') {
-                btnDom.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnDom.className = activeClass;
                 viewDom.classList.remove('hidden');
+            } else if (tab === 'cnpjs') {
+                btnCnpj.className = activeClass;
+                viewCnpj.classList.remove('hidden');
             } else if (tab === 'raci') {
-                btnRaci.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnRaci.className = activeClass;
                 viewRaci.classList.remove('hidden');
             } else {
-                btnKeep.className = "flex items-center gap-1.5 bg-indigo-700 text-amber-300 px-3 py-1.5 rounded-lg transition-all";
+                btnKeep.className = activeClass;
                 viewKeep.classList.remove('hidden');
             }
             window.updateUI();
@@ -758,6 +944,8 @@
             updateDashboardKPIs();
             renderDomainTable();
             updateDomainKPIs();
+            renderCnpjTable();
+            updateCnpjKPIs();
             renderKeepNotes();
             renderRaciMatrix();
 
@@ -765,6 +953,306 @@
                 renderSubtaskTable();
             }
         };
+
+        // --- ABA CNPJ DOMÍNIOS ---
+        function toggleManualCnpjForm() {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const container = document.getElementById('manual-cnpj-container');
+            container.classList.toggle('hidden');
+        }
+
+        document.getElementById('form-single-cnpj').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+
+            const titular = document.getElementById('manual-cnpj-titular').value.trim();
+            const doc = document.getElementById('manual-cnpj-doc').value.trim();
+            const titularDe = document.getElementById('manual-cnpj-titularde').value.trim() || '-';
+
+            if (!titular || !doc) return;
+
+            window.db.cnpjEntries.unshift({
+                id: Date.now(),
+                titular: titular,
+                documento: doc,
+                titularDe: titularDe,
+                domains: []
+            });
+
+            saveDataToCloud();
+            this.reset();
+            document.getElementById('manual-cnpj-container').classList.add('hidden');
+        });
+
+        // PARSER DO CSV REGISTRO.BR
+        function handleCsvFileUpload(event) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                processCsvData(text);
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function processCsvData(csvText) {
+            const lines = csvText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length < 2) {
+                alert('Arquivo CSV vazio ou sem linhas suficientes.');
+                return;
+            }
+
+            // Identifica delimitador (vírgula ou ponto e vírgula)
+            const firstLine = lines[0];
+            const delimiter = firstLine.includes(';') ? ';' : ',';
+
+            let addedCount = 0;
+            // Pula o cabeçalho (i = 1)
+            for (let i = 1; i < lines.length; i++) {
+                const cols = lines[i].split(delimiter).map(c => c.replace(/^["']|["']$/g, '').trim());
+                if (cols.length >= 2) {
+                    const titular = cols[0];
+                    const doc = cols[1];
+                    const titularDe = cols[2] || '-';
+
+                    if (!titular || !doc) continue;
+
+                    // Evita duplicidade por documento
+                    const exists = window.db.cnpjEntries.some(item => item.documento === doc);
+                    if (!exists) {
+                        window.db.cnpjEntries.push({
+                            id: Date.now() + Math.random(),
+                            titular: titular,
+                            documento: doc,
+                            titularDe: titularDe,
+                            domains: []
+                        });
+                        addedCount++;
+                    }
+                }
+            }
+
+            alert(`${addedCount} entidades importadas do CSV com sucesso!`);
+            saveDataToCloud();
+        }
+
+        function toggleExpandCnpj(id) {
+            if (expandedCnpjIds.has(id)) {
+                expandedCnpjIds.delete(id);
+            } else {
+                expandedCnpjIds.add(id);
+            }
+            renderCnpjTable();
+        }
+
+        function addDomainToCnpj(cnpjId) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const entry = window.db.cnpjEntries.find(c => c.id === cnpjId);
+            if (!entry) return;
+
+            const domainName = prompt(`Digite o domínio a ser atrelado ao CNPJ ${entry.documento}: (Ex: portal.com.br)`);
+            if (!domainName || !domainName.trim()) return;
+
+            const cleanDomain = domainName.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+            if (!cleanDomain.includes('.')) return alert('Domínio inválido!');
+
+            if (!entry.domains) entry.domains = [];
+            
+            // Verifica se o domínio já foi atrelado
+            if (entry.domains.some(d => d.name === cleanDomain)) {
+                return alert('Este domínio já está atrelado a este CNPJ!');
+            }
+
+            entry.domains.push({
+                id: Date.now(),
+                name: cleanDomain,
+                status: 'Ativo',
+                notes: 'Atrelado via painel'
+            });
+
+            // Se o domínio ainda não existe na aba principal "Domínios", adiciona lá também
+            const existsInMain = window.db.domains.some(d => d.name === cleanDomain);
+            if (!existsInMain) {
+                window.db.domains.push({
+                    id: Date.now() + 1,
+                    name: cleanDomain,
+                    expiration: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
+                    cnpj: entry.documento,
+                    cnpjStatus: 'Em andamento',
+                    maDocs: 'Pendente',
+                    provider: 'Registro.br',
+                    notes: `Vinculado a ${entry.titular}`
+                });
+            }
+
+            saveDataToCloud();
+        }
+
+        function removeDomainFromCnpj(cnpjId, domainId) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            const entry = window.db.cnpjEntries.find(c => c.id === cnpjId);
+            if (!entry) return;
+
+            if (confirm('Deseja desvincular este domínio deste CNPJ?')) {
+                entry.domains = entry.domains.filter(d => d.id !== domainId);
+                saveDataToCloud();
+            }
+        }
+
+        function deleteCnpjEntry(id) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+            if (confirm('Deseja excluir esta entidade da lista de CNPJs?')) {
+                window.db.cnpjEntries = window.db.cnpjEntries.filter(c => c.id !== id);
+                saveDataToCloud();
+            }
+        }
+
+        function renderCnpjTable() {
+            const tbody = document.getElementById('cnpj-table-body');
+            const search = (document.getElementById('filter-cnpj-search')?.value || '').toLowerCase().trim();
+            const filterDomains = document.getElementById('filter-cnpj-has-domains')?.value || 'todos';
+            
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const entries = window.db.cnpjEntries || [];
+
+            if (entries.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-xs">Nenhum CNPJ cadastrado. Clique em "Selecionar Arquivo CSV" para carregar a lista do Registro.br.</td></tr>`;
+                return;
+            }
+
+            const filtered = entries.filter(item => {
+                const matchSearch = item.titular.toLowerCase().includes(search) || item.documento.toLowerCase().includes(search);
+                const hasDomains = item.domains && item.domains.length > 0;
+                
+                let matchDomains = true;
+                if (filterDomains === 'with_domains') matchDomains = hasDomains;
+                if (filterDomains === 'without_domains') matchDomains = !hasDomains;
+
+                return matchSearch && matchDomains;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-xs">Nenhum resultado encontrado para a busca.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const isExpanded = expandedCnpjIds.has(item.id);
+                const domainsCount = item.domains ? item.domains.length : 0;
+                const hiddenClass = isEditMode ? '' : 'hidden';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-all border-b border-slate-100";
+
+                tr.innerHTML = `
+                    <td class="p-3 text-center">
+                        <button onclick="toggleExpandCnpj(${item.id})" class="text-indigo-600 hover:text-indigo-800 p-1">
+                            <i class="fa-solid ${isExpanded ? 'fa-chevron-down' : 'fa-chevron-right'} text-xs"></i>
+                        </button>
+                    </td>
+                    <td class="p-3 font-semibold text-slate-800">
+                        ${item.titular}
+                    </td>
+                    <td class="p-3 font-mono text-xs font-bold text-slate-600">
+                        ${item.documento}
+                    </td>
+                    <td class="p-3 text-xs text-slate-500">
+                        <span class="bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded-full border border-slate-200">
+                            ${item.titularDe || '-'}
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full ${domainsCount > 0 ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-500'}">
+                            ${domainsCount} ${domainsCount === 1 ? 'domínio atrelado' : 'domínios atrelados'}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="addDomainToCnpj(${item.id})" title="Atrelar Novo Domínio" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-2.5 py-1 rounded-md border border-indigo-200 transition-all ${hiddenClass}">
+                            <i class="fa-solid fa-plus text-[10px]"></i> Domínio
+                        </button>
+                        <button onclick="deleteCnpjEntry(${item.id})" title="Excluir Entidade" class="text-slate-300 hover:text-rose-600 p-1 ml-1 ${hiddenClass}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // LINHA EXPANDIDA (DOMÍNIOS ATRELADOS)
+                if (isExpanded) {
+                    const subTr = document.createElement('tr');
+                    subTr.className = "bg-indigo-50/30 border-b border-indigo-100";
+
+                    let domainsHtml = '';
+                    if (!item.domains || item.domains.length === 0) {
+                        domainsHtml = `
+                            <div class="text-xs text-slate-400 py-3 flex items-center justify-between">
+                                <span>Nenhum domínio cadastrado para este CNPJ ainda.</span>
+                                <button onclick="addDomainToCnpj(${item.id})" class="text-xs text-indigo-600 hover:underline font-bold ${hiddenClass}">+ Adicionar o primeiro domínio</button>
+                            </div>
+                        `;
+                    } else {
+                        domainsHtml = `
+                            <div class="space-y-2 py-2">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Lista de Domínios Atrelados (${item.domains.length})</span>
+                                    <button onclick="addDomainToCnpj(${item.id})" class="text-xs text-indigo-600 hover:underline font-bold flex items-center gap-1 ${hiddenClass}">
+                                        <i class="fa-solid fa-plus text-[10px]"></i> Adicionar Outro Domínio
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                        `;
+
+                        item.domains.forEach(d => {
+                            domainsHtml += `
+                                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-globe text-indigo-500 text-xs"></i>
+                                        <span class="font-mono text-xs font-bold text-slate-800">${d.name}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <a href="https://${d.name}" target="_blank" title="Abrir site" class="text-slate-400 hover:text-indigo-600 text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                        <button onclick="removeDomainFromCnpj(${item.id}, ${d.id})" title="Desvincular domínio" class="text-slate-300 hover:text-rose-600 text-xs ${hiddenClass}"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        domainsHtml += `</div></div>`;
+                    }
+
+                    subTr.innerHTML = `
+                        <td colspan="6" class="p-4 pl-12">
+                            ${domainsHtml}
+                        </td>
+                    `;
+                    tbody.appendChild(subTr);
+                }
+            });
+        }
+
+        function updateCnpjKPIs() {
+            const entries = window.db.cnpjEntries || [];
+            const total = entries.length;
+            
+            let totalAttached = 0;
+            let withDomains = 0;
+
+            entries.forEach(e => {
+                if (e.domains && e.domains.length > 0) {
+                    totalAttached += e.domains.length;
+                    withDomains++;
+                }
+            });
+
+            document.getElementById('cnpj-kpi-total').textContent = total;
+            document.getElementById('cnpj-kpi-attached').textContent = totalAttached;
+            document.getElementById('cnpj-kpi-with-domains').textContent = withDomains;
+        }
 
         // --- ATIVIDADES ---
         function calculateProgress(activity) {
@@ -1134,7 +1622,6 @@
             });
         }
 
-
         // --- DOMÍNIOS (CONSULTA VIA PROXY COM EXTRAÇÃO DE CNPJ) ---
         function getDomainExpirationInfo(expDateStr) {
             if (!expDateStr) return { level: 'warning', days: 0, badgeClass: 'bg-slate-100 text-slate-700 border-slate-200', text: 'Sem data' };
@@ -1173,29 +1660,26 @@
                 let providerName = null;
                 let foundCnpj = null;
 
-                const proxyUrl = `https://api.allorigins.win/raw?url=`;
+                const proxyUrl = `[https://api.allorigins.win/raw?url=](https://api.allorigins.win/raw?url=)`;
 
                 if (clean.endsWith('.br')) {
-                    const targetUrl = encodeURIComponent(`https://rdap.registro.br/domain/${clean}`);
+                    const targetUrl = encodeURIComponent(`[https://rdap.registro.br/domain/$](https://rdap.registro.br/domain/$){clean}`);
                     const rdapRes = await fetch(`${proxyUrl}${targetUrl}`);
                     if (rdapRes.ok) {
                         const rdapData = await rdapRes.json();
                         providerName = "Registro.br";
                         
-                        // Extrai data de expiração
                         if (rdapData.events) {
                             const expEvent = rdapData.events.find(e => e.eventAction === 'expiration');
                             if (expEvent && expEvent.eventDate) expDateStr = expEvent.eventDate.split('T')[0];
                         }
 
-                        // Extrai CNPJ/Documento das entidades
                         if (rdapData.entities && Array.isArray(rdapData.entities)) {
                             for (let ent of rdapData.entities) {
                                 if (ent.roles && (ent.roles.includes('registrant') || ent.roles.includes('administrative') || ent.roles.includes('technical'))) {
                                     if (ent.vcardArray && ent.vcardArray[1]) {
                                         for (let item of ent.vcardArray[1]) {
                                             if (item[0] === 'org' || item[0] === 'fn') {
-                                                // Verifica se o texto possui padrão de CNPJ/CPF
                                                 const match = String(item[3]).match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14}/);
                                                 if (match) foundCnpj = match[0];
                                             }
@@ -1211,7 +1695,7 @@
                 }
 
                 if (!expDateStr) {
-                    const targetUrl = encodeURIComponent(`https://rdap.org/domain/${clean}`);
+                    const targetUrl = encodeURIComponent(`[https://rdap.org/domain/$](https://rdap.org/domain/$){clean}`);
                     const fallbackRes = await fetch(`${proxyUrl}${targetUrl}`);
                     if (fallbackRes.ok) {
                         const fbData = await fallbackRes.json();
@@ -1552,7 +2036,6 @@
             document.getElementById('domain-kpi-ok').textContent = ok;
         }
 
-
         // --- MATRIZ RACI ---
         function addRaciRole() {
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
@@ -1689,7 +2172,6 @@
                 tbody.appendChild(tr);
             });
         }
-
 
         // --- NOTAS (GOOGLE KEEP STYLE) ---
         document.getElementById('form-keep').addEventListener('submit', function(e) {
