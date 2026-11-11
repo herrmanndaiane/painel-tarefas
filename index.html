@@ -5,200 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Gestão, Domínios, CNPJs, RACI e Notas</title>
     <!-- Tailwind CSS -->
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
-    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>
-        // CONFIGURAÇÕES DO WORKER PROXY
-        const PROXY_URL = '[https://icy-wildflower-ec24.dai-herrmann.workers.dev](https://icy-wildflower-ec24.dai-herrmann.workers.dev)';
-        
-        let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
-        let adminToken = sessionStorage.getItem('admin_token') || '';
-
-        // CARREGAR DADOS DO WORKER
-        async function loadDataFromCloud() {
-            const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Sincronizando...";
-
-            try {
-                const response = await fetch(`${PROXY_URL}/get-data?t=${Date.now()}`);
-                
-                if (response.ok) {
-                    window.db = await response.json();
-                    
-                    if (!window.db.activities) window.db.activities = [];
-                    if (!window.db.domains) window.db.domains = [];
-                    if (!window.db.keepNotes) window.db.keepNotes = [];
-                    if (!window.db.cnpjEntries || window.db.cnpjEntries.length === 0) {
-                        window.db.cnpjEntries = getDefaultCnpjData();
-                    }
-                    if (!window.db.raci) window.db.raci = { roles: ['Redator', 'Designer', 'Programador', 'Coordenador', 'Clientes'], tasks: ['Escrever Roteiro', 'Criar Identidade Visual', 'Fazer o Planejamento', 'Colocar o Blog no Ar'], matrix: {} };
-
-                    if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "GitHub Sincronizado";
-                    window.updateUI();
-
-                    refreshAllDomainExpirations();
-                } else {
-                    fallbackLocal();
-                }
-            } catch (err) {
-                console.warn('Erro ao carregar dados:', err);
-                fallbackLocal();
-            }
-        }
-
-        function fallbackLocal() {
-            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v10'));
-            window.db = saved || { 
-                activities: [], 
-                domains: [], 
-                keepNotes: [], 
-                cnpjEntries: getDefaultCnpjData(),
-                raci: { roles: [], tasks: [], matrix: {} } 
-            };
-            const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Modo Off-line / Local";
-            window.updateUI();
-        }
-
-        // SALVAR DADOS NO WORKER
-        async function saveDataToCloud() {
-            if (!isEditMode) {
-                alert('Apenas visualização permitida. Faça login para editar.');
-                loadDataFromCloud();
-                return;
-            }
-
-            localStorage.setItem('my_activities_dashboard_v10', JSON.stringify(window.db));
-
-            const badge = document.getElementById('save-status');
-            if (badge) badge.textContent = "Salvando no GitHub...";
-
-            try {
-                const response = await fetch(`${PROXY_URL}/save-data`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Admin-Password': adminToken
-                    },
-                    body: JSON.stringify(window.db)
-                });
-
-                if (response.ok) {
-                    if (badge) badge.textContent = "Salvo no GitHub!";
-                    setTimeout(() => { if (badge) badge.textContent = "Modo Edição (Autenticado)"; }, 2000);
-                    window.updateUI();
-                } else {
-                    alert('Erro ao salvar dados. Verifique a senha configurada.');
-                    if (badge) badge.textContent = "Erro de Autenticação";
-                }
-            } catch (err) {
-                console.error('Erro de rede:', err);
-                if (badge) badge.textContent = "Erro de Conexão";
-            }
-        }
-
-        // AUTENTICAÇÃO
-        async function toggleAdminAuth() {
-            if (isEditMode) {
-                if (confirm('Deseja sair do Modo de Edição?')) {
-                    sessionStorage.removeItem('admin_authenticated');
-                    sessionStorage.removeItem('admin_token');
-                    isEditMode = false;
-                    adminToken = '';
-                    location.reload();
-                }
-            } else {
-                const pass = prompt('Digite a Senha de Administrador:');
-                if (!pass) return;
-
-                try {
-                    const res = await fetch(`${PROXY_URL}/verify-auth`, {
-                        method: 'POST',
-                        headers: { 'X-Admin-Password': pass }
-                    });
-
-                    if (res.ok) {
-                        sessionStorage.setItem('admin_authenticated', 'true');
-                        sessionStorage.setItem('admin_token', pass);
-                        isEditMode = true;
-                        adminToken = pass;
-                        alert('Autenticado com sucesso!');
-                        location.reload();
-                    } else {
-                        alert('Senha incorreta!');
-                    }
-                } catch (e) {
-                    alert('Erro ao conectar ao servidor de autenticação.');
-                }
-            }
-        }
-
-        // DADOS PADRÃO DO SEU CSV REGISTRO.BR
-        function getDefaultCnpjData() {
-            return [
-                { id: 1, titular: "ASAROTUR VIAGENS E TURISMO LTDA", documento: "093.929.149/0001-30", titularDe: "1 domínio", domains: [] },
-                { id: 2, titular: "Associação Italiana de Santa Maria", documento: "090.324.187/0001-71", titularDe: "1 domínio", domains: [] },
-                { id: 3, titular: "B&W Informatica Ltda.", documento: "002.012.531/0001-20", titularDe: "1 domínio - 1 bloco IP", domains: [] },
-                { id: 4, titular: "Bereit Engenharia", documento: "018.940.768/0001-00", titularDe: "1 domínio", domains: [] },
-                { id: 5, titular: "BRASIL SERVICOS DE TELECOMUNICACOES LTDA", documento: "007.756.651/0015-50", titularDe: "163 blocos IP", domains: [] },
-                { id: 6, titular: "CENTRO OESTE TELECOM", documento: "039.832.926/0001-89", titularDe: "2 domínios", domains: [] },
-                { id: 7, titular: "COOPERATIVA AGROPECUARIA DE SAO PEDRO DO SUL LTDA", documento: "097.173.660/0001-06", titularDe: "1 domínio", domains: [] },
-                { id: 8, titular: "cooperativa dos estudantes de Santa Maria Ltd", documento: "089.798.797/0001-28", titularDe: "1 domínio", domains: [] },
-                { id: 9, titular: "COOPERATIVA MISTA DOS FUMICULTORES DO BRASIL LTDA", documento: "007.001.973/0001-94", titularDe: "2 blocos IP", domains: [] },
-                { id: 10, titular: "CREDIBENS IMOVEIS LTDA", documento: "003.665.174/0001-61", titularDe: "1 domínio", domains: [] },
-                { id: 11, titular: "DSL COMERCIO DE COMBUSTIVEIS LTDA", documento: "017.695.813/0001-46", titularDe: "2 domínios - 1 bloco IP", domains: [] },
-                { id: 12, titular: "DZ7 Telecomunicacoes Ltda", documento: "008.028.826/0001-70", titularDe: "2 domínios - 4 blocos IP", domains: [] },
-                { id: 13, titular: "Ensaio Estúdio Fotográfico Ltda", documento: "094.340.908/0001-98", titularDe: "1 domínio", domains: [] },
-                { id: 14, titular: "EVO Networks", documento: "005.783.190/0001-84", titularDe: "20 domínios - 1 bloco IP", domains: [] },
-                { id: 15, titular: "Flybyte Comunicação Multimida Ltda.", documento: "009.519.714/0001-85", titularDe: "2 domínios - 1 bloco IP", domains: [] },
-                { id: 16, titular: "HI TELECOM EIRELI", documento: "019.125.031/0001-05", titularDe: "1 domínio", domains: [] },
-                { id: 17, titular: "IGAPLAN INDUSTRIAL MECANICA LTDA", documento: "092.954.130/0001-81", titularDe: "1 domínio", domains: [] },
-                { id: 18, titular: "Inst Prev dos Serv Tit de Cargo Efet de Carazinho", documento: "010.225.642/0001-42", titularDe: "1 domínio", domains: [] },
-                { id: 19, titular: "INSTITUTO EDUCACIONAL DOM BOSCO", documento: "095.817.037/0001-13", titularDe: "2 domínios", domains: [] },
-                { id: 20, titular: "LM PROPAGANDA LTDA", documento: "092.467.331/0001-54", titularDe: "1 domínio", domains: [] },
-                { id: 21, titular: "Murilo Gomes Comércio e Serviços de Informática Lt", documento: "013.305.721/0001-51", titularDe: "1 bloco IP", domains: [] },
-                { id: 22, titular: "Netmogi Internet Provider LTDA - ME", documento: "004.962.229/0001-68", titularDe: "4 domínios - 88 blocos IP", domains: [] },
-                { id: 23, titular: "Omega Tecnologia LTDA", documento: "005.559.192/0001-94", titularDe: "1 bloco IP", domains: [] },
-                { id: 24, titular: "OnNet Telecomunicacoes LTDA", documento: "003.127.257/0001-05", titularDe: "2 domínios", domains: [] },
-                { id: 25, titular: "Poliagro Comercio e Representacoes Ltda.", documento: "093.797.868/0001-45", titularDe: "1 domínio", domains: [] },
-                { id: 26, titular: "Pollo Distribuidora de Peças Automotivas Ltda.", documento: "093.880.722/0001-69", titularDe: "1 domínio", domains: [] },
-                { id: 27, titular: "Premier Ortodontia e Estética Bucal Ltda", documento: "008.274.088/0001-41", titularDe: "1 domínio", domains: [] },
-                { id: 28, titular: "PRIMETEL TELECOM LTDA", documento: "011.554.026/0001-06", titularDe: "1 domínio", domains: [] },
-                { id: 29, titular: "PROVEDOR REDESUL LTDA", documento: "005.060.107/0001-49", titularDe: "11 domínios", domains: [] },
-                { id: 30, titular: "REDE TJNET", documento: "012.157.261/0001-07", titularDe: "1 domínio", domains: [] },
-                { id: 31, titular: "Regime Próprio de Previdência do Município de Agud", documento: "010.764.461/0001-94", titularDe: "1 domínio", domains: [] },
-                { id: 32, titular: "S. D. PROVEDOR E INFORMATICA LTDA ME", documento: "097.527.395/0001-17", titularDe: "1 bloco IP", domains: [] },
-                { id: 33, titular: "SELKO INTERNET PROVEDOR E SERVICOS DE TECNOLOGIA", documento: "013.052.829/0001-80", titularDe: "2 domínios", domains: [] },
-                { id: 34, titular: "Silveira Martins Câmara Municipal de Vereadores", documento: "092.457.308/0001-89", titularDe: "1 bloco IP", domains: [] },
-                { id: 35, titular: "T-LESTE TELECOMUNICACOES LESTE DE SAO PAULO LTDA", documento: "005.352.366/0001-43", titularDe: "2 domínios - 3 blocos IP", domains: [] },
-                { id: 36, titular: "TECKLINK TELECOM EIRELI", documento: "040.711.119/0001-97", titularDe: "-", domains: [] },
-                { id: 37, titular: "Titania Telecom", documento: "009.093.813/0001-48", titularDe: "2 domínios", domains: [] },
-                { id: 38, titular: "Titania Telecom", documento: "005.396.044/0001-04", titularDe: "1 bloco IP", domains: [] },
-                { id: 39, titular: "TV Alphaville Sistema de TV por Assinatura LTDA", documento: "065.030.132/0001-01", titularDe: "3 domínios - 2 blocos IP", domains: [] },
-                { id: 40, titular: "TW TELECOM JACIARA EIRELI", documento: "012.220.742/0001-01", titularDe: "1 domínio", domains: [] },
-                { id: 41, titular: "Uillian Bedinoto", documento: "024.304.370-82", titularDe: "-", domains: [] },
-                { id: 42, titular: "UsaFibra Nettfacil Tecnologia e Servicos Ltda", documento: "020.052.994/0001-05", titularDe: "6 blocos IP", domains: [] },
-                { id: 43, titular: "Vanipar Comércio de Parafusos e Ferramentas Ltda", documento: "093.050.698/0001-30", titularDe: "1 domínio", domains: [] },
-                { id: 44, titular: "VELOX TELECOM", documento: "027.211.095/0001-49", titularDe: "1 domínio", domains: [] },
-                { id: 45, titular: "VIA Telecomunicações Ltda.", documento: "003.453.979/0001-41", titularDe: "1 domínio - 13 blocos IP", domains: [] },
-                { id: 46, titular: "VIABRAZIL TELECOMUNICAÇÕES LTDA", documento: "002.375.258/0001-06", titularDe: "1 domínio", domains: [] },
-                { id: 47, titular: "VOINER CORSINI MARTINS", documento: "015.229.611/0001-83", titularDe: "1 bloco IP", domains: [] },
-                { id: 48, titular: "W3 MEGA", documento: "005.230.079/0001-60", titularDe: "7 domínios", domains: [] },
-                { id: 49, titular: "ZECTA TELECOMUNICACOES LTDA", documento: "009.188.449/0001-08", titularDe: "7 domínios", domains: [] }
-            ];
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDataFromCloud();
-        });
-    </script>
-
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap)');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
@@ -670,9 +484,8 @@
             </div>
         </section>
 
-        <!-- TELA NOVA: CNPJ DOMÍNIOS (IMPORTAÇÃO DO CSV REGISTRO.BR) -->
+        <!-- TELA 3: CNPJ DOMÍNIOS -->
         <section id="view-cnpjs" class="space-y-6 hidden">
-            <!-- KPIs DE CNPJ -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
                     <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL DE ENTIDADES (CNPJ/CPF)</span>
@@ -697,14 +510,13 @@
                 </div>
             </div>
 
-            <!-- CARD DE IMPORTAÇÃO CSV / ADIÇÃO MANUAL -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                     <div>
                         <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-file-csv text-indigo-600"></i> Importar CSV de Titularidade (Registro.br)
                         </h2>
-                        <p class="text-xs text-slate-400">Faça o upload do seu arquivo exportado do Registro.br ou cole o conteúdo do CSV.</p>
+                        <p class="text-xs text-slate-400">Faça o upload do seu ficheiro exportado do Registro.br ou cadastre manualmente.</p>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -718,7 +530,6 @@
                     </div>
                 </div>
 
-                <!-- Formulário Manual Escondido -->
                 <div id="manual-cnpj-container" class="hidden border-t border-slate-100 pt-4 mt-3">
                     <form id="form-single-cnpj" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                         <div>
@@ -740,7 +551,6 @@
                 </div>
             </div>
 
-            <!-- LISTA DE CNPJs COM EXPANSÃO PARA DOMÍNIOS -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                     <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
@@ -778,7 +588,7 @@
             </div>
         </section>
 
-        <!-- TELA 3: MATRIZ RACI -->
+        <!-- TELA 4: MATRIZ RACI -->
         <section id="view-raci" class="space-y-6 hidden">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 relative">
                 <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
@@ -786,7 +596,7 @@
                         <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-table-cells text-indigo-600"></i> Aplicação da Matriz RACI
                         </h2>
-                        <p class="text-xs text-slate-400">Defina os papéis, tarefas e responsabilidades das equipes.</p>
+                        <p class="text-xs text-slate-400">Defina os papéis, tarefas e responsabilidades das equipas.</p>
                     </div>
 
                     <div id="raci-admin-controls" class="flex items-center gap-2 hidden">
@@ -815,7 +625,7 @@
             </div>
         </section>
 
-        <!-- TELA 4: NOTAS DA REUNIÃO -->
+        <!-- TELA 5: NOTAS DA REUNIÃO -->
         <section id="view-keep" class="space-y-6 hidden">
             <div id="keep-form-container" class="max-w-2xl mx-auto bg-white p-5 rounded-2xl shadow-md border border-slate-200 relative">
                 <div id="keep-lock-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-6 text-center rounded-2xl">
@@ -853,11 +663,17 @@
     </main>
 
     <script>
+        // CONFIGURAÇÕES DO WORKER PROXY
+        const PROXY_URL = 'https://icy-wildflower-ec24.dai-herrmann.workers.dev';
+        
+        let isEditMode = sessionStorage.getItem('admin_authenticated') === 'true';
+        let adminToken = sessionStorage.getItem('admin_token') || '';
+
         window.db = { activities: [], domains: [], keepNotes: [], cnpjEntries: [], raci: { roles: [], tasks: [], matrix: {} } };
         let activeActivityId = null;
         let activeTab = 'activities';
         let chartInstance = null;
-        let expandedCnpjIds = new Set(); // Armazena linhas expandidas
+        let expandedCnpjIds = new Set();
 
         function switchTab(tab) {
             activeTab = tab;
@@ -984,7 +800,6 @@
             document.getElementById('manual-cnpj-container').classList.add('hidden');
         });
 
-        // PARSER DO CSV REGISTRO.BR
         function handleCsvFileUpload(event) {
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
             const file = event.target.files[0];
@@ -1005,12 +820,10 @@
                 return;
             }
 
-            // Identifica delimitador (vírgula ou ponto e vírgula)
             const firstLine = lines[0];
             const delimiter = firstLine.includes(';') ? ';' : ',';
 
             let addedCount = 0;
-            // Pula o cabeçalho (i = 1)
             for (let i = 1; i < lines.length; i++) {
                 const cols = lines[i].split(delimiter).map(c => c.replace(/^["']|["']$/g, '').trim());
                 if (cols.length >= 2) {
@@ -1020,7 +833,6 @@
 
                     if (!titular || !doc) continue;
 
-                    // Evita duplicidade por documento
                     const exists = window.db.cnpjEntries.some(item => item.documento === doc);
                     if (!exists) {
                         window.db.cnpjEntries.push({
@@ -1061,7 +873,6 @@
 
             if (!entry.domains) entry.domains = [];
             
-            // Verifica se o domínio já foi atrelado
             if (entry.domains.some(d => d.name === cleanDomain)) {
                 return alert('Este domínio já está atrelado a este CNPJ!');
             }
@@ -1073,7 +884,6 @@
                 notes: 'Atrelado via painel'
             });
 
-            // Se o domínio ainda não existe na aba principal "Domínios", adiciona lá também
             const existsInMain = window.db.domains.some(d => d.name === cleanDomain);
             if (!existsInMain) {
                 window.db.domains.push({
@@ -1182,7 +992,6 @@
                 `;
                 tbody.appendChild(tr);
 
-                // LINHA EXPANDIDA (DOMÍNIOS ATRELADOS)
                 if (isExpanded) {
                     const subTr = document.createElement('tr');
                     subTr.className = "bg-indigo-50/30 border-b border-indigo-100";
@@ -1660,10 +1469,10 @@
                 let providerName = null;
                 let foundCnpj = null;
 
-                const proxyUrl = `[https://api.allorigins.win/raw?url=](https://api.allorigins.win/raw?url=)`;
+                const proxyUrl = `https://api.allorigins.win/raw?url=`;
 
                 if (clean.endsWith('.br')) {
-                    const targetUrl = encodeURIComponent(`[https://rdap.registro.br/domain/$](https://rdap.registro.br/domain/$){clean}`);
+                    const targetUrl = encodeURIComponent(`https://rdap.registro.br/domain/${clean}`);
                     const rdapRes = await fetch(`${proxyUrl}${targetUrl}`);
                     if (rdapRes.ok) {
                         const rdapData = await rdapRes.json();
@@ -1695,7 +1504,7 @@
                 }
 
                 if (!expDateStr) {
-                    const targetUrl = encodeURIComponent(`[https://rdap.org/domain/$](https://rdap.org/domain/$){clean}`);
+                    const targetUrl = encodeURIComponent(`https://rdap.org/domain/${clean}`);
                     const fallbackRes = await fetch(`${proxyUrl}${targetUrl}`);
                     if (fallbackRes.ok) {
                         const fbData = await fallbackRes.json();
@@ -2273,6 +2082,11 @@
                 grid.appendChild(card);
             });
         }
+
+        // DISPARO SEGURO DE CARREGAMENTO
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDataFromCloud();
+        });
     </script>
 </body>
 </html>
