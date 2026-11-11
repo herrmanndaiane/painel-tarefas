@@ -46,7 +46,7 @@
                     <i class="fa-brands fa-github text-sm"></i> Conectando...
                 </span>
 
-                <button onclick="toggleAdminAuth()" id="btn-auth" class="text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5">
+                <button onclick="toggleAdminAuth()" id="btn-auth" class="text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-lock text-xs"></i> Entrar / Editar
                 </button>
             </div>
@@ -484,7 +484,7 @@
             </div>
         </section>
 
-        <!-- TELA 3: CNPJ DOMÍNIOS -->
+        <!-- TELA 3: CNPJ DOMÍNIOS COM EXPORTAÇÃO CSV -->
         <section id="view-cnpjs" class="space-y-6 hidden">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
@@ -514,17 +514,20 @@
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
                     <div>
                         <h2 class="text-md font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-file-csv text-indigo-600"></i> Importar CSV de Titularidade (Registro.br)
+                            <i class="fa-solid fa-file-csv text-indigo-600"></i> Gerenciamento e Importação de Titularidade
                         </h2>
-                        <p class="text-xs text-slate-400">Faça o upload do seu ficheiro exportado do Registro.br ou cadastre manualmente.</p>
+                        <p class="text-xs text-slate-400">Importe arquivos do Registro.br ou exporte relatórios consolidados com domínios atrelados.</p>
                     </div>
 
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="exportCnpjWithDomainsCsv()" title="Exportar relatório consolidado" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-file-excel"></i> Exportar CSV
+                        </button>
                         <label class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
-                            <i class="fa-solid fa-upload"></i> Selecionar Arquivo CSV
+                            <i class="fa-solid fa-upload"></i> Importar CSV
                             <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCsvFileUpload(event)">
                         </label>
-                        <button onclick="toggleManualCnpjForm()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-all shadow-sm flex items-center gap-1.5">
+                        <button onclick="toggleManualCnpjForm()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-plus"></i> Novo CNPJ
                         </button>
                     </div>
@@ -544,7 +547,7 @@
                             <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Titular de (Registro.br)</label>
                             <div class="flex gap-2">
                                 <input type="text" id="manual-cnpj-titularde" placeholder="Ex: 1 domínio" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-indigo-500">
-                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-sm whitespace-nowrap">Cadastrar</button>
+                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-sm whitespace-nowrap cursor-pointer">Cadastrar</button>
                             </div>
                         </div>
                     </form>
@@ -600,10 +603,10 @@
                     </div>
 
                     <div id="raci-admin-controls" class="flex items-center gap-2 hidden">
-                        <button onclick="addRaciRole()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                        <button onclick="addRaciRole()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                             <i class="fa-solid fa-plus"></i> Add Papel / Equipe
                         </button>
-                        <button onclick="addRaciTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                        <button onclick="addRaciTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                             <i class="fa-solid fa-plus"></i> Add Tarefa
                         </button>
                     </div>
@@ -650,7 +653,7 @@
                                 <option value="bg-slate-50 border-slate-200">Cinza</option>
                             </select>
                         </div>
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm cursor-pointer">
                             <i class="fa-solid fa-plus"></i> Adicionar Nota
                         </button>
                     </div>
@@ -674,6 +677,125 @@
         let activeTab = 'activities';
         let chartInstance = null;
         let expandedCnpjIds = new Set();
+
+        // CARREGAR DADOS DO WORKER
+        async function loadDataFromCloud() {
+            const badge = document.getElementById('save-status');
+            if (badge) badge.textContent = "Sincronizando...";
+
+            try {
+                const response = await fetch(`${PROXY_URL}/get-data?t=${Date.now()}`);
+                
+                if (response.ok) {
+                    window.db = await response.json();
+                    
+                    if (!window.db.activities) window.db.activities = [];
+                    if (!window.db.domains) window.db.domains = [];
+                    if (!window.db.keepNotes) window.db.keepNotes = [];
+                    if (!window.db.cnpjEntries || window.db.cnpjEntries.length === 0) {
+                        window.db.cnpjEntries = getDefaultCnpjData();
+                    }
+                    if (!window.db.raci) window.db.raci = { roles: ['Redator', 'Designer', 'Programador', 'Coordenador', 'Clientes'], tasks: ['Escrever Roteiro', 'Criar Identidade Visual', 'Fazer o Planejamento', 'Colocar o Blog no Ar'], matrix: {} };
+
+                    if (badge) badge.textContent = isEditMode ? "Modo Edição (Autenticado)" : "GitHub Sincronizado";
+                    window.updateUI();
+
+                    refreshAllDomainExpirations();
+                } else {
+                    fallbackLocal();
+                }
+            } catch (err) {
+                console.warn('Erro ao carregar dados:', err);
+                fallbackLocal();
+            }
+        }
+
+        function fallbackLocal() {
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v10'));
+            window.db = saved || { 
+                activities: [], 
+                domains: [], 
+                keepNotes: [], 
+                cnpjEntries: getDefaultCnpjData(),
+                raci: { roles: [], tasks: [], matrix: {} } 
+            };
+            const badge = document.getElementById('save-status');
+            if (badge) badge.textContent = "Modo Off-line / Local";
+            window.updateUI();
+        }
+
+        // SALVAR DADOS NO WORKER
+        async function saveDataToCloud() {
+            if (!isEditMode) {
+                alert('Apenas visualização permitida. Faça login para editar.');
+                loadDataFromCloud();
+                return;
+            }
+
+            localStorage.setItem('my_activities_dashboard_v10', JSON.stringify(window.db));
+
+            const badge = document.getElementById('save-status');
+            if (badge) badge.textContent = "Salvando no GitHub...";
+
+            try {
+                const response = await fetch(`${PROXY_URL}/save-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Password': adminToken
+                    },
+                    body: JSON.stringify(window.db)
+                });
+
+                if (response.ok) {
+                    if (badge) badge.textContent = "Salvo no GitHub!";
+                    setTimeout(() => { if (badge) badge.textContent = "Modo Edição (Autenticado)"; }, 2000);
+                    window.updateUI();
+                } else {
+                    alert('Erro ao salvar dados. Verifique a senha configurada.');
+                    if (badge) badge.textContent = "Erro de Autenticação";
+                }
+            } catch (err) {
+                console.error('Erro de rede:', err);
+                if (badge) badge.textContent = "Erro de Conexão";
+            }
+        }
+
+        // AUTENTICAÇÃO
+        async function toggleAdminAuth() {
+            if (isEditMode) {
+                if (confirm('Deseja sair do Modo de Edição?')) {
+                    sessionStorage.removeItem('admin_authenticated');
+                    sessionStorage.removeItem('admin_token');
+                    isEditMode = false;
+                    adminToken = '';
+                    location.reload();
+                }
+            } else {
+                const pass = prompt('Digite a Senha de Administrador:');
+                if (!pass) return;
+
+                try {
+                    const res = await fetch(`${PROXY_URL}/verify-auth`, {
+                        method: 'POST',
+                        headers: { 'X-Admin-Password': pass }
+                    });
+
+                    if (res.ok) {
+                        sessionStorage.setItem('admin_authenticated', 'true');
+                        sessionStorage.setItem('admin_token', pass);
+                        isEditMode = true;
+                        adminToken = pass;
+                        alert('Autenticado com sucesso!');
+                        location.reload();
+                    } else {
+                        alert('Senha incorreta!');
+                    }
+                } catch (e) {
+                    alert('Erro ao conectar ao servidor de autenticação.');
+                }
+            }
+        }
 
         function switchTab(tab) {
             activeTab = tab;
@@ -743,7 +865,7 @@
                 if (btnEditTimeline) btnEditTimeline.classList.remove('hidden');
                 if (projectNotes) projectNotes.removeAttribute('readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-unlock text-xs"></i> Sair / Mudar Modo';
-                btnAuth.className = "text-xs bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5";
+                btnAuth.className = "text-xs bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5 cursor-pointer";
             } else {
                 if (lockOverlay) lockOverlay.classList.remove('hidden');
                 if (subtaskLockOverlay) subtaskLockOverlay.classList.remove('hidden');
@@ -753,7 +875,7 @@
                 if (btnEditTimeline) btnEditTimeline.classList.add('hidden');
                 if (projectNotes) projectNotes.setAttribute('readonly', 'readonly');
                 btnAuth.innerHTML = '<i class="fa-solid fa-lock text-xs"></i> Entrar / Editar';
-                btnAuth.className = "text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5";
+                btnAuth.className = "text-xs bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full transition-all shadow-sm flex items-center gap-1.5 cursor-pointer";
             }
 
             renderMacroTable();
@@ -769,6 +891,40 @@
                 renderSubtaskTable();
             }
         };
+
+        // --- EXPORTAR CNPJS COM DOMÍNIOS EM CSV ---
+        function exportCnpjWithDomainsCsv() {
+            const entries = window.db.cnpjEntries || [];
+            if (entries.length === 0) {
+                return alert('Nenhum dado de CNPJ disponível para exportar.');
+            }
+
+            let csvContent = '\uFEFF';
+            csvContent += 'Titular;Documento;Titular de;Qtd Dominios Atrelados;Dominios Atrelados\n';
+
+            entries.forEach(item => {
+                const titular = `"${(item.titular || '').replace(/"/g, '""')}"`;
+                const doc = `"${(item.documento || '').replace(/"/g, '""')}"`;
+                const titularDe = `"${(item.titularDe || '').replace(/"/g, '""')}"`;
+                const qtd = item.domains ? item.domains.length : 0;
+                
+                const dominiosStr = item.domains && item.domains.length > 0 
+                    ? `"${item.domains.map(d => d.name).join(', ')}"`
+                    : '""';
+
+                csvContent += `${titular};${doc};${titularDe};${qtd};${dominiosStr}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `CNPJs_e_Dominios_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
 
         // --- ABA CNPJ DOMÍNIOS ---
         function toggleManualCnpjForm() {
@@ -931,7 +1087,7 @@
             const entries = window.db.cnpjEntries || [];
 
             if (entries.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-xs">Nenhum CNPJ cadastrado. Clique em "Selecionar Arquivo CSV" para carregar a lista do Registro.br.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-xs">Nenhum CNPJ cadastrado. Clique em "Importar CSV" para carregar a lista do Registro.br.</td></tr>`;
                 return;
             }
 
@@ -961,7 +1117,7 @@
 
                 tr.innerHTML = `
                     <td class="p-3 text-center">
-                        <button onclick="toggleExpandCnpj(${item.id})" class="text-indigo-600 hover:text-indigo-800 p-1">
+                        <button onclick="toggleExpandCnpj(${item.id})" class="text-indigo-600 hover:text-indigo-800 p-1 cursor-pointer">
                             <i class="fa-solid ${isExpanded ? 'fa-chevron-down' : 'fa-chevron-right'} text-xs"></i>
                         </button>
                     </td>
@@ -982,10 +1138,10 @@
                         </span>
                     </td>
                     <td class="p-3 text-right">
-                        <button onclick="addDomainToCnpj(${item.id})" title="Atrelar Novo Domínio" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-2.5 py-1 rounded-md border border-indigo-200 transition-all ${hiddenClass}">
+                        <button onclick="addDomainToCnpj(${item.id})" title="Atrelar Novo Domínio" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-2.5 py-1 rounded-md border border-indigo-200 transition-all cursor-pointer ${hiddenClass}">
                             <i class="fa-solid fa-plus text-[10px]"></i> Domínio
                         </button>
-                        <button onclick="deleteCnpjEntry(${item.id})" title="Excluir Entidade" class="text-slate-300 hover:text-rose-600 p-1 ml-1 ${hiddenClass}">
+                        <button onclick="deleteCnpjEntry(${item.id})" title="Excluir Entidade" class="text-slate-300 hover:text-rose-600 p-1 ml-1 cursor-pointer ${hiddenClass}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
@@ -1001,7 +1157,7 @@
                         domainsHtml = `
                             <div class="text-xs text-slate-400 py-3 flex items-center justify-between">
                                 <span>Nenhum domínio cadastrado para este CNPJ ainda.</span>
-                                <button onclick="addDomainToCnpj(${item.id})" class="text-xs text-indigo-600 hover:underline font-bold ${hiddenClass}">+ Adicionar o primeiro domínio</button>
+                                <button onclick="addDomainToCnpj(${item.id})" class="text-xs text-indigo-600 hover:underline font-bold cursor-pointer ${hiddenClass}">+ Adicionar o primeiro domínio</button>
                             </div>
                         `;
                     } else {
@@ -1009,7 +1165,7 @@
                             <div class="space-y-2 py-2">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Lista de Domínios Atrelados (${item.domains.length})</span>
-                                    <button onclick="addDomainToCnpj(${item.id})" class="text-xs text-indigo-600 hover:underline font-bold flex items-center gap-1 ${hiddenClass}">
+                                    <button onclick="addDomainToCnpj(${item.id})" class="text-xs text-indigo-600 hover:underline font-bold flex items-center gap-1 cursor-pointer ${hiddenClass}">
                                         <i class="fa-solid fa-plus text-[10px]"></i> Adicionar Outro Domínio
                                     </button>
                                 </div>
@@ -1025,7 +1181,7 @@
                                     </div>
                                     <div class="flex items-center gap-1.5">
                                         <a href="https://${d.name}" target="_blank" title="Abrir site" class="text-slate-400 hover:text-indigo-600 text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                                        <button onclick="removeDomainFromCnpj(${item.id}, ${d.id})" title="Desvincular domínio" class="text-slate-300 hover:text-rose-600 text-xs ${hiddenClass}"><i class="fa-solid fa-xmark"></i></button>
+                                        <button onclick="removeDomainFromCnpj(${item.id}, ${d.id})" title="Desvincular domínio" class="text-slate-300 hover:text-rose-600 text-xs cursor-pointer ${hiddenClass}"><i class="fa-solid fa-xmark"></i></button>
                                     </div>
                                 </div>
                             `;
@@ -1265,11 +1421,11 @@
                 tr.innerHTML = `
                     <td class="p-3">
                         <div class="flex items-center gap-1.5">
-                            <button onclick="openTimeline(${act.id})" class="font-bold text-slate-800 hover:text-indigo-600 text-left underline-offset-2 hover:underline">
+                            <button onclick="openTimeline(${act.id})" class="font-bold text-slate-800 hover:text-indigo-600 text-left underline-offset-2 hover:underline cursor-pointer">
                                 ${act.title}
                             </button>
                             ${protocolTag}
-                            <button onclick="editMacroActivity(${act.id}, event)" title="Editar Atividade" class="text-slate-300 hover:text-indigo-600 text-xs ml-1 ${hiddenClass}">
+                            <button onclick="editMacroActivity(${act.id}, event)" title="Editar Atividade" class="text-slate-300 hover:text-indigo-600 text-xs ml-1 cursor-pointer ${hiddenClass}">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                         </div>
@@ -1292,14 +1448,14 @@
                         <span class="text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${priorityClass}">${act.priority}</span>
                     </td>
                     <td class="p-3">
-                        <select ${disabledAttr} onchange="updateMacroStatus(${act.id}, this.value, event)" class="text-xs font-semibold px-2 py-1 rounded-md border ${statusBadgeClass} outline-none">
+                        <select ${disabledAttr} onchange="updateMacroStatus(${act.id}, this.value, event)" class="text-xs font-semibold px-2 py-1 rounded-md border ${statusBadgeClass} outline-none cursor-pointer">
                             <option value="Pendente" ${act.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
                             <option value="Em Andamento" ${act.status === 'Em Andamento' ? 'selected' : ''}>Em Andamento</option>
                             <option value="Concluída" ${act.status === 'Concluída' ? 'selected' : ''}>Concluída</option>
                         </select>
                     </td>
                     <td class="p-3 text-right">
-                        <button onclick="deleteMacroActivity(${act.id}, event)" class="text-slate-300 hover:text-rose-600 p-1 ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="deleteMacroActivity(${act.id}, event)" class="text-slate-300 hover:text-rose-600 p-1 cursor-pointer ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1387,14 +1543,14 @@
                         }">${sub.priority}</span>
                     </td>
                     <td class="p-3">
-                        <select ${disabledAttr} onchange="updateSubtaskStatus(${sub.id}, this.value)" class="text-xs font-semibold px-2 py-1 rounded border outline-none">
+                        <select ${disabledAttr} onchange="updateSubtaskStatus(${sub.id}, this.value)" class="text-xs font-semibold px-2 py-1 rounded border outline-none cursor-pointer">
                             <option value="Pendente" ${sub.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
                             <option value="Em Andamento" ${sub.status === 'Em Andamento' ? 'selected' : ''}>Em Andamento</option>
                             <option value="Concluída" ${sub.status === 'Concluída' ? 'selected' : ''}>Concluída</option>
                         </select>
                     </td>
                     <td class="p-3 text-right">
-                        <button onclick="deleteSubtask(${sub.id})" class="text-slate-300 hover:text-rose-600 p-1 ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="deleteSubtask(${sub.id})" class="text-slate-300 hover:text-rose-600 p-1 cursor-pointer ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1820,8 +1976,8 @@
                         </span>
                     </td>
                     <td class="p-3 text-right">
-                        <button onclick="editDomain(${dom.id})" title="Editar Domínio" class="text-slate-300 hover:text-indigo-600 p-1 ${hiddenClass}"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteDomain(${dom.id})" title="Excluir Domínio" class="text-slate-300 hover:text-rose-600 p-1 ml-1 ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="editDomain(${dom.id})" title="Editar Domínio" class="text-slate-300 hover:text-indigo-600 p-1 cursor-pointer ${hiddenClass}"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteDomain(${dom.id})" title="Excluir Domínio" class="text-slate-300 hover:text-rose-600 p-1 ml-1 cursor-pointer ${hiddenClass}"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1926,8 +2082,8 @@
                     <th class="p-3 text-center min-w-[120px]">
                         <div class="flex items-center justify-center gap-1">
                             <span>${r}</span>
-                            <button onclick="editRaciRole(${idx})" title="Editar Nome" class="text-indigo-300 hover:text-white text-[10px] ${hiddenClass}"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteRaciRole(${idx})" title="Excluir Coluna" class="text-indigo-300 hover:text-rose-300 text-[10px] ${hiddenClass}"><i class="fa-solid fa-xmark"></i></button>
+                            <button onclick="editRaciRole(${idx})" title="Editar Nome" class="text-indigo-300 hover:text-white text-[10px] cursor-pointer ${hiddenClass}"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteRaciRole(${idx})" title="Excluir Coluna" class="text-indigo-300 hover:text-rose-300 text-[10px] cursor-pointer ${hiddenClass}"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     </th>`;
             });
@@ -1947,8 +2103,8 @@
                     <td class="p-3 text-left font-bold text-slate-700 bg-slate-50/60 flex items-center justify-between gap-2">
                         <span>${t}</span>
                         <div class="flex items-center gap-1.5 ${hiddenClass}">
-                            <button onclick="editRaciTask(${tIdx})" title="Editar Tarefa" class="text-slate-300 hover:text-indigo-600 text-xs"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteRaciTask(${tIdx})" title="Excluir Linha" class="text-slate-300 hover:text-rose-600 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="editRaciTask(${tIdx})" title="Editar Tarefa" class="text-slate-300 hover:text-indigo-600 text-xs cursor-pointer"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteRaciTask(${tIdx})" title="Excluir Linha" class="text-slate-300 hover:text-rose-600 text-xs cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </td>`;
 
@@ -2057,7 +2213,7 @@
                                 class="font-bold text-slate-800 text-sm leading-tight bg-transparent w-full outline-none border-b border-transparent focus:border-slate-300">
                             
                             <div class="flex items-center gap-1 ${hiddenClass}">
-                                <button onclick="deleteKeepNote(${note.id})" title="Excluir Nota" class="text-slate-400 hover:text-rose-600 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
+                                <button onclick="deleteKeepNote(${note.id})" title="Excluir Nota" class="text-slate-400 hover:text-rose-600 text-xs p-1 cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
 
