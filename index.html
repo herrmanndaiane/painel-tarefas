@@ -48,7 +48,7 @@
         }
 
         function fallbackLocal() {
-            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v8'));
+            const saved = JSON.parse(localStorage.getItem('my_activities_dashboard_v9'));
             window.db = saved || { activities: [], domains: [], keepNotes: [], raci: { roles: [], tasks: [], matrix: {} } };
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Modo Off-line / Local";
@@ -63,7 +63,7 @@
                 return;
             }
 
-            localStorage.setItem('my_activities_dashboard_v8', JSON.stringify(window.db));
+            localStorage.setItem('my_activities_dashboard_v9', JSON.stringify(window.db));
 
             const badge = document.getElementById('save-status');
             if (badge) badge.textContent = "Salvando no GitHub...";
@@ -128,7 +128,6 @@
             }
         }
 
-        // INICIALIZADOR AUTOMÁTICO
         document.addEventListener('DOMContentLoaded', function() {
             loadDataFromCloud();
         });
@@ -194,7 +193,7 @@
                                 <i class="fa-solid fa-spinner text-indigo-400"></i>
                             </div>
                         </div>
-                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 flex flex-col justify-between">
                             <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">CONCLUÍDAS</span>
                             <div class="flex items-baseline justify-between mt-3">
                                 <span id="kpi-concluidas" class="text-3xl font-extrabold text-emerald-600">0</span>
@@ -468,24 +467,42 @@
                                 <div class="flex gap-2">
                                     <input type="text" id="domain-name" required placeholder="Ex: minhaempresa.com.br" onblur="autoFetchDomainExpiration()"
                                         class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
-                                    <button type="button" onclick="autoFetchDomainExpiration()" id="btn-fetch-whois" title="Buscar vencimento automático" class="bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 font-bold px-3 py-2 rounded-lg text-xs border border-slate-200 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                                    <button type="button" onclick="autoFetchDomainExpiration()" id="btn-fetch-whois" title="Buscar no WHOIS" class="bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 font-bold px-3 py-2 rounded-lg text-xs border border-slate-200 transition-all flex items-center gap-1.5 whitespace-nowrap">
                                         <i class="fa-solid fa-wand-magic-sparkles"></i> Buscar
                                     </button>
                                 </div>
-                                <span id="whois-status" class="text-[10px] text-slate-400 mt-1 block">Digite o domínio para buscar o vencimento.</span>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Data de Vencimento</label>
-                                <input type="date" id="domain-expiration" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span id="whois-status" class="text-[10px] text-slate-400 mt-1 block">Digite o domínio para puxar vencimento e CNPJ.</span>
                             </div>
 
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Migração CNPJ</label>
-                                <select id="domain-cnpj-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Não iniciado" selected>Não iniciado</option>
-                                    <option value="Em andamento">Em andamento</option>
-                                    <option value="Finalizado com sucesso">Finalizado com sucesso</option>
-                                </select>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Data de Vencimento</label>
+                                    <input type="date" id="domain-expiration" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">CNPJ Registrado</label>
+                                    <input type="text" id="domain-cnpj" placeholder="Auto via WHOIS" 
+                                        class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Migração CNPJ</label>
+                                    <select id="domain-cnpj-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Não iniciado" selected>Não iniciado</option>
+                                        <option value="Em andamento">Em andamento</option>
+                                        <option value="Finalizado com sucesso">Finalizado com sucesso</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Documentos M&A</label>
+                                    <select id="domain-ma-docs" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="Pendente" selected>Pendente</option>
+                                        <option value="Em elaboração">Em elaboração</option>
+                                        <option value="Concluído / Assinado">Concluído / Assinado</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div>
@@ -510,7 +527,7 @@
                         <h2 class="text-md font-bold text-slate-800 mb-2 flex items-center gap-2">
                             <i class="fa-solid fa-file-import text-indigo-600"></i> Importar Lista em Lote
                         </h2>
-                        <p class="text-xs text-slate-400 mb-3">Cole sua lista de domínios (um por linha) para buscar vencimentos e cadastrar tudo de uma vez.</p>
+                        <p class="text-xs text-slate-400 mb-3">Cole sua lista de domínios (um por linha) para buscar vencimentos, CNPJ e cadastrar.</p>
                         
                         <textarea id="batch-domains-input" rows="4" placeholder="google.com.br&#10;uol.com.br&#10;minhaempresa.com" 
                             class="w-full p-3 border border-slate-200 rounded-lg text-xs font-mono text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 resize-y mb-2"></textarea>
@@ -529,11 +546,22 @@
                                 <i class="fa-solid fa-globe text-indigo-600"></i> Monitoramento de Vencimentos
                             </h2>
                             <button onclick="refreshAllDomainExpirations(true)" id="btn-refresh-domains" title="Forçar atualização dos vencimentos agora" class="text-xs bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 px-2.5 py-1 rounded-md border border-slate-200 transition-all font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-rotate text-[10px]"></i> Atualizar Datas
+                                <i class="fa-solid fa-rotate text-[10px]"></i> Atualizar WHOIS
                             </button>
                         </div>
 
+                        <!-- FILTROS DE DOMÍNIOS -->
                         <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-slate-400">M&A:</span>
+                                <select id="filter-domain-ma" onchange="renderDomainTable()" class="px-2 py-1 border border-slate-200 rounded-lg text-xs outline-none bg-slate-50">
+                                    <option value="todos">Todos M&A</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em elaboração">Em elaboração</option>
+                                    <option value="Concluído / Assinado">Concluído / Assinado</option>
+                                </select>
+                            </div>
+
                             <div class="flex items-center gap-1.5">
                                 <span class="text-xs text-slate-400">CNPJ:</span>
                                 <select id="filter-domain-cnpj" onchange="renderDomainTable()" class="px-2 py-1 border border-slate-200 rounded-lg text-xs outline-none bg-slate-50">
@@ -560,8 +588,9 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase bg-slate-50">
-                                    <th class="p-3">Domínio / Provedor</th>
+                                    <th class="p-3">Domínio / CNPJ</th>
                                     <th class="p-3">Migração CNPJ</th>
+                                    <th class="p-3">Documentos M&A</th>
                                     <th class="p-3">Data Vencimento</th>
                                     <th class="p-3">Status / Prazo</th>
                                     <th class="p-3 text-right">Ações</th>
@@ -574,11 +603,9 @@
             </div>
         </section>
 
-
         <!-- TELA 3: MATRIZ RACI -->
         <section id="view-raci" class="space-y-6 hidden">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 relative">
-                
                 <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
                     <div>
                         <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
@@ -612,7 +639,6 @@
                 </div>
             </div>
         </section>
-
 
         <!-- TELA 4: NOTAS DA REUNIÃO -->
         <section id="view-keep" class="space-y-6 hidden">
@@ -1109,8 +1135,9 @@
         }
 
 
-        // --- DOMÍNIOS ---
+        // --- DOMÍNIOS (CONSULTA VIA PROXY COM EXTRAÇÃO DE CNPJ) ---
         function getDomainExpirationInfo(expDateStr) {
+            if (!expDateStr) return { level: 'warning', days: 0, badgeClass: 'bg-slate-100 text-slate-700 border-slate-200', text: 'Sem data' };
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const [y, m, d] = expDateStr.split('-');
@@ -1126,6 +1153,17 @@
             }
         }
 
+        function formatCnpjCpf(val) {
+            if (!val) return '';
+            const clean = val.replace(/\D/g, '');
+            if (clean.length === 14) {
+                return clean.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+            } else if (clean.length === 11) {
+                return clean.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+            }
+            return val;
+        }
+
         async function fetchSingleDomainDate(rawDomain) {
             let clean = rawDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
             if (!clean || clean.length < 4 || !clean.includes('.')) return null;
@@ -1133,6 +1171,7 @@
             try {
                 let expDateStr = null;
                 let providerName = null;
+                let foundCnpj = null;
 
                 const proxyUrl = `https://api.allorigins.win/raw?url=`;
 
@@ -1142,9 +1181,31 @@
                     if (rdapRes.ok) {
                         const rdapData = await rdapRes.json();
                         providerName = "Registro.br";
+                        
+                        // Extrai data de expiração
                         if (rdapData.events) {
                             const expEvent = rdapData.events.find(e => e.eventAction === 'expiration');
                             if (expEvent && expEvent.eventDate) expDateStr = expEvent.eventDate.split('T')[0];
+                        }
+
+                        // Extrai CNPJ/Documento das entidades
+                        if (rdapData.entities && Array.isArray(rdapData.entities)) {
+                            for (let ent of rdapData.entities) {
+                                if (ent.roles && (ent.roles.includes('registrant') || ent.roles.includes('administrative') || ent.roles.includes('technical'))) {
+                                    if (ent.vcardArray && ent.vcardArray[1]) {
+                                        for (let item of ent.vcardArray[1]) {
+                                            if (item[0] === 'org' || item[0] === 'fn') {
+                                                // Verifica se o texto possui padrão de CNPJ/CPF
+                                                const match = String(item[3]).match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14}/);
+                                                if (match) foundCnpj = match[0];
+                                            }
+                                        }
+                                    }
+                                    if (ent.handle && (ent.handle.length === 14 || ent.handle.length === 11 || ent.handle.includes('/') || ent.handle.includes('.'))) {
+                                        if (!foundCnpj) foundCnpj = ent.handle;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1161,9 +1222,14 @@
                     }
                 }
 
-                return { domain: clean, expiration: expDateStr, provider: providerName };
+                return { 
+                    domain: clean, 
+                    expiration: expDateStr, 
+                    provider: providerName,
+                    cnpj: foundCnpj ? formatCnpjCpf(foundCnpj) : null
+                };
             } catch (err) {
-                return { domain: clean, expiration: null, provider: null };
+                return { domain: clean, expiration: null, provider: null, cnpj: null };
             }
         }
 
@@ -1179,16 +1245,25 @@
             let updatedAny = false;
             for (let dom of window.db.domains) {
                 const res = await fetchSingleDomainDate(dom.name);
-                if (res && res.expiration && res.expiration !== dom.expiration) {
-                    dom.expiration = res.expiration;
-                    if (res.provider && !dom.provider) dom.provider = res.provider;
-                    updatedAny = true;
+                if (res) {
+                    if (res.expiration && res.expiration !== dom.expiration) {
+                        dom.expiration = res.expiration;
+                        updatedAny = true;
+                    }
+                    if (res.provider && !dom.provider) {
+                        dom.provider = res.provider;
+                        updatedAny = true;
+                    }
+                    if (res.cnpj && !dom.cnpj) {
+                        dom.cnpj = res.cnpj;
+                        updatedAny = true;
+                    }
                 }
             }
 
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-rotate text-[10px]"></i> Atualizar Datas`;
+                btn.innerHTML = `<i class="fa-solid fa-rotate text-[10px]"></i> Atualizar WHOIS`;
             }
 
             if (updatedAny) {
@@ -1196,7 +1271,7 @@
                 updateDomainKPIs();
                 if (isEditMode) saveDataToCloud();
             } else if (manualTrigger) {
-                alert('Datas dos domínios verificadas com sucesso!');
+                alert('WHOIS verificado: dados já estão 100% atualizados!');
             }
         }
 
@@ -1204,22 +1279,27 @@
             const domainInput = document.getElementById('domain-name');
             const statusLabel = document.getElementById('whois-status');
             const expInput = document.getElementById('domain-expiration');
+            const cnpjInput = document.getElementById('domain-cnpj');
             const providerInput = document.getElementById('domain-provider');
 
             let raw = domainInput.value;
             if (!raw) return;
 
-            statusLabel.textContent = "Consultando WHOIS/RDAP...";
+            statusLabel.textContent = "Consultando WHOIS/RDAP e CNPJ...";
             statusLabel.className = "text-[10px] text-indigo-600 font-bold mt-1 block animate-pulse";
 
             const res = await fetchSingleDomainDate(raw);
-            if (res && res.expiration) {
-                expInput.value = res.expiration;
+            if (res) {
+                if (res.expiration) expInput.value = res.expiration;
+                if (res.cnpj) cnpjInput.value = res.cnpj;
                 if (res.provider && !providerInput.value) providerInput.value = res.provider;
-                statusLabel.textContent = "Data encontrada e preenchida automaticamente!";
+                
+                statusLabel.textContent = res.cnpj 
+                    ? "Dados e CNPJ obtidos com sucesso do Registro.br!" 
+                    : "Data preenchida! CNPJ não detectado automaticamente (preencha se necessário).";
                 statusLabel.className = "text-[10px] text-emerald-600 font-bold mt-1 block";
             } else {
-                statusLabel.textContent = "Não foi possível obter a data automaticamente. Preencha manualmente.";
+                statusLabel.textContent = "Consulta automática não concluída. Preencha manualmente.";
                 statusLabel.className = "text-[10px] text-amber-600 font-bold mt-1 block";
             }
         }
@@ -1250,7 +1330,7 @@
                 statusLabel.textContent = `Processando (${i + 1}/${lines.length}): ${domainName}...`;
                 
                 const result = await fetchSingleDomainDate(domainName);
-                let finalExp = result.expiration;
+                let finalExp = result ? result.expiration : null;
                 if (!finalExp) {
                     const defaultDate = new Date();
                     defaultDate.setFullYear(defaultDate.getFullYear() + 1);
@@ -1259,10 +1339,12 @@
 
                 window.db.domains.push({
                     id: Date.now() + Math.random(),
-                    name: result.domain,
+                    name: result ? result.domain : domainName,
                     expiration: finalExp,
+                    cnpj: result && result.cnpj ? result.cnpj : '',
                     cnpjStatus: 'Não iniciado',
-                    provider: result.provider || '',
+                    maDocs: 'Pendente',
+                    provider: result && result.provider ? result.provider : '',
                     notes: 'Importado em lote'
                 });
                 addedCount++;
@@ -1284,7 +1366,9 @@
                 id: Date.now(),
                 name: document.getElementById('domain-name').value.trim().toLowerCase(),
                 expiration: document.getElementById('domain-expiration').value,
+                cnpj: document.getElementById('domain-cnpj').value.trim(),
                 cnpjStatus: document.getElementById('domain-cnpj-status').value,
+                maDocs: document.getElementById('domain-ma-docs').value,
                 provider: document.getElementById('domain-provider').value.trim(),
                 notes: document.getElementById('domain-notes').value.trim()
             };
@@ -1292,7 +1376,7 @@
             window.db.domains.push(newDomain);
             saveDataToCloud();
             this.reset();
-            document.getElementById('whois-status').textContent = "Digite o domínio para buscar o vencimento.";
+            document.getElementById('whois-status').textContent = "Digite o domínio para puxar vencimento e CNPJ.";
             document.getElementById('whois-status').className = "text-[10px] text-slate-400 mt-1 block";
         });
 
@@ -1314,6 +1398,16 @@
             saveDataToCloud();
         }
 
+        function updateDomainMaDocs(id, newStatus) {
+            if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
+
+            const dom = window.db.domains.find(d => d.id === id);
+            if (!dom) return;
+
+            dom.maDocs = newStatus;
+            saveDataToCloud();
+        }
+
         function editDomain(id) {
             if (!isEditMode) return alert('Modo leitura ativado. Faça login para editar.');
             const dom = window.db.domains.find(d => d.id === id);
@@ -1321,6 +1415,9 @@
 
             const newName = prompt('Nome do Domínio:', dom.name);
             if (newName === null || newName.trim() === '') return;
+
+            const newCnpj = prompt('CNPJ registrado:', dom.cnpj || '');
+            if (newCnpj === null) return;
 
             const newExp = prompt('Data de Vencimento (AAAA-MM-DD):', dom.expiration);
             if (newExp === null || newExp.trim() === '') return;
@@ -1332,6 +1429,7 @@
             if (newNotes === null) return;
 
             dom.name = newName.trim().toLowerCase();
+            dom.cnpj = newCnpj.trim();
             dom.expiration = newExp.trim();
             dom.provider = newProvider.trim();
             dom.notes = newNotes.trim();
@@ -1343,27 +1441,30 @@
             const tbody = document.getElementById('domain-table-body');
             const filterExp = document.getElementById('filter-domain').value;
             const filterCnpj = document.getElementById('filter-domain-cnpj').value;
+            const filterMa = document.getElementById('filter-domain-ma').value;
             tbody.innerHTML = '';
 
             if (window.db.domains.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio cadastrado no monitoramento.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio cadastrado no monitoramento.</td></tr>`;
                 return;
             }
 
             const filtered = window.db.domains.filter(dom => {
                 const info = getDomainExpirationInfo(dom.expiration);
                 const cnpjVal = dom.cnpjStatus || 'Não iniciado';
+                const maVal = dom.maDocs || 'Pendente';
 
                 let matchExp = (filterExp === 'todos') || (info.level === filterExp);
                 let matchCnpj = (filterCnpj === 'todos') || (cnpjVal === filterCnpj);
+                let matchMa = (filterMa === 'todos') || (maVal === filterMa);
 
-                return matchExp && matchCnpj;
+                return matchExp && matchCnpj && matchMa;
             });
 
             filtered.sort((a, b) => new Date(a.expiration) - new Date(b.expiration));
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio encontrado para os filtros selecionados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 text-xs">Nenhum domínio encontrado para os filtros selecionados.</td></tr>`;
                 return;
             }
 
@@ -1380,6 +1481,13 @@
                     'Finalizado com sucesso': 'bg-emerald-50 text-emerald-700 border-emerald-200'
                 }[cnpjStatusVal] || 'bg-slate-100 text-slate-600 border-slate-200';
 
+                const maDocsVal = dom.maDocs || 'Pendente';
+                let maStyle = {
+                    'Pendente': 'bg-rose-50 text-rose-700 border-rose-200',
+                    'Em elaboração': 'bg-amber-50 text-amber-700 border-amber-200',
+                    'Concluído / Assinado': 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                }[maDocsVal] || 'bg-slate-100 text-slate-600 border-slate-200';
+
                 const tr = document.createElement('tr');
                 tr.className = `${info.level === 'critical' ? 'bg-rose-50/50 font-medium' : 'hover:bg-slate-50'} transition-all`;
 
@@ -1389,13 +1497,24 @@
                             ${dom.name}
                             <a href="https://${dom.name}" target="_blank" title="Abrir site" class="text-slate-300 hover:text-indigo-600 text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                         </div>
-                        <div class="text-xs text-slate-400">${dom.provider || 'Provedor não informado'} ${dom.notes ? '• ' + dom.notes : ''}</div>
+                        <div class="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                            <i class="fa-regular fa-id-card text-[10px]"></i>
+                            <span class="font-mono text-[11px] font-semibold text-slate-600">${dom.cnpj || 'CNPJ não informado'}</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">${dom.provider || 'Provedor não informado'} ${dom.notes ? '• ' + dom.notes : ''}</div>
                     </td>
                     <td class="p-3">
                         <select ${disabledAttr} onchange="updateDomainCnpjStatus(${dom.id}, this.value)" class="text-xs font-semibold px-2 py-1 rounded-md border ${cnpjStyle} outline-none cursor-pointer">
                             <option value="Não iniciado" ${cnpjStatusVal === 'Não iniciado' ? 'selected' : ''}>Não iniciado</option>
                             <option value="Em andamento" ${cnpjStatusVal === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
                             <option value="Finalizado com sucesso" ${cnpjStatusVal === 'Finalizado com sucesso' ? 'selected' : ''}>Finalizado com sucesso</option>
+                        </select>
+                    </td>
+                    <td class="p-3">
+                        <select ${disabledAttr} onchange="updateDomainMaDocs(${dom.id}, this.value)" class="text-xs font-semibold px-2 py-1 rounded-md border ${maStyle} outline-none cursor-pointer">
+                            <option value="Pendente" ${maDocsVal === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                            <option value="Em elaboração" ${maDocsVal === 'Em elaboração' ? 'selected' : ''}>Em elaboração</option>
+                            <option value="Concluído / Assinado" ${maDocsVal === 'Concluído / Assinado' ? 'selected' : ''}>Concluído / Assinado</option>
                         </select>
                     </td>
                     <td class="p-3 text-xs font-semibold text-slate-700">
