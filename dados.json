@@ -2013,6 +2013,12 @@
           "name": "evo.seg.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854071337,
+          "name": "evo.tv.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
