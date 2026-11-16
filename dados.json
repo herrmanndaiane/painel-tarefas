@@ -1716,6 +1716,14 @@
   },
   "cancellations": [
     {
+      "id": 1794834559301,
+      "service": "StarTI",
+      "amount": 1768.38,
+      "frequency": "Mensal",
+      "date": "2026-10-21",
+      "notes": ""
+    },
+    {
       "id": 1794834483779,
       "service": "Licença cPanel",
       "amount": 180,
