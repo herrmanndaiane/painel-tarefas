@@ -1882,7 +1882,14 @@
       "titular": "DZ7 Telecomunicacoes Ltda",
       "documento": "008.028.826/0001-70",
       "titularDe": "2 domínios - 4 blocos IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794853921328,
+          "name": "dz7.gru.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 13,
