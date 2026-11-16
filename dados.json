@@ -1827,7 +1827,14 @@
       "titular": "CENTRO OESTE TELECOM",
       "documento": "039.832.926/0001-89",
       "titularDe": "2 domínios",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794853890764,
+          "name": "centrooestetelecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 7,
