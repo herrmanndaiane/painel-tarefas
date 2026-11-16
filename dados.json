@@ -2037,6 +2037,12 @@
           "name": "evonetworks.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854093589,
+          "name": "grupoevo.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
