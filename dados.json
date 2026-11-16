@@ -1716,6 +1716,14 @@
   },
   "cancellations": [
     {
+      "id": 1794834720299,
+      "service": "DataSafer",
+      "amount": 1603.88,
+      "frequency": "Mensal",
+      "date": "2026-10-21",
+      "notes": ""
+    },
+    {
       "id": 1794834559301,
       "service": "StarTI",
       "amount": 1768.38,
