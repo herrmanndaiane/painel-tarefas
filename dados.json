@@ -2603,7 +2603,14 @@
       "titular": "VIA Telecomunicações Ltda.",
       "documento": "003.453.979/0001-41",
       "titularDe": "1 domínio - 13 blocos IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854881869,
+          "name": "remota.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 46,
