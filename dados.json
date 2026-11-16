@@ -1696,6 +1696,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a EVO Networks"
+    },
+    {
+      "id": 1794854271107,
+      "name": "flybyte.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "009.519.714/0001-85",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a Flybyte Comunicação Multimida Ltda."
     }
   ],
   "keepNotes": [
@@ -2169,7 +2179,14 @@
       "titular": "Flybyte Comunicação Multimida Ltda.",
       "documento": "009.519.714/0001-85",
       "titularDe": "2 domínios - 1 bloco IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854271106,
+          "name": "flybyte.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 16,
