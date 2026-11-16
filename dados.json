@@ -1566,6 +1566,16 @@
       "expiration": "2027-08-25",
       "provider": "",
       "notes": "Importado em lote"
+    },
+    {
+      "id": 1794853813500,
+      "name": "200.219.198.208",
+      "expiration": "2027-11-16",
+      "cnpj": "002.012.531/0001-20",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a B&W Informatica Ltda."
     }
   ],
   "keepNotes": [
@@ -1780,6 +1790,12 @@
         {
           "id": 1794853804024,
           "name": "bewnet.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794853813499,
+          "name": "200.219.198.208",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
