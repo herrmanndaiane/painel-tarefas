@@ -1776,6 +1776,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a Titania Telecom"
+    },
+    {
+      "id": 1794854906240,
+      "name": "flexmais.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "005.230.079/0001-60",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a W3 MEGA"
     }
   ],
   "keepNotes": [
@@ -2631,7 +2641,14 @@
       "titular": "W3 MEGA",
       "documento": "005.230.079/0001-60",
       "titularDe": "7 domínios",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854906239,
+          "name": "flexmais.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 49,
