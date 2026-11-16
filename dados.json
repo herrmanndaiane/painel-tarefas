@@ -2031,6 +2031,12 @@
           "name": "evobanco.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854088383,
+          "name": "evonetworks.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
