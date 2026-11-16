@@ -1736,6 +1736,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a Netmogi Internet Provider LTDA - ME"
+    },
+    {
+      "id": 1794854351190,
+      "name": "zeniteferramental.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "004.962.229/0001-68",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a Netmogi Internet Provider LTDA - ME"
     }
   ],
   "keepNotes": [
@@ -2300,6 +2310,12 @@
         {
           "id": 1794854346523,
           "name": "netsuntecnologia.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854351189,
+          "name": "zeniteferramental.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
