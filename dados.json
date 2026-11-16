@@ -1746,6 +1746,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a Netmogi Internet Provider LTDA - ME"
+    },
+    {
+      "id": 1794854514453,
+      "name": "onnetmais.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "003.127.257/0001-05",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a OnNet Telecomunicacoes LTDA"
     }
   ],
   "keepNotes": [
@@ -2333,7 +2343,14 @@
       "titular": "OnNet Telecomunicacoes LTDA",
       "documento": "003.127.257/0001-05",
       "titularDe": "2 domínios",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854514452,
+          "name": "onnetmais.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 25,
