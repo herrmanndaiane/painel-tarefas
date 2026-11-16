@@ -1576,6 +1576,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a B&W Informatica Ltda."
+    },
+    {
+      "id": 1794853931611,
+      "name": "189.125.33.20",
+      "expiration": "2027-11-16",
+      "cnpj": "008.028.826/0001-70",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a DZ7 Telecomunicacoes Ltda"
     }
   ],
   "keepNotes": [
@@ -1892,6 +1902,12 @@
         {
           "id": 1794853926086,
           "name": "dz7telecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794853931610,
+          "name": "189.125.33.20",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
