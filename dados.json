@@ -2697,6 +2697,12 @@
           "name": "internex.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854960499,
+          "name": "turbonex.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     }
