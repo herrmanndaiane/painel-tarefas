@@ -1716,6 +1716,14 @@
   },
   "cancellations": [
     {
+      "id": 1794834483779,
+      "service": "Licença cPanel",
+      "amount": 180,
+      "frequency": "Mensal",
+      "date": "2026-11-13",
+      "notes": "Felice"
+    },
+    {
       "id": 1794834466887,
       "service": "Licença cPanel",
       "amount": 180,
