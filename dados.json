@@ -2449,6 +2449,12 @@
           "name": "selkointernet.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854638917,
+          "name": "selkointernet.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
