@@ -1726,6 +1726,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a Flybyte Comunicação Multimida Ltda."
+    },
+    {
+      "id": 1794854332741,
+      "name": "bergi.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "004.962.229/0001-68",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a Netmogi Internet Provider LTDA - ME"
     }
   ],
   "keepNotes": [
@@ -2274,7 +2284,14 @@
       "titular": "Netmogi Internet Provider LTDA - ME",
       "documento": "004.962.229/0001-68",
       "titularDe": "4 domínios - 88 blocos IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854332740,
+          "name": "bergi.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 23,
