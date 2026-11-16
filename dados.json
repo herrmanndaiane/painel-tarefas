@@ -2554,7 +2554,14 @@
       "titular": "TW TELECOM JACIARA EIRELI",
       "documento": "012.220.742/0001-01",
       "titularDe": "1 domínio",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854839263,
+          "name": "twtelecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 41,
