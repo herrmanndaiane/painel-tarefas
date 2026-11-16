@@ -2715,6 +2715,12 @@
           "name": "zecstar.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854974430,
+          "name": "zecta.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     }
