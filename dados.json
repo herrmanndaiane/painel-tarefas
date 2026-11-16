@@ -1776,7 +1776,14 @@
       "titular": "B&W Informatica Ltda.",
       "documento": "002.012.531/0001-20",
       "titularDe": "1 domínio - 1 bloco IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794853804024,
+          "name": "bewnet.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 4,
