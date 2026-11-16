@@ -1766,6 +1766,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a OnNet Telecomunicacoes LTDA"
+    },
+    {
+      "id": 1794854770390,
+      "name": "200.241.33.48",
+      "expiration": "2027-11-16",
+      "cnpj": "005.396.044/0001-04",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a Titania Telecom"
     }
   ],
   "keepNotes": [
@@ -2504,7 +2514,14 @@
       "titular": "Titania Telecom",
       "documento": "005.396.044/0001-04",
       "titularDe": "1 bloco IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854770389,
+          "name": "200.241.33.48",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 39,
