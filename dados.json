@@ -2290,6 +2290,12 @@
           "name": "bergi.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854338372,
+          "name": "netsun.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
