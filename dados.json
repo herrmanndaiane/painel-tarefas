@@ -1676,6 +1676,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a EVO Networks"
+    },
+    {
+      "id": 1794854138103,
+      "name": "life.psi.br",
+      "expiration": "2027-11-16",
+      "cnpj": "005.783.190/0001-84",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a EVO Networks"
     }
   ],
   "keepNotes": [
@@ -2127,6 +2137,12 @@
         {
           "id": 1794854132783,
           "name": "land.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854138102,
+          "name": "life.psi.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
