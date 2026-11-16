@@ -1833,6 +1833,12 @@
           "name": "centrooestetelecom.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794853896071,
+          "name": "ctotelecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
