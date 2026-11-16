@@ -2677,6 +2677,12 @@
           "name": "w3mega.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854936139,
+          "name": "w3nt.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
