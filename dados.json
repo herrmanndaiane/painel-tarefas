@@ -2589,7 +2589,14 @@
       "titular": "VELOX TELECOM",
       "documento": "027.211.095/0001-49",
       "titularDe": "1 domínio",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854861496,
+          "name": "veloxtelecom.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 45,
