@@ -2394,7 +2394,14 @@
       "titular": "PRIMETEL TELECOM LTDA",
       "documento": "011.554.026/0001-06",
       "titularDe": "1 domínio",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854560668,
+          "name": "primatectelecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 29,
