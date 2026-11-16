@@ -1706,6 +1706,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a Flybyte Comunicação Multimida Ltda."
+    },
+    {
+      "id": 1794854276419,
+      "name": "flybyte.net.br",
+      "expiration": "2027-11-16",
+      "cnpj": "009.519.714/0001-85",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a Flybyte Comunicação Multimida Ltda."
     }
   ],
   "keepNotes": [
@@ -2183,6 +2193,12 @@
         {
           "id": 1794854271106,
           "name": "flybyte.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854276418,
+          "name": "flybyte.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
