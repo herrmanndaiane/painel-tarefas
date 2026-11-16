@@ -1995,6 +1995,12 @@
           "name": "evo.agr.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854049682,
+          "name": "evo.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
