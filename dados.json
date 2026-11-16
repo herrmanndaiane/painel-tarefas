@@ -1586,6 +1586,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a DZ7 Telecomunicacoes Ltda"
+    },
+    {
+      "id": 1794853936939,
+      "name": "189.125.141.4",
+      "expiration": "2027-11-16",
+      "cnpj": "008.028.826/0001-70",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a DZ7 Telecomunicacoes Ltda"
     }
   ],
   "keepNotes": [
@@ -1908,6 +1918,12 @@
         {
           "id": 1794853931610,
           "name": "189.125.33.20",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794853936938,
+          "name": "189.125.141.4",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
