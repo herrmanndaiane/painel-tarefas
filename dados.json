@@ -1606,6 +1606,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a EVO Networks"
+    },
+    {
+      "id": 1794854033541,
+      "name": "amaisrapida.net.br",
+      "expiration": "2027-11-16",
+      "cnpj": "005.783.190/0001-84",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a EVO Networks"
     }
   ],
   "keepNotes": [
@@ -1955,6 +1965,12 @@
         {
           "id": 1794854028632,
           "name": "agroevo.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854033540,
+          "name": "amaisrapida.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
