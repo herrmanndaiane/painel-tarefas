@@ -1888,6 +1888,12 @@
           "name": "dz7.gru.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794853926086,
+          "name": "dz7telecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
