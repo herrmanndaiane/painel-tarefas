@@ -2709,6 +2709,12 @@
           "name": "turbonex.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854969616,
+          "name": "zecstar.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     }
