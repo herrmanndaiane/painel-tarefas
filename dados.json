@@ -2296,6 +2296,12 @@
           "name": "netsun.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854346523,
+          "name": "netsuntecnologia.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
