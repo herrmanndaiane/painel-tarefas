@@ -2443,7 +2443,14 @@
       "titular": "SELKO INTERNET PROVEDOR E SERVICOS DE TECNOLOGIA",
       "documento": "013.052.829/0001-80",
       "titularDe": "2 domínios",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854633581,
+          "name": "selkointernet.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 34,
