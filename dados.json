@@ -2534,6 +2534,12 @@
           "name": "clubetvalphaville.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854804019,
+          "name": "internetalphaville.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
