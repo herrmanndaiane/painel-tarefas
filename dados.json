@@ -2665,6 +2665,12 @@
           "name": "megavelocidade4g.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854927741,
+          "name": "w3.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
