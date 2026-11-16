@@ -2721,6 +2721,12 @@
           "name": "zecta.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854978451,
+          "name": "zecta.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     }
