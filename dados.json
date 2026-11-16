@@ -2528,7 +2528,14 @@
       "titular": "TV Alphaville Sistema de TV por Assinatura LTDA",
       "documento": "065.030.132/0001-01",
       "titularDe": "3 domínios - 2 blocos IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854799275,
+          "name": "clubetvalphaville.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 40,
