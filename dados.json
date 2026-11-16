@@ -2225,7 +2225,14 @@
       "titular": "HI TELECOM EIRELI",
       "documento": "019.125.031/0001-05",
       "titularDe": "1 domínio",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854300416,
+          "name": "hitelecom.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 17,
