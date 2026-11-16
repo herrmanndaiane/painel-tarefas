@@ -2691,7 +2691,14 @@
       "titular": "ZECTA TELECOMUNICACOES LTDA",
       "documento": "009.188.449/0001-08",
       "titularDe": "7 domínios",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854955821,
+          "name": "internex.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     }
   ]
 }
