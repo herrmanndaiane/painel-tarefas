@@ -2490,6 +2490,12 @@
           "name": "titania.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854752736,
+          "name": "younet.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
