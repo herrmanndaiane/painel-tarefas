@@ -2007,6 +2007,12 @@
           "name": "evo.radio.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854066186,
+          "name": "evo.seg.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
