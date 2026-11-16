@@ -2091,6 +2091,12 @@
           "name": "home.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854120209,
+          "name": "internetrapida.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
