@@ -2484,7 +2484,14 @@
       "titular": "Titania Telecom",
       "documento": "009.093.813/0001-48",
       "titularDe": "2 domínios",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854747792,
+          "name": "titania.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 38,
