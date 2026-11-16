@@ -2703,6 +2703,12 @@
           "name": "turbonex.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854965660,
+          "name": "turbonex.net.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     }
