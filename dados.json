@@ -2019,6 +2019,12 @@
           "name": "evo.tv.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854078880,
+          "name": "evo360.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
