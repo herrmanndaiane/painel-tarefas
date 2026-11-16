@@ -2415,7 +2415,14 @@
       "titular": "REDE TJNET",
       "documento": "012.157.261/0001-07",
       "titularDe": "1 domínio",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854595406,
+          "name": "tjnetcomunicacoes.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 31,
