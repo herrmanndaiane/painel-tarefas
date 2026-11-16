@@ -2001,6 +2001,12 @@
           "name": "evo.net.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854055473,
+          "name": "evo.radio.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
