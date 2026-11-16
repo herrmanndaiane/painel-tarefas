@@ -1806,7 +1806,14 @@
       "titular": "Bereit Engenharia",
       "documento": "018.940.768/0001-00",
       "titularDe": "1 domínio",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794853869474,
+          "name": "bereitengenharia.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 5,
