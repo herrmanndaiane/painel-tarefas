@@ -1713,5 +1713,360 @@
       "16_2": "I",
       "16_3": "I"
     }
-  }
+  },
+  "cancellations": [
+    {
+      "id": 1794834466887,
+      "service": "Licença cPanel",
+      "amount": 180,
+      "frequency": "Mensal",
+      "date": "2026-11-13",
+      "notes": "Ford Amazon"
+    }
+  ],
+  "cnpjEntries": [
+    {
+      "id": 1,
+      "titular": "ASAROTUR VIAGENS E TURISMO LTDA",
+      "documento": "093.929.149/0001-30",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 2,
+      "titular": "Associação Italiana de Santa Maria",
+      "documento": "090.324.187/0001-71",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 3,
+      "titular": "B&W Informatica Ltda.",
+      "documento": "002.012.531/0001-20",
+      "titularDe": "1 domínio - 1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 4,
+      "titular": "Bereit Engenharia",
+      "documento": "018.940.768/0001-00",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 5,
+      "titular": "BRASIL SERVICOS DE TELECOMUNICACOES LTDA",
+      "documento": "007.756.651/0015-50",
+      "titularDe": "163 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 6,
+      "titular": "CENTRO OESTE TELECOM",
+      "documento": "039.832.926/0001-89",
+      "titularDe": "2 domínios",
+      "domains": []
+    },
+    {
+      "id": 7,
+      "titular": "COOPERATIVA AGROPECUARIA DE SAO PEDRO DO SUL LTDA",
+      "documento": "097.173.660/0001-06",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 8,
+      "titular": "cooperativa dos estudantes de Santa Maria Ltd",
+      "documento": "089.798.797/0001-28",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 9,
+      "titular": "COOPERATIVA MISTA DOS FUMICULTORES DO BRASIL LTDA",
+      "documento": "007.001.973/0001-94",
+      "titularDe": "2 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 10,
+      "titular": "CREDIBENS IMOVEIS LTDA",
+      "documento": "003.665.174/0001-61",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 11,
+      "titular": "DSL COMERCIO DE COMBUSTIVEIS LTDA",
+      "documento": "017.695.813/0001-46",
+      "titularDe": "2 domínios - 1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 12,
+      "titular": "DZ7 Telecomunicacoes Ltda",
+      "documento": "008.028.826/0001-70",
+      "titularDe": "2 domínios - 4 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 13,
+      "titular": "Ensaio Estúdio Fotográfico Ltda",
+      "documento": "094.340.908/0001-98",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 14,
+      "titular": "EVO Networks",
+      "documento": "005.783.190/0001-84",
+      "titularDe": "20 domínios - 1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 15,
+      "titular": "Flybyte Comunicação Multimida Ltda.",
+      "documento": "009.519.714/0001-85",
+      "titularDe": "2 domínios - 1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 16,
+      "titular": "HI TELECOM EIRELI",
+      "documento": "019.125.031/0001-05",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 17,
+      "titular": "IGAPLAN INDUSTRIAL MECANICA LTDA",
+      "documento": "092.954.130/0001-81",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 18,
+      "titular": "Inst Prev dos Serv Tit de Cargo Efet de Carazinho",
+      "documento": "010.225.642/0001-42",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 19,
+      "titular": "INSTITUTO EDUCACIONAL DOM BOSCO",
+      "documento": "095.817.037/0001-13",
+      "titularDe": "2 domínios",
+      "domains": []
+    },
+    {
+      "id": 20,
+      "titular": "LM PROPAGANDA LTDA",
+      "documento": "092.467.331/0001-54",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 21,
+      "titular": "Murilo Gomes Comércio e Serviços de Informática Lt",
+      "documento": "013.305.721/0001-51",
+      "titularDe": "1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 22,
+      "titular": "Netmogi Internet Provider LTDA - ME",
+      "documento": "004.962.229/0001-68",
+      "titularDe": "4 domínios - 88 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 23,
+      "titular": "Omega Tecnologia LTDA",
+      "documento": "005.559.192/0001-94",
+      "titularDe": "1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 24,
+      "titular": "OnNet Telecomunicacoes LTDA",
+      "documento": "003.127.257/0001-05",
+      "titularDe": "2 domínios",
+      "domains": []
+    },
+    {
+      "id": 25,
+      "titular": "Poliagro Comercio e Representacoes Ltda.",
+      "documento": "093.797.868/0001-45",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 26,
+      "titular": "Pollo Distribuidora de Peças Automotivas Ltda.",
+      "documento": "093.880.722/0001-69",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 27,
+      "titular": "Premier Ortodontia e Estética Bucal Ltda",
+      "documento": "008.274.088/0001-41",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 28,
+      "titular": "PRIMETEL TELECOM LTDA",
+      "documento": "011.554.026/0001-06",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 29,
+      "titular": "PROVEDOR REDESUL LTDA",
+      "documento": "005.060.107/0001-49",
+      "titularDe": "11 domínios",
+      "domains": []
+    },
+    {
+      "id": 30,
+      "titular": "REDE TJNET",
+      "documento": "012.157.261/0001-07",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 31,
+      "titular": "Regime Próprio de Previdência do Município de Agud",
+      "documento": "010.764.461/0001-94",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 32,
+      "titular": "S. D. PROVEDOR E INFORMATICA LTDA ME",
+      "documento": "097.527.395/0001-17",
+      "titularDe": "1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 33,
+      "titular": "SELKO INTERNET PROVEDOR E SERVICOS DE TECNOLOGIA",
+      "documento": "013.052.829/0001-80",
+      "titularDe": "2 domínios",
+      "domains": []
+    },
+    {
+      "id": 34,
+      "titular": "Silveira Martins Câmara Municipal de Vereadores",
+      "documento": "092.457.308/0001-89",
+      "titularDe": "1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 35,
+      "titular": "T-LESTE TELECOMUNICACOES LESTE DE SAO PAULO LTDA",
+      "documento": "005.352.366/0001-43",
+      "titularDe": "2 domínios - 3 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 36,
+      "titular": "TECKLINK TELECOM EIRELI",
+      "documento": "040.711.119/0001-97",
+      "titularDe": "-",
+      "domains": []
+    },
+    {
+      "id": 37,
+      "titular": "Titania Telecom",
+      "documento": "009.093.813/0001-48",
+      "titularDe": "2 domínios",
+      "domains": []
+    },
+    {
+      "id": 38,
+      "titular": "Titania Telecom",
+      "documento": "005.396.044/0001-04",
+      "titularDe": "1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 39,
+      "titular": "TV Alphaville Sistema de TV por Assinatura LTDA",
+      "documento": "065.030.132/0001-01",
+      "titularDe": "3 domínios - 2 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 40,
+      "titular": "TW TELECOM JACIARA EIRELI",
+      "documento": "012.220.742/0001-01",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 41,
+      "titular": "Uillian Bedinoto",
+      "documento": "024.304.370-82",
+      "titularDe": "-",
+      "domains": []
+    },
+    {
+      "id": 42,
+      "titular": "UsaFibra Nettfacil Tecnologia e Servicos Ltda",
+      "documento": "020.052.994/0001-05",
+      "titularDe": "6 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 43,
+      "titular": "Vanipar Comércio de Parafusos e Ferramentas Ltda",
+      "documento": "093.050.698/0001-30",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 44,
+      "titular": "VELOX TELECOM",
+      "documento": "027.211.095/0001-49",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 45,
+      "titular": "VIA Telecomunicações Ltda.",
+      "documento": "003.453.979/0001-41",
+      "titularDe": "1 domínio - 13 blocos IP",
+      "domains": []
+    },
+    {
+      "id": 46,
+      "titular": "VIABRAZIL TELECOMUNICAÇÕES LTDA",
+      "documento": "002.375.258/0001-06",
+      "titularDe": "1 domínio",
+      "domains": []
+    },
+    {
+      "id": 47,
+      "titular": "VOINER CORSINI MARTINS",
+      "documento": "015.229.611/0001-83",
+      "titularDe": "1 bloco IP",
+      "domains": []
+    },
+    {
+      "id": 48,
+      "titular": "W3 MEGA",
+      "documento": "005.230.079/0001-60",
+      "titularDe": "7 domínios",
+      "domains": []
+    },
+    {
+      "id": 49,
+      "titular": "ZECTA TELECOMUNICACOES LTDA",
+      "documento": "009.188.449/0001-08",
+      "titularDe": "7 domínios",
+      "domains": []
+    }
+  ]
 }
