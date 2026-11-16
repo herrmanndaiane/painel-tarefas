@@ -2653,6 +2653,12 @@
           "name": "mega4g.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854917063,
+          "name": "megavelocidade.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
