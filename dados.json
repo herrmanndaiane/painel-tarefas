@@ -1716,6 +1716,14 @@
   },
   "cancellations": [
     {
+      "id": 1794852160787,
+      "service": "Licença cPanel",
+      "amount": 180,
+      "frequency": "Mensal",
+      "date": "2026-11-16",
+      "notes": "Metalúrgica Netz"
+    },
+    {
       "id": 1794834720299,
       "service": "DataSafer",
       "amount": 1603.88,
