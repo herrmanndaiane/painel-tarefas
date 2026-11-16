@@ -2025,6 +2025,12 @@
           "name": "evo360.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854084072,
+          "name": "evobanco.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
