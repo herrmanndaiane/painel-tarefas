@@ -1596,6 +1596,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a DZ7 Telecomunicacoes Ltda"
+    },
+    {
+      "id": 1794854028633,
+      "name": "agroevo.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "005.783.190/0001-84",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a EVO Networks"
     }
   ],
   "keepNotes": [
@@ -1941,7 +1951,14 @@
       "titular": "EVO Networks",
       "documento": "005.783.190/0001-84",
       "titularDe": "20 domínios - 1 bloco IP",
-      "domains": []
+      "domains": [
+        {
+          "id": 1794854028632,
+          "name": "agroevo.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        }
+      ]
     },
     {
       "id": 15,
