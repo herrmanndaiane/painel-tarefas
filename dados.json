@@ -2540,6 +2540,12 @@
           "name": "internetalphaville.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854810148,
+          "name": "tvalphaville.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
         }
       ]
     },
