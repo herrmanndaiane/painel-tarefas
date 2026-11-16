@@ -1756,6 +1756,16 @@
       "maDocs": "Pendente",
       "provider": "Registro.br",
       "notes": "Vinculado a OnNet Telecomunicacoes LTDA"
+    },
+    {
+      "id": 1794854520679,
+      "name": "onnettelecom.com.br",
+      "expiration": "2027-11-16",
+      "cnpj": "003.127.257/0001-05",
+      "cnpjStatus": "Em andamento",
+      "maDocs": "Pendente",
+      "provider": "Registro.br",
+      "notes": "Vinculado a OnNet Telecomunicacoes LTDA"
     }
   ],
   "keepNotes": [
@@ -2347,6 +2357,12 @@
         {
           "id": 1794854514452,
           "name": "onnetmais.com.br",
+          "status": "Ativo",
+          "notes": "Atrelado via painel"
+        },
+        {
+          "id": 1794854520678,
+          "name": "onnettelecom.com.br",
           "status": "Ativo",
           "notes": "Atrelado via painel"
         }
